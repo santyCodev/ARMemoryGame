@@ -1,0 +1,79 @@
+A todas las clases se les a asignado un namespace especifico
+
+LogController
+- Atributo logsActive serializada para activar en editor
+- Propiedad LogsActive que devuelve el atributo privado
+- Metodo PrintInConsole
+
+Patron State para el GameController
+- Clase Contexto: GameController
+- Interfaz de estados: IState
+- Clase que impeplementa IState: State
+- Estado de inicializacion: GameInitializationState
+
+GameController
+- Clase que controla el flujo del juego
+- Recibe desde el editor: LogController, PlacasController, CharacterController
+- Propiedades: CurrentState, LogController, PlacasController, CharacterController
+- Funcion start: Inicializacion del primer estado
+- Funcion update: Arranca el estado si este se ha inicializado
+- Funcion ChangeState: Asigna un estado nuevo al estado actual
+
+Interfaz IState
+- funcion IsRunning: para indicar si el estado esta inicializado
+- funcion StartState: arranca el estado actual
+
+Clase State
+- implementa IState
+- atributos protected: 
+- propiedad IsExecuting: para controlar cuando se esta ejecutando o no el estado
+gameControllerContext, logController
+- constructor: asigna el contexto y el log controller
+- Funcion isRunning: devuelve el valor de IsExecuting
+- Funcion StartState: no implementa nada
+
+GameInitializationState
+- hereda de State
+- Constructor: para asignar el placasController, el contexto en la clase padre y la inicializacion del estado en si
+- funcion StartState: proceso paralelo donde controla el flujo del estado
+- funcion onEnter: primera funcion del flujo, inicializa el estado mediante la propiedad IsExecuting
+- funcion onExecution: segunda funcion del flujo: donde se ejecutara la funcionalidad propia del estado
+- funcion onExit: para salir con seguridad del estado e iniciar el estado siguiente
+
+PlacaControl
+- Clase que controla los gameObjects correspondiente a las placas
+- Contiene internamente el material del gameObject para trabajar con el
+- funcion ChangeMaterialColor: para cambiar el color del material
+- funcion SetOriginalMaterialColor: para devolver el color original de la placa
+
+PlacasController
+- Clase que controla la logica de las placas
+- Recibe un gameObject con el conjunto de placas del tablero
+- Funcion setDefaultTags: asigna una tag por defecto a todas las placas
+- Funcion setMarkedTag: asigna una tag a las placas elegidas aleatoriamente, usa la funcion setRandomTag
+- funcion setRandomTagsToDefault: Devuelve las tags a las placas que antes fueron elegidas aleatoriamente, usa la funcion setRandomTag
+- funcion setRandomTag: funcion donde se ejecuta la asignacion de las placas
+- funcion InstantiatePlacasRandom: instancia un array para placas elegidas aleatoriamente
+- funcion InitializePlacasRandom: inicializa por primera vez el array de placas aleatorias con el valor inicial
+- funcion GetRandomPlacas: elige de manera aleatoria un numero de placas del tablero
+- funcion GetActualPlacaRandom: Devuelve una placa aleatoria como actual desde el array de placas
+- funcion PrintLastPlacaRandom: Imprime en consola la placa asignada como anterior
+- funcion ComparePlacasEquals: compara una placa anterior con una actual si no son iguales
+- funcion PrintPlacasRandom: Imprime en consola las placas / posiciones random despues de completar la eleccion
+- En esta clase se han creado 3 regiones para organizar codigo: SetTags, InitializePlacas y GetRandomPlacas 
+
+CharacterController
+- Clase que controla la funcionalidad del personaje del juego
+- funcion PrepareForMovement: asigna las placas por donde se movera y arrancara su movimiento
+- funcion MoveCharacter: El personaje recorre por todas las placas asignadas para el
+- funcion WaitForEnd: contador para esperar medio segundo
+- funcion MarkPlate: marca la placa por donde ha pasado, cambiando su color
+- funcion MoveToNextPosition: Uso de interpolacion lineal para el calculo de la posicion relativa en cada frame, para que el personaje avance entre placas
+- funcion SetFirstPosition: Asigna la posicion de la primera placa al personaje donde empezara
+- funcion SetNextPosition: Asigna al personaje la posicion de la siguiente placa a recorrer
+- funcion NewCharacterPosition: Situa al personaje en una posicion concreta
+- funcion LookAtNextPosition: Hace que el personaje mire a una posicion concreta
+
+.gitignore
+- para ingnorar los ficheros *.meta
+
