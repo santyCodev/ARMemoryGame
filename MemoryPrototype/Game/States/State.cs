@@ -1,9 +1,6 @@
-﻿using MemoryPrototype.Game;
+﻿using System.Collections;
 using MemoryPrototype.Logs;
 using MemoryPrototype.StatePattern;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace MemoryPrototype.Game.States
 {
@@ -12,22 +9,36 @@ namespace MemoryPrototype.Game.States
         protected GameController gameControllerContext;
         protected LogController logController;
 
-        protected bool IsExecuting { get; set; }
-        //public GameController GameControllerContext { get; set; }
+        protected bool IsInitialized { get; set; }
 
         public State(GameController context)
         {
             gameControllerContext = context;
             logController = gameControllerContext.LogController;
         }
-        public bool IsRunning()
+        public bool Initialized()
         {
-            return IsExecuting;
+            return IsInitialized;
         }
 
         public virtual IEnumerator StartState()
         {
             throw new System.NotImplementedException();
+        }
+        
+        public virtual void OnExecution()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void OnEnter()
+        {
+            IsInitialized = true;
+        }
+
+        public void OnExit()
+        {
+            //Context.ChangeState(new GameState(Context));
         }
     }
 }

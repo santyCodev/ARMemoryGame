@@ -6,8 +6,12 @@ namespace MemoryPrototype.StatePattern
 {
     public interface IState
     {
-        bool IsRunning();
+        bool Initialized();
         IEnumerator StartState();
+        void OnEnter();
+        void OnExit();
+        void OnExecution();
+
     }
 }
 

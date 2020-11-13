@@ -19,28 +19,28 @@ namespace MemoryPrototype.Game.States
             OnEnter();
         }
 
+        private new void OnEnter()
+        {
+            logController.PrintInConsole(STATE_NAME + " - ENTER");
+            base.OnEnter();
+        }
+
         public override IEnumerator StartState()
         {
-            IsExecuting = false;
+            IsInitialized = false;
             yield return new WaitForSeconds(3);
-            StateExecution();
+            OnExecution();
             yield return new WaitForSeconds(5);
             OnExit();
         }
-
-        private void OnEnter()
-        {            
-            logController.PrintInConsole(STATE_NAME + " - ENTER");
-            IsExecuting = true;
-        }
-
-        private void OnExit()
+        
+        private new void OnExit()
         {
             logController.PrintInConsole(STATE_NAME + " - EXIT");
-            //Context.ChangeState(new GameState(Context));
+            base.OnExit();
         }
 
-        private void StateExecution()
+        public override void OnExecution()
         {
             logController.PrintInConsole(STATE_NAME + " - EXECUTION");
             PlacasInitialization();
@@ -56,7 +56,8 @@ namespace MemoryPrototype.Game.States
 
         private void CharacterInitialization()
         {            
-            characterController.PrepareForMovement(placasController.PlacasRandom);            
+            characterController.PrepareForMovement(placasController.PlacasRandom);
+            logController.PrintInConsole(STATE_NAME + " Character Initialization - DONE");
         }
     }
 }

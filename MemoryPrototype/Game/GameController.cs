@@ -33,7 +33,7 @@ namespace MemoryPrototype.Game
         // Update is called once per frame
         void Update()
         {
-            if (CurrentState.IsRunning())
+            if (CurrentState.Initialized())
             {
                 StartCoroutine(CurrentState.StartState());
             }
