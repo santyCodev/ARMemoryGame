@@ -10,7 +10,7 @@ namespace MemoryPrototype.Game.States
 {
     public class GameInitializationState : State
     {                        
-        private const string STATE_NAME = "Game Initializacion State";
+        private const string STATE_NAME = "GAME INITIALIZACION STATE";
 
         private PlacasController placasController;
 
@@ -44,6 +44,14 @@ namespace MemoryPrototype.Game.States
         private void StateExecution()
         {
             logController.PrintInConsole(STATE_NAME + " - EXECUTION");
+            PlacasInitialization();
+        }
+
+        private void PlacasInitialization()
+        {
+            placasController.SetRandomPlacas();
+            placasController.SetMarkedTag();
+            logController.PrintInConsole(STATE_NAME + " Placas Initialization - DONE");
         }
     }
 }

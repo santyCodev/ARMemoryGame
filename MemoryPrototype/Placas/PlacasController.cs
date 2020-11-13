@@ -7,27 +7,21 @@ namespace MemoryPrototype.Placas
 {
     public class PlacasController : MonoBehaviour
     {
+        [SerializeField] private LogController logController;       //Controlador de logs
+        [SerializeField] private GameObject placasParent;           //parent de las placas
+
         private const int NUM_PLACAS_INITIAL = 3;
         private const string DEFAULT_TAG = "Plate";
         private const string MARKED_TAG = "PlateMarked";
 
-        private Transform[] placas;                         //Array que contendra a todas las placas
-        private GameObject[] posicionesPlacasRandom;        //Array con las placas random elegidas
-        private int NumPlacasRandom { get; set; }           //Numero de placas random a recoger
-        
-        public LogController logController;                 //Controlador de logs
-        public GameObject placasParent;                     //parent de las placas       
-
-        
-
+        private Transform[] placas;                                 //Array que contendra a todas las placas
+        private GameObject[] placasRandom;                          //Array con las placas random elegidas
+        public int NumPlacasRandom { get; set; }                    //Numero de placas random a recoger
         private void Awake()
         {
             placas = GetPlacasFromParent();              
             SetDefaultTags();
             InitializePlacasRandom();
-
-            GetRandomPlacas();
-            setMarkedTag();
         }
 
         void Start()
@@ -48,7 +42,7 @@ namespace MemoryPrototype.Placas
         /*
             Asigna la tag MARKED_TAG a las placas random
          */
-        public void setMarkedTag()
+        public void SetMarkedTag()
         {
             setRandomTag(MARKED_TAG);
         }
@@ -66,7 +60,7 @@ namespace MemoryPrototype.Placas
          */
         private void setRandomTag(string tagType)
         {
-            foreach (var placa in posicionesPlacasRandom) { placa.tag = tagType; }
+            foreach (var placa in placasRandom) { placa.tag = tagType; }
         }
 
         #endregion
@@ -87,7 +81,7 @@ namespace MemoryPrototype.Placas
          */
         public void InstantiatePlacasRandom(int numPlacas)
         {
-            posicionesPlacasRandom = new GameObject[numPlacas];
+            placasRandom = new GameObject[numPlacas];
         }
 
         /*
@@ -109,7 +103,7 @@ namespace MemoryPrototype.Placas
             - Se asignaran tantas placas como valor tengamos en NumPlacasRandom
             - Con el valor index, controlamos que no sobrepasemos NumPlacasRandom
          */
-        public void GetRandomPlacas()
+        public void SetRandomPlacas()
         {            
             int index = 0;
             Transform actualPlacaRandom;
@@ -158,7 +152,7 @@ namespace MemoryPrototype.Placas
             if (lastPlacaRamdom == null || !actualPlacaRandom.Equals(lastPlacaRamdom.transform))
             {
                 logController.PrintInConsole("Las Posiciones de las placas no son iguales");
-                posicionesPlacasRandom[index] = actualPlacaRandom.gameObject;
+                placasRandom[index] = actualPlacaRandom.gameObject;
                 lastPlacaRamdom = actualPlacaRandom.gameObject;
                 index++;
             }
@@ -170,9 +164,9 @@ namespace MemoryPrototype.Placas
          */
         private void PrintPlacasRandom()
         {
-            for (int i = 0; i < posicionesPlacasRandom.Length; i++)
+            for (int i = 0; i < placasRandom.Length; i++)
             {
-                logController.PrintInConsole("Posicion random: " + posicionesPlacasRandom[i].transform.position);
+                logController.PrintInConsole("Posicion random: " + placasRandom[i].transform.position);
             }
         }
 
