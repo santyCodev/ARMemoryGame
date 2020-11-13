@@ -28,11 +28,6 @@ namespace MemoryPrototype.Game
         {
             CurrentState = new GameInitializationState(this);
             LogController.PrintInConsole("Current State - "+CurrentState);
-            //if (logController.LogsActive) { TestGameObjectInicialization(); }
-
-
-
-            //characterController.PrepareForMovement(placasController.PosicionesPlacasRandom);
         }
 
         // Update is called once per frame

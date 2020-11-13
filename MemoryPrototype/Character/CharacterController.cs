@@ -18,7 +18,7 @@ namespace MemoryPrototype.Character
             moveLerpTime = 1f;
         }
 
-        #region PrepareForMovement
+        #region Character's Position
 
         /*
             Prepara el personaje para su movimiento
@@ -39,15 +39,32 @@ namespace MemoryPrototype.Character
             transform.localPosition = firstPosition;
             logController.PrintInConsole("setFirstPosition()- Primera posicion " + transform.localPosition);
         }
-                
 
-        #endregion
-       
         /*
-            Corrutina donde el personaje recorre todas las posiciones de la coleccion.
+           Situa al personaje en una posicion concreta, la posicion tiene que ajustar la variable Y del
+           Vector3 a 0.5 para que el GameObject no se vea enterrado en el plano
+        */
+        private Vector3 NewPosition(Vector3 position)
+        {
+            return new Vector3(position.x, 0.5f, position.z);
+        }
+        #endregion
+
+        #region Character movement
+
+        /*
+            Inicia la corrutina de movimiento del personaje
          */
-        private IEnumerator MoveCharacter()
-        {            
+        public void MoveCharacter()
+        {
+            StartCoroutine(InitMovement());
+        }
+        
+        /*
+            El personaje recorre todas las posiciones.
+         */
+        public IEnumerator InitMovement()
+        {
             MarkPlate(positionsToWalk[0]);
 
             for (int i = 1; i < positionsToWalk.Length; i++)
@@ -66,46 +83,18 @@ namespace MemoryPrototype.Character
                 logController.PrintInConsole("MoveCharacter() - Chara ha llegado al destino " + nextPosition);
                 SetFirstPosition(nextPosition);
             }
+            logController.PrintInConsole("MoveCharacter() - Chara ha terminado el recorrido ");
 
-            logController.PrintInConsole("MoveCharacter() - Chara ha terminado el recorrido ");           
-
-            yield return WaitForEnd();            
+            yield return new WaitForSeconds(0.5f);
         }
 
         /*
-           Situa al personaje en una posicion concreta, la posicion tiene que ajustar la variable Y del
-           Vector3 a 0.5 para que el GameObject no se vea enterrado en el plano
-        */
-        private Vector3 NewPosition(Vector3 position)
-        {
-            return new Vector3(position.x, 0.5f, position.z);
-        }
-
-        private IEnumerator WaitForEnd()
-        {
-            float counter = 0;
-            float waitTime = 0.5f;
-            while (counter < waitTime)
-            {
-                counter += Time.deltaTime;
-                yield return null;
-            }
-        }
-
-        /*
-            Cambia el color del material el cual el personaje ha pisado
-         */
-        private void MarkPlate(GameObject placa)
-        {
-            placa.GetComponent<PlacaControl>().ChangeMaterialColor();
-        }
-
-        /*
-            Se llama desde la corrutina donde realiza el calculo de la interpolacion lineal entre la posicion
-            actual del personaj y la posicion destino.
-            - El tiempo actual de recorrido se compara con el tiempo total, si este llega a sobrepasarlo, se iguala al total
-            - El tiempo de interpolacion es la operacion entre (currentLerpTime / moveLerpTime), cuando el resultado sea 1
-                habra terminado el recorrido y el personaje estara en el 
+            Calculo de la interpolacion lineal entre la posicion
+            actual del personaje y la posicion destino.
+            - El tiempo actual de recorrido se compara con el tiempo total, 
+                si este llega a sobrepasarlo, se iguala al total
+            - El tiempo de interpolacion es la operacion entre (currentLerpTime / moveLerpTime), 
+                cuando el resultado sea 1 habra terminado el recorrido y el personaje estara en el 
         */
         private void MoveToNextPosition()
         {
@@ -117,12 +106,6 @@ namespace MemoryPrototype.Character
             transform.localPosition = Vector3.Lerp(transform.position, nextPosition, (currentLerpTime / moveLerpTime));
         }
 
-        
-
-        
-
-       
-
         /*
             Hace que el personaje mire hacia una posicicion concreta
          */
@@ -132,6 +115,17 @@ namespace MemoryPrototype.Character
             transform.LookAt(newFinalPosition);
             logController.PrintInConsole("LookAtPosition - Mirando a la posicion = " + newFinalPosition);
         }
-    }
+
+        /*
+            Cambia el color del material el cual el personaje ha pisado
+         */
+        private void MarkPlate(GameObject placa)
+        {
+            placa.GetComponent<PlacaControl>().ChangeMaterialColor();
+        }
+
+        #endregion
+
+    }//End Class
 }
 

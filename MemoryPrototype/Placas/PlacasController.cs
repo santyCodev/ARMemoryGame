@@ -24,11 +24,6 @@ namespace MemoryPrototype.Placas
             InitializePlacasRandom();
         }
 
-        void Start()
-        {
-                                                      
-        }
-
         #region SetTags
 
         /*

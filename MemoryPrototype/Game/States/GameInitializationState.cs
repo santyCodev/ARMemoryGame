@@ -55,9 +55,8 @@ namespace MemoryPrototype.Game.States
         }
 
         private void CharacterInitialization()
-        {
-            //Asignacion de las posiciones a recorrer
-            characterController.PrepareForMovement(placasController.PlacasRandom);
+        {            
+            characterController.PrepareForMovement(placasController.PlacasRandom);            
         }
     }
 }
