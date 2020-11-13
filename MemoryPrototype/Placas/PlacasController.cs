@@ -21,10 +21,11 @@ namespace MemoryPrototype.Placas
         
 
         private void Awake()
-        {            
-            placas = placasParent.GetComponentsInChildren<Transform>();          //Recoge todas las placas hijas    
+        {
+            placas = GetPlacasFromParent();              
             SetDefaultTags();
             InitializePlacasRandom();
+
             GetRandomPlacas();
             setMarkedTag();
         }
@@ -44,16 +45,25 @@ namespace MemoryPrototype.Placas
             foreach (var placa in placas) { placa.gameObject.tag = DEFAULT_TAG; }
         }
 
+        /*
+            Asigna la tag MARKED_TAG a las placas random
+         */
         public void setMarkedTag()
         {
             setRandomTag(MARKED_TAG);
         }
 
+        /*
+            Asigna de nuevo la DEFAULT_TAG a las placas que fueron cambiadas antes por la MARKED_TAG
+         */
         public void setRandomTagsToDefault()
         {
             setRandomTag(DEFAULT_TAG);            
         }
 
+        /*
+            Asigna a las placas del array de placas random el tagType
+         */
         private void setRandomTag(string tagType)
         {
             foreach (var placa in posicionesPlacasRandom) { placa.tag = tagType; }
@@ -62,6 +72,15 @@ namespace MemoryPrototype.Placas
         #endregion
 
         #region InitializePlacas
+
+        /* 
+            Recoge las placas que son hijas del parent en un array de Transforms
+
+         */
+        private Transform[] GetPlacasFromParent()
+        {
+            return placasParent.GetComponentsInChildren<Transform>();
+        }
 
         /*
             Se instancia el array de placas random con el numero de placas que contendra 
