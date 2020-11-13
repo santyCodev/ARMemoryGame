@@ -1,10 +1,7 @@
-﻿using MemoryPrototype.Game;
-using MemoryPrototype.Logs;
-using MemoryPrototype.Placas;
-using MemoryPrototype.StatePattern;
+﻿using MemoryPrototype.Placas;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using CharacterController = MemoryPrototype.Character.CharacterController;
 
 namespace MemoryPrototype.Game.States
 {
@@ -13,10 +10,12 @@ namespace MemoryPrototype.Game.States
         private const string STATE_NAME = "GAME INITIALIZACION STATE";
 
         private PlacasController placasController;
+        private CharacterController characterController;
 
         public GameInitializationState(GameController context) : base(context)        
         {           
-            placasController = gameControllerContext.PlacasController;            
+            placasController = gameControllerContext.PlacasController;
+            characterController = gameControllerContext.CharacterController;
             OnEnter();
         }
 
@@ -45,6 +44,7 @@ namespace MemoryPrototype.Game.States
         {
             logController.PrintInConsole(STATE_NAME + " - EXECUTION");
             PlacasInitialization();
+            CharacterInitialization();
         }
 
         private void PlacasInitialization()
@@ -52,6 +52,12 @@ namespace MemoryPrototype.Game.States
             placasController.SetRandomPlacas();
             placasController.SetMarkedTag();
             logController.PrintInConsole(STATE_NAME + " Placas Initialization - DONE");
+        }
+
+        private void CharacterInitialization()
+        {
+            //Asignacion de las posiciones a recorrer
+            characterController.PrepareForMovement(placasController.PlacasRandom);
         }
     }
 }

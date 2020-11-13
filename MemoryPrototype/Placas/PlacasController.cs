@@ -14,9 +14,9 @@ namespace MemoryPrototype.Placas
         private const string DEFAULT_TAG = "Plate";
         private const string MARKED_TAG = "PlateMarked";
 
-        private Transform[] placas;                                 //Array que contendra a todas las placas
-        private GameObject[] placasRandom;                          //Array con las placas random elegidas
+        private Transform[] placas;                                 //Array que contendra a todas las placas        
         public int NumPlacasRandom { get; set; }                    //Numero de placas random a recoger
+        public GameObject[] PlacasRandom { get; set; }              //Array con las placas random elegidas
         private void Awake()
         {
             placas = GetPlacasFromParent();              
@@ -60,7 +60,7 @@ namespace MemoryPrototype.Placas
          */
         private void setRandomTag(string tagType)
         {
-            foreach (var placa in placasRandom) { placa.tag = tagType; }
+            foreach (var placa in PlacasRandom) { placa.tag = tagType; }
         }
 
         #endregion
@@ -81,7 +81,7 @@ namespace MemoryPrototype.Placas
          */
         public void InstantiatePlacasRandom(int numPlacas)
         {
-            placasRandom = new GameObject[numPlacas];
+            PlacasRandom = new GameObject[numPlacas];
         }
 
         /*
@@ -152,7 +152,7 @@ namespace MemoryPrototype.Placas
             if (lastPlacaRamdom == null || !actualPlacaRandom.Equals(lastPlacaRamdom.transform))
             {
                 logController.PrintInConsole("Las Posiciones de las placas no son iguales");
-                placasRandom[index] = actualPlacaRandom.gameObject;
+                PlacasRandom[index] = actualPlacaRandom.gameObject;
                 lastPlacaRamdom = actualPlacaRandom.gameObject;
                 index++;
             }
@@ -164,9 +164,9 @@ namespace MemoryPrototype.Placas
          */
         private void PrintPlacasRandom()
         {
-            for (int i = 0; i < placasRandom.Length; i++)
+            for (int i = 0; i < PlacasRandom.Length; i++)
             {
-                logController.PrintInConsole("Posicion random: " + placasRandom[i].transform.position);
+                logController.PrintInConsole("Posicion random: " + PlacasRandom[i].transform.position);
             }
         }
 

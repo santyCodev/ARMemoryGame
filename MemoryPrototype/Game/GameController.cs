@@ -8,6 +8,7 @@ using MemoryPrototype.StatePattern;
 using MemoryPrototype.Placas;
 using MemoryPrototype.Game.States;
 using MemoryPrototype.Logs;
+using CharacterController = MemoryPrototype.Character.CharacterController;
 
 namespace MemoryPrototype.Game 
 {

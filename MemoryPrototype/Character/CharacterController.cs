@@ -6,47 +6,53 @@ namespace MemoryPrototype.Character
 {
     public class CharacterController : MonoBehaviour
     {
-        public LogController logController;                 //Controlador de logs
+        [SerializeField] private LogController logController;       //Controlador de logs
 
-        private GameObject[] stepPositions;                 //Coleccion de posiciones a recorrer
-        private Vector3 nextPosition;                       //Siguiente posicion
-        private float moveLerpTime = 1f;                    //Tiempo total de la interpolacion lineal
-        private float currentLerpTime;                      //Tiempo actual de interpolacion lineal
-        public bool CharacterStarted { get; set; }
-        public bool CharacterEnded { get; set; }
+        private GameObject[] positionsToWalk;                       //Coleccion de posiciones a recorrer
+        private Vector3 nextPosition;                               //Siguiente posicion
+        private float moveLerpTime;                                 //Tiempo total de la interpolacion lineal
+        private float currentLerpTime;                              //Tiempo actual de interpolacion lineal
 
-        // Start is called before the first frame update
-        void Start()
+        private void Start()
         {
-            this.CharacterEnded = false;
+            moveLerpTime = 1f;
         }
 
-        // Update is called once per frame
-        void Update()
-        {
+        #region PrepareForMovement
 
-        }
-
+        /*
+            Prepara el personaje para su movimiento
+            - Asigna las posiciones a recorrer
+            - Coloca al personaje en la primera posicion
+        */
         public void PrepareForMovement(GameObject[] placas)
         {
-            stepPositions = placas;
-            StartCoroutine(MoveCharacter());
-            this.CharacterStarted = true;
+            positionsToWalk = placas;
+            SetFirstPosition(NewPosition(positionsToWalk[0].transform.position));            
         }
 
+        /*
+            Asigna al personaje la primera posicion de las placas
+         */
+        private void SetFirstPosition(Vector3 firstPosition)
+        {
+            transform.localPosition = firstPosition;
+            logController.PrintInConsole("setFirstPosition()- Primera posicion " + transform.localPosition);
+        }
+                
+
+        #endregion
+       
         /*
             Corrutina donde el personaje recorre todas las posiciones de la coleccion.
          */
         private IEnumerator MoveCharacter()
-        {
+        {            
+            MarkPlate(positionsToWalk[0]);
 
-            SetFirstPosition(NewCharacterPosition(stepPositions[0].transform));
-            MarkPlate(stepPositions[0]);
-
-            for (int i = 1; i < stepPositions.Length; i++)
+            for (int i = 1; i < positionsToWalk.Length; i++)
             {
-
-                SetNextPosition(stepPositions[i].transform.position);
+                nextPosition = NewPosition(positionsToWalk[i].transform.position);
                 LookAtNextPosition(nextPosition);
 
                 currentLerpTime = 0;
@@ -56,17 +62,23 @@ namespace MemoryPrototype.Character
                     MoveToNextPosition();
                     yield return null;
                 }
-                MarkPlate(stepPositions[i]);
+                MarkPlate(positionsToWalk[i]);
                 logController.PrintInConsole("MoveCharacter() - Chara ha llegado al destino " + nextPosition);
                 SetFirstPosition(nextPosition);
             }
 
-            logController.PrintInConsole("MoveCharacter() - Chara ha terminado el recorrido ");
-            this.CharacterStarted = false;
+            logController.PrintInConsole("MoveCharacter() - Chara ha terminado el recorrido ");           
 
-            yield return WaitForEnd();
+            yield return WaitForEnd();            
+        }
 
-            this.CharacterEnded = true;
+        /*
+           Situa al personaje en una posicion concreta, la posicion tiene que ajustar la variable Y del
+           Vector3 a 0.5 para que el GameObject no se vea enterrado en el plano
+        */
+        private Vector3 NewPosition(Vector3 position)
+        {
+            return new Vector3(position.x, 0.5f, position.z);
         }
 
         private IEnumerator WaitForEnd()
@@ -105,35 +117,11 @@ namespace MemoryPrototype.Character
             transform.localPosition = Vector3.Lerp(transform.position, nextPosition, (currentLerpTime / moveLerpTime));
         }
 
-        /*
-            Asigna la posicion parametro a la posicion del personaje, esta posicion tiene que ser la primera de todas las
-            posiciones, o la siguiente posicion si el personaje ha llegado a ella
-         */
-        private void SetFirstPosition(Vector3 firstPosition)
-        {
-            transform.localPosition = firstPosition;
-            logController.PrintInConsole("setFirstPosition()- Primera posicion " + transform.localPosition);
-        }
+        
 
-        /*
-            Asigna la siguiente posicion para que el personaje sepa a donde ir.
-         */
-        private void SetNextPosition(Vector3 position)
-        {
-            nextPosition = new Vector3(position.x, 0.5f, position.z);
-            logController.PrintInConsole("SetNextPosition()- Se va a mover chara a " + nextPosition);
-        }
+        
 
-        /*
-            Situa al personaje en una posicion concreta, la posicion tiene que ajustar la variable Y del
-            Vector3 a 0.5 para que el GameObject no se vea enterrado en el plano
-         */
-        private Vector3 NewCharacterPosition(Transform newPosition)
-        {
-            float positionY = newPosition.position.y + transform.position.y;
-            Vector3 actualPosition = new Vector3(newPosition.position.x, positionY, newPosition.position.z);
-            return actualPosition;
-        }
+       
 
         /*
             Hace que el personaje mire hacia una posicicion concreta
