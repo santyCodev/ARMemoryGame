@@ -37,26 +37,6 @@ namespace MemoryPrototype.Game
             {
                 StartCoroutine(CurrentState.StartState());
             }
-
-            //Turno del game controller
-            /*if (characterController.CharacterStarted)
-            {
-                logController.PrintInConsole("GameController: Ha comenzado el recorrido del personaje - Esperando a que termine");
-            }
-            else
-            {
-                logController.PrintInConsole("GameController: El personaje aun no ha empezado");
-            }
-
-            if (characterController.CharacterEnded)
-            {
-                characterController.CharacterEnded = false;
-                logController.PrintInConsole("GameController: El personaje ha terminado el recorrido");
-                for (int i = 0; i < placasController.PosicionesPlacasRandom.Length; i++)
-                {
-                    placasController.PosicionesPlacasRandom[i].GetComponent<PlacaControl>().SetOriginalMaterialColor();
-                }
-            }*/
         }
 
         public void ChangeState(IState state)

@@ -167,7 +167,21 @@ namespace MemoryPrototype.Placas
 
         #endregion
 
-        
+        #region Placas Material Color
+
+        /*
+            Devuelve a las placas aleatorias su color original
+         */
+        public void SetOriginalMaterialColor()
+        {
+            logController.PrintInConsole("SetOriginalMaterialColor() - Devolviendo el color a las placas");
+            foreach (var placa in PlacasRandom)
+            {
+                placa.GetComponent<PlacaControl>().SetOriginalMaterialColor();
+            }
+        }
+
+        #endregion
     }//END CLASS
 }
 

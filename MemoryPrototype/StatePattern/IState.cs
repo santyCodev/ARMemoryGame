@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MemoryPrototype.Game.States;
 
 namespace MemoryPrototype.StatePattern
 {
@@ -9,9 +10,8 @@ namespace MemoryPrototype.StatePattern
         bool Initialized();
         IEnumerator StartState();
         void OnEnter();
-        void OnExit();
+        void OnExit(State state);
         void OnExecution();
-
     }
 }
 

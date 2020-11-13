@@ -63,7 +63,7 @@ namespace MemoryPrototype.Character
         /*
             El personaje recorre todas las posiciones.
          */
-        public IEnumerator InitMovement()
+        private IEnumerator InitMovement()
         {
             MarkPlate(positionsToWalk[0]);
 
@@ -121,6 +121,7 @@ namespace MemoryPrototype.Character
          */
         private void MarkPlate(GameObject placa)
         {
+            logController.PrintInConsole("MarkPlate()- Marcando placa " + placa.transform.position);
             placa.GetComponent<PlacaControl>().ChangeMaterialColor();
         }
 

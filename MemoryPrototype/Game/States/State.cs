@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using MemoryPrototype.Logs;
 using MemoryPrototype.StatePattern;
+using UnityEngine;
 
 namespace MemoryPrototype.Game.States
 {
@@ -36,9 +37,9 @@ namespace MemoryPrototype.Game.States
             IsInitialized = true;
         }
 
-        public void OnExit()
+        public void OnExit(State state)
         {
-            //Context.ChangeState(new GameState(Context));
+            gameControllerContext.ChangeState(state);
         }
     }
 }

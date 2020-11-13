@@ -19,6 +19,7 @@ namespace MemoryPrototype.Game.States
             OnEnter();
         }
 
+        #region State Functions
         private new void OnEnter()
         {
             logController.PrintInConsole(STATE_NAME + " - ENTER");
@@ -28,16 +29,15 @@ namespace MemoryPrototype.Game.States
         public override IEnumerator StartState()
         {
             IsInitialized = false;
-            yield return new WaitForSeconds(3);
             OnExecution();
-            yield return new WaitForSeconds(5);
+            yield return null;
             OnExit();
         }
-        
-        private new void OnExit()
+
+        private void OnExit()
         {
             logController.PrintInConsole(STATE_NAME + " - EXIT");
-            base.OnExit();
+            base.OnExit(new GameMovementState(gameControllerContext));
         }
 
         public override void OnExecution()
@@ -47,6 +47,9 @@ namespace MemoryPrototype.Game.States
             CharacterInitialization();
         }
 
+        #endregion
+
+        #region PlacasInitialization
         private void PlacasInitialization()
         {
             placasController.SetRandomPlacas();
@@ -54,10 +57,16 @@ namespace MemoryPrototype.Game.States
             logController.PrintInConsole(STATE_NAME + " Placas Initialization - DONE");
         }
 
+        #endregion
+
+        #region CharacterInitialization
         private void CharacterInitialization()
-        {            
+        {
             characterController.PrepareForMovement(placasController.PlacasRandom);
             logController.PrintInConsole(STATE_NAME + " Character Initialization - DONE");
         }
-    }
+
+        #endregion
+
+    }//END CLASS
 }
