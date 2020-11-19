@@ -13,6 +13,12 @@ namespace MemoryPrototype.Character
         private float moveLerpTime;                                 //Tiempo total de la interpolacion lineal
         private float currentLerpTime;                              //Tiempo actual de interpolacion lineal
 
+        public delegate void FinishAction();                        //Delegado para el evento
+        public static event FinishAction OnCharacterFinish;         //Evento para avisar que el character ha terminado
+
+        /*
+            Inicializa el tiempo de interpolacion a 1s
+         */
         private void Start()
         {
             moveLerpTime = 1f;
@@ -62,6 +68,7 @@ namespace MemoryPrototype.Character
         
         /*
             El personaje recorre todas las posiciones.
+            Cuando termina el recorrido dispara el evento OnCharacterFinish
          */
         private IEnumerator InitMovement()
         {
@@ -86,6 +93,7 @@ namespace MemoryPrototype.Character
             logController.PrintInConsole("MoveCharacter() - Chara ha terminado el recorrido ");
 
             yield return new WaitForSeconds(0.5f);
+            OnCharacterFinish();
         }
 
         /*
