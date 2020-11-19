@@ -137,7 +137,7 @@ namespace MemoryPrototype.Placas
         }
 
         /*
-            Compara la placa anterior conla actual si no son iguales
+            Compara la placa anterior con la actual si no son iguales
             - La placa actual se guarda en el array de placas random
             - Despues se asigna la actual a la anterior
             - Sumamos index++ para seguir asignando placas

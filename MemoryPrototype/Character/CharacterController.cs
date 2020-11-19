@@ -21,7 +21,7 @@ namespace MemoryPrototype.Character
          */
         private void Start()
         {
-            moveLerpTime = 1f;
+            moveLerpTime = 0.5f;
         }
 
         #region Character's Position
