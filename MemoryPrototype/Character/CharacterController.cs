@@ -19,12 +19,12 @@ namespace MemoryPrototype.Character
         /*
             Inicializa el tiempo de interpolacion a 1s
          */
-        private void Start()
+        private void Awake()
         {
             moveLerpTime = 0.5f;
         }
 
-        #region Character's Position
+        #region Prepare for movement
 
         /*
             Prepara el personaje para su movimiento
