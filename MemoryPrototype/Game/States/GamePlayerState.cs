@@ -18,12 +18,14 @@ namespace MemoryPrototype.Game.States
             Constructor
                 - Recoge desde el gameController, el controlador de placas y del player
                 - Llama al constructor de la clase padre
+                - Asigna la funcion ComparePlacas al evento OnPlacaClicked
                 - Llama a la funcion OnEnter para inicializar el estado
          */
         public GamePlayerState(GameController context) : base(context)
         {
             placasController = gameControllerContext.PlacasController;
             playerController = gameControllerContext.PlayerController;
+            PlayerController.OnPlacaClicked += ComparePlacas;
             OnEnter();
         }
 
@@ -49,7 +51,7 @@ namespace MemoryPrototype.Game.States
             IsInitialized = false;
             OnExecution();
             yield return null;
-            OnExit();
+            //OnExit();
         }
 
         /*
@@ -61,19 +63,30 @@ namespace MemoryPrototype.Game.States
         public override void OnExecution()
         {
             logController.PrintInConsole(STATE_NAME + " - EXECUTION");
+            playerController.StartExecute = true;
         }
 
         /*
             Indica que esta en esta funcion
-            Llama al OnExit() del padre para cambiar de estado
+            - Desasigna la funcion ComparePlacas del evento OnPlacaClicked
+            - Llama al OnExit() del padre para cambiar de estado
+            
          */
         private void OnExit()
         {
             logController.PrintInConsole(STATE_NAME + " - EXIT");
+            PlayerController.OnPlacaClicked -= ComparePlacas;
             //base.OnExit(new GameMovementState(gameControllerContext));
         }
 
         #endregion
+
+        private bool ComparePlacas(GameObject placaSelected)
+        {
+            logController.PrintInConsole(STATE_NAME + "ComparePlacas() - La placa seleccionada es "+placaSelected.name);
+
+            return true;
+        }
     }
 }
 

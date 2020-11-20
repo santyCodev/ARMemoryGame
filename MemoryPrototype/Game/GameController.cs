@@ -40,10 +40,7 @@ namespace MemoryPrototype.Game
          */
         void Update()
         {
-            if (CurrentState.Initialized())
-            {
-                StartCoroutine(CurrentState.StartState());
-            }
+            if (CurrentState.Initialized()){ StartCoroutine(CurrentState.StartState()); }
         }
 
         /*

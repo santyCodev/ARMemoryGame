@@ -6,22 +6,32 @@ namespace MemoryPrototype.Player
 {
     public class PlayerController : MonoBehaviour
     {
-        // Start is called before the first frame update
-        void Start()
-        {
+        public bool StartExecute { get; set; }                      //Indica que el player comienza a jugar
+        public delegate bool PlacaSelected(GameObject placa);                       //Delegado para el evento
+        public static event PlacaSelected OnPlacaClicked;           //Evento para avisar que el player ha hecho click en una placa
 
+
+        // Start is called before the first frame update
+        void awake()
+        {
+            StartExecute = false;
         }
 
         // Update is called once per frame
         void Update()
         {
+            if (StartExecute) { PlayerStart(); }
+        }
+
+        private void PlayerStart()
+        {
             #if UNITY_EDITOR
-                //This is for Unity Testing
-                UpdateLabelNameUnity();
-            
+                 //This is for Unity Testing
+                 ClickPointRaycastUnity();
+
             #elif UNITY_ANDROID
-                //This is for Android Devices
-                UpdateLabelNameAndroid();
+                 //This is for Android Devices
+                 ClickPointRaycastAndroid();
             
             #endif
         }
@@ -32,13 +42,13 @@ namespace MemoryPrototype.Player
         - Evalua si el rayo a colisionado con algun objeto en la variable hit
         - Si es asi, activa el label y escribe el nombre del objeto en el hit
         */
-        private void UpdateLabelNameUnity()
+        private void ClickPointRaycastUnity()
         {
 
             if (Input.GetMouseButtonDown(0))
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                SetLabelNameForRaycastHit(ray);
+                GetPlacaForRaycastHit(ray);
             }
         }
 
@@ -48,14 +58,14 @@ namespace MemoryPrototype.Player
         - Evalua si el rayo a colisionado con algun objeto en la variable hit
         - Si es asi, activa el label y escribe el nombre del objeto en el hit
     */
-        private void UpdateLabelNameAndroid()
+        private void ClickPointRaycastAndroid()
         {
 
             if ((Input.GetTouch(0).phase == TouchPhase.Stationary) ||
                (Input.GetTouch(0).phase == TouchPhase.Moved && Input.GetTouch(0).deltaPosition.magnitude < 1.2f))
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
-                SetLabelNameForRaycastHit(ray);
+                GetPlacaForRaycastHit(ray);
             }
         }
 
@@ -63,12 +73,14 @@ namespace MemoryPrototype.Player
             Evalua si el rayo a colisionado con algun objeto en la variable hit
             
         */
-        private void SetLabelNameForRaycastHit(Ray ray)
+        private void GetPlacaForRaycastHit(Ray ray)
         {
+            bool stateResponse = false;
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
             {
                 Debug.Log("Raycast colisionado con "+hit.transform.name);
+                stateResponse = OnPlacaClicked(hit.transform.gameObject);
             }
             else
             {

@@ -73,7 +73,7 @@ namespace MemoryPrototype.Game.States
         {
             logController.PrintInConsole(STATE_NAME + " - EXIT");
             CharacterController.OnCharacterFinish -= CharacterHasEnd;
-            //base.OnExit(new State());
+            base.OnExit(new GamePlayerState(gameControllerContext));
         }       
 
         #endregion
