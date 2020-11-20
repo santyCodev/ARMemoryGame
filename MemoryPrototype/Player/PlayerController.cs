@@ -20,10 +20,10 @@ namespace MemoryPrototype.Player
         // Update is called once per frame
         void Update()
         {
-            if (StartExecute) { PlayerStart(); }
+            if (StartExecute) { LetPlayerClick(); }
         }
 
-        private void PlayerStart()
+        private void LetPlayerClick()
         {
             #if UNITY_EDITOR
                  //This is for Unity Testing
@@ -74,12 +74,11 @@ namespace MemoryPrototype.Player
             
         */
         private void GetPlacaForRaycastHit(Ray ray)
-        {
-            bool stateResponse = false;
+        {            
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))            {
-                
-                stateResponse = OnPlacaClicked(hit.transform.gameObject);
+
+                StartExecute = OnPlacaClicked(hit.transform.gameObject);
             }
             else
             {

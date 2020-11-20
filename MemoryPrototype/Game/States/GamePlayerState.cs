@@ -14,8 +14,8 @@ namespace MemoryPrototype.Game.States
         private PlayerController playerController;                          //Controlador del jugador
         private PlacasController placasController;                          //Controlador de placas
         private GameObject[] placasRandom;                                  //Las placas random
-        private GameObject placaActual;
-        private int numPlacaActual;
+        private GameObject placaActual;                                     //La placa actual a comparar
+        private int numPlacaActual;                                         //Indice de conteo de placas
         /*
             Constructor
                 - Recoge desde el gameController, el controlador de placas y del player
@@ -27,11 +27,7 @@ namespace MemoryPrototype.Game.States
         {
             placasController = gameControllerContext.PlacasController;
             playerController = gameControllerContext.PlayerController;
-            PlayerController.OnPlacaClicked += ComparePlacas;
-            placasRandom = placasController.PlacasRandom;
-            numPlacaActual = placasRandom.Length-1;
-            placaActual = placasRandom[numPlacaActual];
-            
+            PlayerController.OnPlacaClicked += ComparePlacas;           
             OnEnter();
         }
 
@@ -39,11 +35,17 @@ namespace MemoryPrototype.Game.States
 
         /*
             Imprime que esta en esta funcion
-            Inicializa el estado llamando al OnEnter del padre
+            - Recoge la lista de placas random
+            - Inicia el conteo de placas desde la ultima
+            - Recoge la placa actual desde la lista
+            - Inicializa el estado
          */
         private new void OnEnter()
         {
             logController.PrintInConsole(STATE_NAME + " - ENTER");
+            placasRandom = placasController.PlacasRandom;
+            numPlacaActual = placasRandom.Length - 1;
+            placaActual = placasRandom[numPlacaActual];
             base.OnEnter();
         }
 
@@ -93,7 +95,7 @@ namespace MemoryPrototype.Game.States
 
             //Si es la ultima placa
             if (numPlacaActual == placasRandom.Length - 1) { isCompared = CheckPlacas(true, placaSelected); }
-            //Si la placa es menor a la ulima y mayor que la primera
+            //Si la placa es menor a la ultima y mayor que la primera
             else if (numPlacaActual < placasRandom.Length - 1 && numPlacaActual > 0){ isCompared = CheckPlacas(true, placaSelected); }
             //Si es la primera placa
             else if (numPlacaActual == 0){ isCompared = CheckPlacas(false, placaSelected); }
