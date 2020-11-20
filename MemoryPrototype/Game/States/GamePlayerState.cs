@@ -13,7 +13,9 @@ namespace MemoryPrototype.Game.States
 
         private PlayerController playerController;                          //Controlador del jugador
         private PlacasController placasController;                          //Controlador de placas
-
+        private GameObject[] placasRandom;                                  //Las placas random
+        private GameObject placaActual;
+        private int numPlacaActual;
         /*
             Constructor
                 - Recoge desde el gameController, el controlador de placas y del player
@@ -26,6 +28,10 @@ namespace MemoryPrototype.Game.States
             placasController = gameControllerContext.PlacasController;
             playerController = gameControllerContext.PlayerController;
             PlayerController.OnPlacaClicked += ComparePlacas;
+            placasRandom = placasController.PlacasRandom;
+            numPlacaActual = placasRandom.Length-1;
+            placaActual = placasRandom[numPlacaActual];
+            
             OnEnter();
         }
 
@@ -83,8 +89,46 @@ namespace MemoryPrototype.Game.States
 
         private bool ComparePlacas(GameObject placaSelected)
         {
-            logController.PrintInConsole(STATE_NAME + "ComparePlacas() - La placa seleccionada es "+placaSelected.name);
+            bool isCompared = false;
 
+            //Si es la ultima placa
+            if (numPlacaActual == placasRandom.Length - 1) { isCompared = CheckPlacas(true, placaSelected); }
+            //Si la placa es menor a la ulima y mayor que la primera
+            else if (numPlacaActual < placasRandom.Length - 1 && numPlacaActual > 0){ isCompared = CheckPlacas(true, placaSelected); }
+            //Si es la primera placa
+            else if (numPlacaActual == 0){ isCompared = CheckPlacas(false, placaSelected); }
+
+            return isCompared;
+        }
+
+        private void placaSiguiente()
+        {
+            if(numPlacaActual > 0)
+            {
+                numPlacaActual--;
+                placaActual = placasRandom[numPlacaActual];
+            }            
+        }
+
+        private void PrintPlacaInfo(string yesno, GameObject placaSelected)
+        {
+            logController.PrintInConsole(STATE_NAME + "ComparePlacas() - Esa "+ yesno + "es la placa " + numPlacaActual);
+            logController.PrintInConsole(STATE_NAME + "ComparePlacas() - Placa random actual " + placasRandom[numPlacaActual].name);
+            logController.PrintInConsole(STATE_NAME + "ComparePlacas() - Placa seleccionada " + placaSelected.name);
+        }
+
+        private bool CheckPlacas(bool needPlacaSiguiente, GameObject placaSelected)
+        {
+            if (placasRandom[numPlacaActual].Equals(placaSelected))
+            {
+                if (logController.enabled) { PrintPlacaInfo("si", placaSelected); }
+                if (needPlacaSiguiente) { placaSiguiente(); }
+            }
+            else
+            {
+                if (logController.enabled) { PrintPlacaInfo("no", placaSelected); }
+                return false;
+            }
             return true;
         }
     }

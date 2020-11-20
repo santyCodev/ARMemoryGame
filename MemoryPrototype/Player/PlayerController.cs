@@ -77,9 +77,8 @@ namespace MemoryPrototype.Player
         {
             bool stateResponse = false;
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
-            {
-                Debug.Log("Raycast colisionado con "+hit.transform.name);
+            if (Physics.Raycast(ray, out hit))            {
+                
                 stateResponse = OnPlacaClicked(hit.transform.gameObject);
             }
             else

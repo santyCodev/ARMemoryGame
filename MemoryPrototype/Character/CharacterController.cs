@@ -135,6 +135,9 @@ namespace MemoryPrototype.Character
 
         #endregion
 
+        public void SetActiveCharacter(bool option) {
+            gameObject.SetActive(option);
+        }
     }//End Class
 }
 
