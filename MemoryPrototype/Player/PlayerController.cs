@@ -7,7 +7,7 @@ namespace MemoryPrototype.Player
     public class PlayerController : MonoBehaviour
     {
         public bool StartExecute { get; set; }                      //Indica que el player comienza a jugar
-        public delegate bool PlacaSelected(GameObject placa);                       //Delegado para el evento
+        public delegate void PlacaSelected(GameObject placa);                       //Delegado para el evento
         public static event PlacaSelected OnPlacaClicked;           //Evento para avisar que el player ha hecho click en una placa
 
 
@@ -78,7 +78,7 @@ namespace MemoryPrototype.Player
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))            {
 
-                StartExecute = OnPlacaClicked(hit.transform.gameObject);
+                OnPlacaClicked(hit.transform.gameObject);
             }
             else
             {

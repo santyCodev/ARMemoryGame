@@ -59,6 +59,8 @@ namespace MemoryPrototype.Game.States
         public override void OnExecution()
         {
             logController.PrintInConsole(STATE_NAME + " - EXECUTION");
+            InitialzieRondaAndFase();
+            UpFase();
             PlacasInitialization();
             CharacterInitialization();
         }
@@ -72,10 +74,33 @@ namespace MemoryPrototype.Game.States
             logController.PrintInConsole(STATE_NAME + " - EXIT");
             base.OnExit(new GameMovementState(gameControllerContext));
         }
-        
-        #endregion
 
+        #endregion
         
+
+        private void InitialzieRondaAndFase()
+        {
+            if (gameControllerContext.NumRonda == 0 && gameControllerContext.NumFase == 0)
+            {
+                gameControllerContext.NumRonda = 1;
+                gameControllerContext.NumFase = 1;
+            }
+        }
+
+        private void UpFase() { 
+            //Sube de fase
+            if(gameControllerContext.NumRonda > gameControllerContext.MaxRondas)
+            {
+                logController.PrintInConsole(STATE_NAME + " Subida de fase ");
+                gameControllerContext.NumFase++;
+                gameControllerContext.NumRonda = 1;
+                placasController.NumPlacasRandom++;
+                placasController.InstantiatePlacasRandom(placasController.NumPlacasRandom);
+                logController.PrintInConsole(STATE_NAME + " - NumFase: "+ gameControllerContext.NumFase);
+                logController.PrintInConsole(STATE_NAME + " - NumRonda: " + gameControllerContext.NumRonda);
+                logController.PrintInConsole(STATE_NAME + " - Nueva placas random, longitud: " + placasController.PlacasRandom.Length);
+            }
+        }
 
         #region PlacasInitialization
 
@@ -87,11 +112,12 @@ namespace MemoryPrototype.Game.States
          */
         private void PlacasInitialization()
         {
+            if (placasController.PlacasRandom[0] != null) { placasController.SetRandomTagsToDefault(); }
             placasController.SetRandomPlacas();
             placasController.SetMarkedTag();
             logController.PrintInConsole(STATE_NAME + " Placas Initialization - DONE");
         }
-
+        
         #endregion
 
         #region CharacterInitialization
@@ -103,6 +129,10 @@ namespace MemoryPrototype.Game.States
          */
         private void CharacterInitialization()
         {
+            if (!characterController.GetIsActive())
+            {
+                characterController.SetActiveCharacter(true);
+            }
             characterController.PrepareForMovement(placasController.PlacasRandom);
             logController.PrintInConsole(STATE_NAME + " Character Initialization - DONE");
         }

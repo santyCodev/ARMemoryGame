@@ -39,7 +39,7 @@ namespace MemoryPrototype.Placas
          */
         public void SetMarkedTag()
         {
-            setRandomTag(MARKED_TAG);
+            SetRandomTag(MARKED_TAG);
         }
 
         /*
@@ -47,17 +47,22 @@ namespace MemoryPrototype.Placas
          */
         public void SetRandomTagsToDefault()
         {
-            setRandomTag(DEFAULT_TAG);            
+            SetRandomTag(DEFAULT_TAG);            
         }
 
         /*
             Asigna a las placas del array de placas random el tagType
          */
-        private void setRandomTag(string tagType)
+        private void SetRandomTag(string tagType)
         {
             foreach (var placa in PlacasRandom) { placa.tag = tagType; }
         }
 
+        public bool CheckIfMarkedTag() 
+        {
+            foreach (var placa in PlacasRandom) { if (placa.CompareTag(MARKED_TAG)) { return true; }}
+            return false;
+        }
         #endregion
 
         #region InitializePlacas

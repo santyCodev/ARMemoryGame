@@ -29,6 +29,8 @@ namespace MemoryPrototype.Game
         public int NumFase { get; set; }                                                            //Numero de fases del juego (cada fase son 3 rondas)
         
         private const int MAX_RONDAS = 3;                                                           //Numero maximo de rondas
+        public int MaxRondas { get { return MAX_RONDAS; } }
+
         private void Awake() 
         {
             NumRonda = 0;

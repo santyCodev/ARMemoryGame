@@ -130,6 +130,11 @@ namespace MemoryPrototype.Character
         public void SetActiveCharacter(bool option) {
             gameObject.SetActive(option);
         }
+
+        public bool GetIsActive()
+        {
+            return gameObject.activeSelf;
+        }
     }//End Class
 }
 

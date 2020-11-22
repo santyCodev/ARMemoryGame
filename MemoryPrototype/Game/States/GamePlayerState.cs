@@ -84,43 +84,37 @@ namespace MemoryPrototype.Game.States
         {
             logController.PrintInConsole(STATE_NAME + " - EXIT");
             PlayerController.OnPlacaClicked -= ComparePlacas;
-            //base.OnExit(new GameMovementState(gameControllerContext));
+            base.OnExit(new GameInitializationState(gameControllerContext));
         }
 
         #endregion
 
         
 
-        private bool ComparePlacas(GameObject placaSelected)
+        private void ComparePlacas(GameObject placaSelected)
         {
-            bool isCompared = false;
-
             //Si es la ultima placa
-            if (numPlacaActual == placasRandom.Length - 1) { isCompared = CheckPlacas(true, placaSelected); }
+            if (numPlacaActual == placasRandom.Length - 1) { CheckPlacas(true, placaSelected); }
             //Si la placa es menor a la ultima y mayor que la primera
-            else if (numPlacaActual < placasRandom.Length - 1 && numPlacaActual > 0){ isCompared = CheckPlacas(true, placaSelected); }
+            else if (numPlacaActual < placasRandom.Length - 1 && numPlacaActual > 0){ CheckPlacas(true, placaSelected); }
             //Si es la primera placa
-            else if (numPlacaActual == 0){ isCompared = CheckPlacas(false, placaSelected); }
-
-            return isCompared;
+            else if (numPlacaActual == 0){ CheckPlacas(false, placaSelected); }            
         }
 
-        private bool CheckPlacas(bool needPlacaSiguiente, GameObject placaSelected)
+        private void CheckPlacas(bool needPlacaSiguiente, GameObject placaSelected)
         {
             if (placasRandom[numPlacaActual].Equals(placaSelected))
             {
                 if (logController.enabled) { PrintPlacaInfo("si", placaSelected); }
                 if (needPlacaSiguiente) { placaSiguiente(); }
-                else { nextTurn();}
+                else { nextTurn(); }
             }
             else
             {
                 if (logController.enabled) { PrintPlacaInfo("no", placaSelected); }
                 gameControllerContext.NumRonda = 0;
                 OnExit();
-                return false;
             }
-            return true;
         }
 
         private void placaSiguiente()
