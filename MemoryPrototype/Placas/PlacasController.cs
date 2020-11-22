@@ -45,7 +45,7 @@ namespace MemoryPrototype.Placas
         /*
             Asigna de nuevo la DEFAULT_TAG a las placas que fueron cambiadas antes por la MARKED_TAG
          */
-        public void setRandomTagsToDefault()
+        public void SetRandomTagsToDefault()
         {
             setRandomTag(DEFAULT_TAG);            
         }

@@ -65,8 +65,7 @@ namespace MemoryPrototype.Game.States
         /*
             Funcion de ejecucion del estado
             - Indica que esta en esta funcion
-            - Inicializacion de placas
-            - Inicializacion del personaje
+            - Da paso al jugador para que pueda hacer clickhol
          */
         public override void OnExecution()
         {
@@ -76,6 +75,7 @@ namespace MemoryPrototype.Game.States
 
         /*
             Indica que esta en esta funcion
+            - 
             - Desasigna la funcion ComparePlacas del evento OnPlacaClicked
             - Llama al OnExit() del padre para cambiar de estado
             
@@ -88,6 +88,8 @@ namespace MemoryPrototype.Game.States
         }
 
         #endregion
+
+        
 
         private bool ComparePlacas(GameObject placaSelected)
         {
@@ -103,6 +105,24 @@ namespace MemoryPrototype.Game.States
             return isCompared;
         }
 
+        private bool CheckPlacas(bool needPlacaSiguiente, GameObject placaSelected)
+        {
+            if (placasRandom[numPlacaActual].Equals(placaSelected))
+            {
+                if (logController.enabled) { PrintPlacaInfo("si", placaSelected); }
+                if (needPlacaSiguiente) { placaSiguiente(); }
+                else { nextTurn();}
+            }
+            else
+            {
+                if (logController.enabled) { PrintPlacaInfo("no", placaSelected); }
+                gameControllerContext.NumRonda = 0;
+                OnExit();
+                return false;
+            }
+            return true;
+        }
+
         private void placaSiguiente()
         {
             if(numPlacaActual > 0)
@@ -112,6 +132,13 @@ namespace MemoryPrototype.Game.States
             }            
         }
 
+        private void nextTurn()
+        {
+            gameControllerContext.NumRonda++;
+            OnExit();
+        }
+
+        
         private void PrintPlacaInfo(string yesno, GameObject placaSelected)
         {
             logController.PrintInConsole(STATE_NAME + "ComparePlacas() - Esa "+ yesno + "es la placa " + numPlacaActual);
@@ -119,20 +146,7 @@ namespace MemoryPrototype.Game.States
             logController.PrintInConsole(STATE_NAME + "ComparePlacas() - Placa seleccionada " + placaSelected.name);
         }
 
-        private bool CheckPlacas(bool needPlacaSiguiente, GameObject placaSelected)
-        {
-            if (placasRandom[numPlacaActual].Equals(placaSelected))
-            {
-                if (logController.enabled) { PrintPlacaInfo("si", placaSelected); }
-                if (needPlacaSiguiente) { placaSiguiente(); }
-            }
-            else
-            {
-                if (logController.enabled) { PrintPlacaInfo("no", placaSelected); }
-                return false;
-            }
-            return true;
-        }
+        
     }
 }
 

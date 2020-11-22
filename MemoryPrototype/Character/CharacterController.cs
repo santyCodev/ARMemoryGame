@@ -10,20 +10,12 @@ namespace MemoryPrototype.Character
 
         private GameObject[] positionsToWalk;                       //Coleccion de posiciones a recorrer
         private Vector3 nextPosition;                               //Siguiente posicion
-        private float moveLerpTime;                                 //Tiempo total de la interpolacion lineal
         private float currentLerpTime;                              //Tiempo actual de interpolacion lineal
+        private const float MOVE_LERP_TIME = 3;                     //Tiempo total de la interpolacion lineal
 
         public delegate void FinishAction();                        //Delegado para el evento
         public static event FinishAction OnCharacterFinish;         //Evento para avisar que el character ha terminado
-
-        /*
-            Inicializa el tiempo de interpolacion a 1s
-         */
-        private void Awake()
-        {
-            moveLerpTime = 0.5f;
-        }
-
+        
         #region Prepare for movement
 
         /*
@@ -107,11 +99,11 @@ namespace MemoryPrototype.Character
         private void MoveToNextPosition()
         {
             currentLerpTime += Time.deltaTime;
-            if (currentLerpTime >= moveLerpTime) { currentLerpTime = moveLerpTime; }
+            if (currentLerpTime >= MOVE_LERP_TIME) { currentLerpTime = MOVE_LERP_TIME; }
 
             logController.PrintInConsole("MoveCharacter()- Moviendo chara a " + nextPosition);
 
-            transform.localPosition = Vector3.Lerp(transform.position, nextPosition, (currentLerpTime / moveLerpTime));
+            transform.localPosition = Vector3.Lerp(transform.position, nextPosition, (currentLerpTime / MOVE_LERP_TIME));
         }
 
         /*

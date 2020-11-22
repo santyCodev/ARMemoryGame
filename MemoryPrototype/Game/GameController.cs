@@ -24,8 +24,16 @@ namespace MemoryPrototype.Game
         public LogController LogController { get { return logController; } }                        //Controlador de Log
         public PlacasController PlacasController { get { return placasController; } }               //Controlador de Placas
         public CharacterController CharacterController { get { return characterController; } }      //Controlador de Personaje
-        public PlayerController PlayerController { get { return playerController; } }      //Controlador de Personaje
-
+        public PlayerController PlayerController { get { return playerController; } }               //Controlador de Personaje            
+        public int NumRonda { get; set; }                                                           //Numero de rondas en un turno
+        public int NumFase { get; set; }                                                            //Numero de fases del juego (cada fase son 3 rondas)
+        
+        private const int MAX_RONDAS = 3;                                                           //Numero maximo de rondas
+        private void Awake() 
+        {
+            NumRonda = 0;
+            NumFase = 0;
+        }
         /*
             Asigna el primer estado del juego
          */
