@@ -10,6 +10,7 @@ namespace MemoryPrototype.Placas
         [SerializeField] private LogController logController;       //Controlador de logs
         [SerializeField] private GameObject placasParent;           //parent de las placas
 
+        private const string CLASS_NAME = "PLACAS CONTROLLER";
         private const int NUM_PLACAS_INITIAL = 3;
         private const string DEFAULT_TAG = "Plate";
         private const string MARKED_TAG = "PlateMarked";
@@ -17,14 +18,22 @@ namespace MemoryPrototype.Placas
         private Transform[] placas;                                 //Array que contendra a todas las placas        
         public int NumPlacasRandom { get; set; }                    //Numero de placas random a recoger
         public GameObject[] PlacasRandom { get; set; }              //Array con las placas random elegidas
+
+        #region Initialize Placas Random
         private void Awake()
         {
             placas = GetPlacasFromParent();              
             SetDefaultTags();
-            InitializePlacasRandom();
         }
 
-        #region SetTags
+        /* 
+            Recoge las placas que son hijas del parent en un array de Transforms
+         */
+        private Transform[] GetPlacasFromParent()
+        {
+            logController.PrintInConsole(CLASS_NAME + " Get placas from parent - DONE ");
+            return placasParent.GetComponentsInChildren<Transform>();
+        }
 
         /*
             Recorre el array de placas y asigna en cada una de ellas el tag default
@@ -32,7 +41,40 @@ namespace MemoryPrototype.Placas
         private void SetDefaultTags()
         {
             foreach (var placa in placas) { placa.gameObject.tag = DEFAULT_TAG; }
+            logController.PrintInConsole(CLASS_NAME + " Set Default Tags - DONE ");
         }
+
+        /*
+           Esta funcion inicializa por primera vez el array de placas random con el
+            valor inicial dado por la constante NUM_PLACAS_INITIAL            
+         */
+        public void InitializePlacasRandom()
+        {
+            InitializePlacasRandom(NUM_PLACAS_INITIAL);
+        }
+
+        /*
+            Metodo sobrecargado para inicializar las placas random
+         */
+        public void InitializePlacasRandom(int numPlacas)
+        {
+            NumPlacasRandom = numPlacas;
+            InstantiatePlacasRandom(NumPlacasRandom);
+            logController.PrintInConsole(CLASS_NAME + " Initialize placs random - DONE ");
+        }
+
+        /*
+            Se instancia el array de placas random con el numero de placas que contendra 
+         */
+        public void InstantiatePlacasRandom(int numPlacas)
+        {
+            PlacasRandom = new GameObject[numPlacas];
+            logController.PrintInConsole(CLASS_NAME + " Placas random creadas - tamaño: " + numPlacas);
+        }
+
+        #endregion
+
+        #region SetTags
 
         /*
             Asigna la tag MARKED_TAG a las placas random
@@ -64,39 +106,8 @@ namespace MemoryPrototype.Placas
             return false;
         }
         #endregion
-
-        #region InitializePlacas
-
-        /* 
-            Recoge las placas que son hijas del parent en un array de Transforms
-
-         */
-        private Transform[] GetPlacasFromParent()
-        {
-            return placasParent.GetComponentsInChildren<Transform>();
-        }
-
-        /*
-            Se instancia el array de placas random con el numero de placas que contendra 
-         */
-        public void InstantiatePlacasRandom(int numPlacas)
-        {
-            PlacasRandom = new GameObject[numPlacas];
-        }
-
-        /*
-           Esta funcion inicializa por primera vez el array de placas random con el
-            valor inicial dado por la constante NUM_PLACAS_INITIAL            
-         */
-        private void InitializePlacasRandom()
-        {
-            NumPlacasRandom = NUM_PLACAS_INITIAL;
-            InstantiatePlacasRandom(NUM_PLACAS_INITIAL);
-        }
         
-        #endregion
-
-        #region GetRandomPlacas
+        #region Random Placas
 
         /*
             Elige de manera aleaoria un numero de placas del tablero

@@ -10,7 +10,6 @@ namespace MemoryPrototype.Game.States
     public class GameMovementState : State
     {
         private const string STATE_NAME = "GAME MOVEMENT STATE";                //Constante con el nombre de la clase
-
         private PlacasController placasController;                              //Controlador de placas
         private CharacterController characterController;                        //Controlador de personaje
 

@@ -1,4 +1,5 @@
-﻿using MemoryPrototype.Placas;
+﻿using MemoryPrototype.Data;
+using MemoryPrototype.Placas;
 using System.Collections;
 using UnityEngine;
 using CharacterController = MemoryPrototype.Character.CharacterController;
@@ -11,6 +12,9 @@ namespace MemoryPrototype.Game.States
 
         private PlacasController placasController;                                  //Controlador de placas
         private CharacterController characterController;                            //Controlador de personaje
+        private DataController dataController;                            //Controlador de personaje
+
+        #region State Functions
 
         /*
             Constructor
@@ -22,11 +26,10 @@ namespace MemoryPrototype.Game.States
         {           
             placasController = gameControllerContext.PlacasController;
             characterController = gameControllerContext.CharacterController;
+            dataController = gameControllerContext.DataController;
             OnEnter();
         }
-
-        #region State Functions
-
+        
         /*
             Imprime que esta en esta funcion
             Inicializa el estado llamando al OnEnter del padre
@@ -52,15 +55,13 @@ namespace MemoryPrototype.Game.States
 
         /*
             Funcion de ejecucion del estado
-            - Indica que esta en esta funcion
+            - Checkea si se puede bajar o subir de nivel
             - Inicializacion de placas
             - Inicializacion del personaje
          */
         public override void OnExecution()
         {
-            logController.PrintInConsole(STATE_NAME + " - EXECUTION");
-            InitialzieRondaAndFase();
-            UpFase();
+            logController.PrintInConsole(STATE_NAME + " - EXECUTION");            
             PlacasInitialization();
             CharacterInitialization();
         }
@@ -72,52 +73,43 @@ namespace MemoryPrototype.Game.States
         private void OnExit()
         {
             logController.PrintInConsole(STATE_NAME + " - EXIT");
-            base.OnExit(new GameMovementState(gameControllerContext));
+            //base.OnExit(new GameMovementState(gameControllerContext));
         }
 
         #endregion
-        
 
-        private void InitialzieRondaAndFase()
-        {
-            if (gameControllerContext.NumRonda == 0 && gameControllerContext.NumFase == 0)
-            {
-                gameControllerContext.NumRonda = 1;
-                gameControllerContext.NumFase = 1;
-            }
-        }
+        #region Ronda y Fase
 
-        private void UpFase() { 
-            //Sube de fase
-            if(gameControllerContext.NumRonda > gameControllerContext.MaxRondas)
-            {
-                logController.PrintInConsole(STATE_NAME + " Subida de fase ");
-                gameControllerContext.NumFase++;
-                gameControllerContext.NumRonda = 1;
-                placasController.NumPlacasRandom++;
-                placasController.InstantiatePlacasRandom(placasController.NumPlacasRandom);
-                logController.PrintInConsole(STATE_NAME + " - NumFase: "+ gameControllerContext.NumFase);
-                logController.PrintInConsole(STATE_NAME + " - NumRonda: " + gameControllerContext.NumRonda);
-                logController.PrintInConsole(STATE_NAME + " - Nueva placas random, longitud: " + placasController.PlacasRandom.Length);
-            }
-        }
+        #endregion
 
         #region PlacasInitialization
 
         /*
             Iniclaliza las placas para el turno
+            - Instancia las placas random
             - Asigna las placas random
             - Asigna los tags a las placas random
             - Indica que la inicializacion ha terminado
          */
         private void PlacasInitialization()
-        {
-            if (placasController.PlacasRandom[0] != null) { placasController.SetRandomTagsToDefault(); }
+        {            
+            InitializePlacasRandom();
             placasController.SetRandomPlacas();
             placasController.SetMarkedTag();
             logController.PrintInConsole(STATE_NAME + " Placas Initialization - DONE");
         }
         
+        /*
+            Inicializa las placas random en funcion del numero de rondas
+            - Si es la primera fase, se inicializa con el numero de placas default
+            - Si es una fase superior, se inicializa con el numero de placas modificado
+         */
+        private void InitializePlacasRandom()
+        {
+            if(dataController.GetLevel() == 1) { placasController.InitializePlacasRandom(); }
+            else if(dataController.GetLevel() > 1) { placasController.InitializePlacasRandom(placasController.NumPlacasRandom); }
+            logController.PrintInConsole(STATE_NAME + " - Nueva placas random, longitud: " + placasController.PlacasRandom.Length);
+        }
         #endregion
 
         #region CharacterInitialization

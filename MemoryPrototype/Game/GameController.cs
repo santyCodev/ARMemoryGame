@@ -10,39 +10,35 @@ using MemoryPrototype.Game.States;
 using MemoryPrototype.Logs;
 using CharacterController = MemoryPrototype.Character.CharacterController;
 using MemoryPrototype.Player;
+using MemoryPrototype.Data;
 
 namespace MemoryPrototype.Game 
 {
     //Clase que actua como contexto
     public class GameController : MonoBehaviour    
     {
+        private const string CLASS_NAME = "GAME CONTROLLER";                                        //Constante con el nombre de la clase
+
         [SerializeField] private LogController logController;                                       //Controlador de logs
         [SerializeField] private PlacasController placasController;                                 //Controlador de placas
         [SerializeField] private CharacterController characterController;                           //Controlador de personaje      
         [SerializeField] private PlayerController playerController;                                 //Controlador del jugador
+        [SerializeField] private DataController dataController;                                     //Controlador de datos
+
         public IState CurrentState { get; set; }                                                    //Estado actual
         public LogController LogController { get { return logController; } }                        //Controlador de Log
         public PlacasController PlacasController { get { return placasController; } }               //Controlador de Placas
         public CharacterController CharacterController { get { return characterController; } }      //Controlador de Personaje
         public PlayerController PlayerController { get { return playerController; } }               //Controlador de Personaje            
-        public int NumRonda { get; set; }                                                           //Numero de rondas en un turno
-        public int NumFase { get; set; }                                                            //Numero de fases del juego (cada fase son 3 rondas)
-        
-        private const int MAX_RONDAS = 3;                                                           //Numero maximo de rondas
-        public int MaxRondas { get { return MAX_RONDAS; } }
+        public DataController DataController { get { return dataController; } }                     //Controlador de datos            
 
-        private void Awake() 
-        {
-            NumRonda = 0;
-            NumFase = 0;
-        }
         /*
             Asigna el primer estado del juego
          */
         private void Start()
         {
             CurrentState = new GameInitializationState(this);
-            LogController.PrintInConsole("Current State - "+CurrentState);
+            LogController.PrintInConsole(CLASS_NAME+" Current State - " +CurrentState);
         }
 
         /*

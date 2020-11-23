@@ -112,7 +112,7 @@ namespace MemoryPrototype.Game.States
             else
             {
                 if (logController.enabled) { PrintPlacaInfo("no", placaSelected); }
-                gameControllerContext.NumRonda = 0;
+                //gameControllerContext.NumRonda = 0;
                 OnExit();
             }
         }
@@ -128,7 +128,7 @@ namespace MemoryPrototype.Game.States
 
         private void nextTurn()
         {
-            gameControllerContext.NumRonda++;
+            //gameControllerContext.NumRonda++;
             OnExit();
         }
 
