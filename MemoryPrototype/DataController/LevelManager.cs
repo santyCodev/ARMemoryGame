@@ -7,15 +7,19 @@ namespace MemoryPrototype.Data
 {
     public class LevelManager : MonoBehaviour
     {
-        private const string CLASS_NAME = "LEVEL MANAGER";                                  //Constante con el nombre de la clase
+        private const string CLASS_NAME = "LEVEL MANAGER";      //Constante con el nombre de la clase
 
-        private const int MAX_RONDAS = 3;                                                           //Numero maximo de rondas
-        private const int MAX_FALLOS = 2;                                                         //Numero de intentos antes de bajar de nivel
-        private LogController logController;                                                        //Controlador de logs
-        public int NumRonda { get; set; }                                                           //Numero de rondas en un turno
-        public int NumLevel { get; set; }                                                            //Numero de fases del juego (cada fase son 3 rondas)
-        public int NumFallos { get; set; }
-        public int NumAciertos { get; set; }
+        private const int MAX_RONDAS = 3;                       //Numero maximo de rondas
+        private const int MAX_FALLOS = 2;                       //Numero maximo de fallos
+        
+        private LogController logController;                    //Controlador de logs
+        private int NumRonda { get; set; }                      //Numero de rondas en un nivel
+        private int NumLevel { get; set; }                      //Numero de niveles del juego
+        private int NumFallos { get; set; }                     //Numero de aciertos
+        private int NumAciertos { get; set; }                   //Numero de fallos
+
+        #region Inicializacion de datos
+
         private void Start()
         {
             logController = GetComponent<DataController>().LogController;
@@ -25,56 +29,139 @@ namespace MemoryPrototype.Data
         private void InitializationData()
         {
             NumLevel = 1;
-            SetLevel(" Inicializacion ronda y fase ");
+            SetLevel(" Inicializacion de datos: ");
+            PrintData();
         }
 
+        #endregion
+
+        #region Gestion de datos
+        /*
+            Aumenta en 1 el numero de aciertos
+         */
+        public void UpAcierto() 
+        {
+            NumAciertos++;
+            PrintData("El jugador ha acertado: ");
+        }
+
+        /*
+            Aumenta en 1 el numero de fallos
+            - Cuando aumenta un fallo se reinician los aciertos
+         */
+        public void UpFallo()
+        {
+            NumFallos++;
+            NumAciertos = 0;
+            PrintData("El jugador ha fallado: ");
+        }
+
+        /*
+            Aumenta en 1 el numero de rondas
+            - Cuando se sube de ronda se reinician los aciertos
+         */
+        public void UpRonda()
+        {
+            NumRonda++;
+            NumAciertos = 0;
+            PrintData("Subida de ronda: ");
+        }
+
+        /*
+            Aumenta el nivel de juego
+            - Cuando se sube de nivel, se reinician los demas datos
+         */
         public void UpLevel()
         {
             NumLevel++;
-            SetLevel(" Subida de fase ");
+            SetLevel(" Subida de nivel: ");
         }
 
+        /*
+            Bajada de nivel
+            - Cuando baja el nivel, se reinician los demas datos
+         */
         public void DownLevel()
         {
             NumLevel--;
-            SetLevel(" Bajada de level ");
+            SetLevel(" Bajada de nivel: ");            
         }        
 
-        public void StayLevel()
-        {
-            SetLevel(" Sigue fallando, manteniendose en nivel inicial ");
-        }
-
+        /*
+            
+         */
         private void SetLevel(string message)
-        {
-            logController.PrintInConsole(CLASS_NAME + message);
+        {            
             NumRonda = 1;
             NumFallos = 0;
             NumAciertos = 0;
+            PrintData(message);
         }
 
-        public bool IsSuperiorLevel()
+        #endregion
+
+        #region Comprobacion de maximos
+        /*
+            Comprueba si ha llegado al maximo de fallos
+         */
+        public bool IsMaxFallos()
         {
-            logController.PrintInConsole(CLASS_NAME + " Check if superior level ");
-            return NumRonda > MAX_RONDAS;
+            PrintMessage(" Check if max fallos: "+ (NumFallos == MAX_FALLOS));
+            return NumFallos == MAX_FALLOS;
         }
 
-        public bool HasPassedMaxIntentos()
+        /*
+            Comprueba si ha llegado al maximo de aciertos
+            - El numero de aciertos viene dado por el numero
+                de placas de ese nivel actual
+         */
+        public bool IsMaxAciertos(int maxAciertos)
         {
-            logController.PrintInConsole(CLASS_NAME + " Check if passed max intentos ");
-            return NumFallos > MAX_FALLOS;
+            PrintMessage(" Check if max aciertos: " + (NumAciertos == maxAciertos));
+            return NumAciertos == maxAciertos;
         }
+
+        /*
+            Comprueba si ha llegado al maximo de rondas
+         */
+        public bool IsMaxRondas()
+        {
+            PrintMessage(" Check if max rondas: " + (NumRonda == MAX_RONDAS));
+            return NumRonda == MAX_RONDAS;
+        }
+        #endregion
+
 
         public bool IsLevelOne()
         {
             return NumLevel == 1;
         }
 
-        public void PrintData()
+        #region Logs de datos
+
+        /*
+            Imprime las propiedades por consola
+         */
+        private void PrintData(string message = null)
         {
-            logController.PrintInConsole(CLASS_NAME + " Level: " + NumLevel);
-            logController.PrintInConsole(CLASS_NAME + " Ronda: " + NumRonda);
-            logController.PrintInConsole(CLASS_NAME + " Intentos: " + NumFallos);
+            string stringToPrint = "";
+
+            if(message != null) { stringToPrint = message; }
+
+            PrintMessage(stringToPrint + "\n" +
+                            " Level : " + NumLevel + "\n" +
+                            " Ronda : " + NumRonda + "\n" +
+                            " Aciertos : " + NumAciertos + "\n" +
+                            " Fallos : " + NumFallos);
         }
+
+        /*
+            Usa el controlador de logs para imprimir un mensaje en consola
+         */
+        private void PrintMessage(string message) 
+        {
+            logController.PrintInConsole(CLASS_NAME + message);
+        }
+        #endregion
     }
 }
