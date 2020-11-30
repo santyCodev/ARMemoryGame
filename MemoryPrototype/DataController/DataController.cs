@@ -11,9 +11,11 @@ namespace MemoryPrototype.Data
         
         [SerializeField] private LogController logController;                                       //Controlador de logs
         public LogController LogController { get { return logController; } }                        //Controlador de Log
+        private LevelManager levelManager;                                                          //Level manager
 
-        private LevelManager levelManager;
-
+        /*
+            Obtiene el levelManager para acceder a sus funciones
+         */
         private void Start()
         {
             levelManager = GetComponent<LevelManager>();

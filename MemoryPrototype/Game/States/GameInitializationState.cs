@@ -86,17 +86,15 @@ namespace MemoryPrototype.Game.States
 
         /*
             Iniclaliza las placas para el turno
-            - Instancia las placas random
-            - Asigna las placas random
-            - Asigna los tags a las placas random
-            - Indica que la inicializacion ha terminado
+            - Las placas se inicializan solo si
          */
         private void PlacasInitialization()
-        {            
-            InitializePlacasRandom();
-            placasController.SetRandomPlacas();
-            placasController.SetMarkedTag();
-            logController.PrintInConsole(STATE_NAME + " Placas Initialization - DONE");
+        {       
+            //if getPreviousLevel > 1 and getLevel == 1 then placasInitializacion 
+            //(para el nivel 1, en el caso de que se haya bajado de nivel ya que el array
+            // seria mas grande y hay que volver a construir el de nivel 1)
+            if(dataController.GetLevel() > 1) { SetNextPlacasRandomInitialization(); }            
+            logController.PrintInConsole(STATE_NAME + " PlacasInitialization() - DONE");
         }
         
         /*
@@ -104,12 +102,14 @@ namespace MemoryPrototype.Game.States
             - Si es el primer nivel, se inicializa con el numero de placas default
             - Si es un nivel superior, se inicializa con el numero de placas modificado
          */
-        private void InitializePlacasRandom()
+        private void SetNextPlacasRandomInitialization()
         {
-            if(dataController.GetLevel() == 1) { placasController.InitializePlacasRandom(); }
-            else if(dataController.GetLevel() > 1) { placasController.InitializePlacasRandom(placasController.NumPlacasRandom); }
-            logController.PrintInConsole(STATE_NAME + " - Nueva placas random, longitud: " + placasController.PlacasRandom.Length);
+            placasController.InitializePlacasRandom(placasController.NumPlacasRandom);
+            placasController.SetRandomPlacas();
+            placasController.SetMarkedTag();
+            logController.PrintInConsole(STATE_NAME + " SetNextPlacasRandomInitialization() - DONE ");
         }
+
         #endregion
 
         #region CharacterInitialization

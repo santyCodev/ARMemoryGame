@@ -14,7 +14,7 @@ namespace MemoryPrototype.Data
         
         private LogController logController;                    //Controlador de logs
         private int NumRonda { get; set; }                      //Numero de rondas en un nivel
-        private int NumLevel { get; set; }                      //Numero de niveles del juego
+        public int NumLevel { get; set; }                      //Numero de niveles del juego
         private int NumFallos { get; set; }                     //Numero de aciertos
         private int NumAciertos { get; set; }                   //Numero de fallos
 
