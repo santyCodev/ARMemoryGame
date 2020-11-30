@@ -10,28 +10,41 @@ namespace MemoryPrototype.Placas
         [SerializeField] private LogController logController;       //Controlador de logs
         [SerializeField] private GameObject placasParent;           //parent de las placas
 
-        private const string CLASS_NAME = "PLACAS CONTROLLER";
-        private const int NUM_PLACAS_INITIAL = 3;
-        private const string DEFAULT_TAG = "Plate";
-        private const string MARKED_TAG = "PlateMarked";
+        private const string CLASS_NAME = "PLACAS CONTROLLER";      //Constante nombre de clase
+        private const int NUM_PLACAS_INITIAL = 3;                   //Numero de placas inicial
+        private const string DEFAULT_TAG = "Plate";                 //Tag inicial para las placas
+        private const string MARKED_TAG = "PlateMarked";            //Tag para las placas elegidas como random
 
         private Transform[] placas;                                 //Array que contendra a todas las placas        
         public int NumPlacasRandom { get; set; }                    //Numero de placas random a recoger
         public GameObject[] PlacasRandom { get; set; }              //Array con las placas random elegidas
 
-        #region Initialize Placas Random
+        #region Inicializacion de placas
+
+        /*
+            Inicializa los datos para comenzar con el nivel 1 del juego
+            - Recoge el array de placas desde el gameObject parent
+            - A todas las placas les asigna el tag por defecto
+            - Instancia el array de placas random
+            - Asigna al array las placas elegidas aleatoriamente
+            - Asigna a las placas random el tag correspondiente
+         */
         private void Awake()
         {
             placas = GetPlacasFromParent();              
             SetDefaultTags();
+            InitializePlacasRandom();
+            SetRandomPlacas();
+            SetMarkedTag();
+            PrintMessage(" PlacasInitialization - Awake() - DONE");
         }
 
         /* 
-            Recoge las placas que son hijas del parent en un array de Transforms
+            Recoge las placas que son hijas del parent como un array de Transforms
          */
         private Transform[] GetPlacasFromParent()
         {
-            logController.PrintInConsole(CLASS_NAME + " Get placas from parent - DONE ");
+            PrintMessage(" GetPlacasFromParent() - DONE ");
             return placasParent.GetComponentsInChildren<Transform>();
         }
 
@@ -41,7 +54,7 @@ namespace MemoryPrototype.Placas
         private void SetDefaultTags()
         {
             foreach (var placa in placas) { placa.gameObject.tag = DEFAULT_TAG; }
-            logController.PrintInConsole(CLASS_NAME + " Set Default Tags - DONE ");
+            PrintMessage(" SetDefaultTags() - DONE ");
         }
 
         /*
@@ -51,37 +64,39 @@ namespace MemoryPrototype.Placas
         public void InitializePlacasRandom()
         {
             InitializePlacasRandom(NUM_PLACAS_INITIAL);
+            PrintMessage(" InitializePlacasRandom(NUM_PLACAS_INITIAL) - DONE ");
         }
 
         /*
-            Metodo sobrecargado para inicializar las placas random
+            Metodo sobrecargado para inicializar las placas random con un valor que
+                pasa como parametro, para niveles donde hay mas numero de placas
          */
         public void InitializePlacasRandom(int numPlacas)
         {
             NumPlacasRandom = numPlacas;
             InstantiatePlacasRandom(NumPlacasRandom);
-            logController.PrintInConsole(CLASS_NAME + " Initialize placs random - DONE ");
+            PrintMessage(" InitializePlacasRandom(" + numPlacas + ") - DONE ");
         }
 
         /*
             Se instancia el array de placas random con el numero de placas que contendra 
          */
-        public void InstantiatePlacasRandom(int numPlacas)
+        private void InstantiatePlacasRandom(int numPlacas)
         {
             PlacasRandom = new GameObject[numPlacas];
-            logController.PrintInConsole(CLASS_NAME + " Placas random creadas - tamaño: " + numPlacas);
+            PrintMessage(" InstantiatePlacasRandom(" + numPlacas + ") - DONE");
         }
 
         #endregion
 
-        #region SetTags
-
+        #region Gestion de Tags
         /*
             Asigna la tag MARKED_TAG a las placas random
          */
         public void SetMarkedTag()
         {
             SetRandomTag(MARKED_TAG);
+            PrintMessage(" SetMarkedTag() - DONE");
         }
 
         /*
@@ -89,25 +104,32 @@ namespace MemoryPrototype.Placas
          */
         public void SetRandomTagsToDefault()
         {
-            SetRandomTag(DEFAULT_TAG);            
+            SetRandomTag(DEFAULT_TAG);
+            PrintMessage(" SetRandomTagsToDefault() - DONE");
         }
 
         /*
-            Asigna a las placas del array de placas random el tagType
+            Asigna a las placas random el tagType, que puede ser DEFAULT o MARKED
          */
         private void SetRandomTag(string tagType)
         {
             foreach (var placa in PlacasRandom) { placa.tag = tagType; }
+            PrintMessage(" SetRandomTag(" + tagType + ") - DONE");
         }
 
+        /*
+            Comprueba si las placas random tienen el tag MARKED
+         */
         public bool CheckIfMarkedTag() 
         {
-            foreach (var placa in PlacasRandom) { if (placa.CompareTag(MARKED_TAG)) { return true; }}
-            return false;
+            int countPlacas = 0;
+            foreach (var placa in PlacasRandom) { if (placa.CompareTag(MARKED_TAG)) {countPlacas++;} }
+            PrintMessage(" CheckIfMarkedTag() - num marked tags = " + countPlacas + " - DONE");
+            return countPlacas == PlacasRandom.Length;
         }
         #endregion
         
-        #region Random Placas
+        #region Eleccion de placas aleatorias
 
         /*
             Elige de manera aleaoria un numero de placas del tablero
@@ -122,34 +144,25 @@ namespace MemoryPrototype.Placas
 
             while (index < NumPlacasRandom)
             {
-                actualPlacaRandom = GetActualPlacaRandom();
-                logController.PrintInConsole("Posicion placa actual: " + actualPlacaRandom.transform.position);
-
+                actualPlacaRandom = GetPlacaRandom();
+                PrintMessage(" SetRandomPlacas() - Posicion placa actual: " + actualPlacaRandom.transform.position);
                 if (logController.LogsActive) { PrintLastPlacaRandom(lastPlacaRamdom); }
-
                 index = CompareIfPlacasEquals(index, actualPlacaRandom, lastPlacaRamdom);                
             }
 
             if (logController.LogsActive) { PrintPlacasRandom(); }
+            PrintMessage(" SetRandomPlacas() - DONE");
         }
 
         /*
-            Devuelve una placa aleatoria como actual desde el array de placas
+            Devuelve desde las placas random devuelve una placa aleatoria
          */
-        private Transform GetActualPlacaRandom()
+        private Transform GetPlacaRandom()
         {
             int randomPosition;
             randomPosition = UnityEngine.Random.Range(1, placas.Length);
+            PrintMessage(" GetPlacaRandom() - DONE");
             return placas[randomPosition];
-        }
-
-        /*
-            Imprime en consola la placa anterior
-         */
-        private void PrintLastPlacaRandom(GameObject lastPlacaRamdom)
-        {
-            if (lastPlacaRamdom == null) { logController.PrintInConsole("Posicion placa anterior: null"); }
-            else { logController.PrintInConsole("Posicion placa anterior: " + lastPlacaRamdom.transform.position); }
         }
 
         /*
@@ -158,29 +171,20 @@ namespace MemoryPrototype.Placas
             - Despues se asigna la actual a la anterior
             - Sumamos index++ para seguir asignando placas
          */
-        private int CompareIfPlacasEquals(int index, Transform actualPlacaRandom, GameObject lastPlacaRamdom)
+        private int CompareIfPlacasEquals(int index, Transform actualPlacaRandom, GameObject lastPlacaRandom)
         {
-            if (lastPlacaRamdom == null || !actualPlacaRandom.Equals(lastPlacaRamdom.transform))
+            if (lastPlacaRandom == null || !actualPlacaRandom.Equals(lastPlacaRandom.transform))
             {
-                logController.PrintInConsole("Las Posiciones de las placas no son iguales");
+                PrintMessage(" CompareIfPlacasEquals() - Placa actual = " + actualPlacaRandom.position+ "- Placa anterior = " + lastPlacaRandom.transform.position+ " - No son iguales");
                 PlacasRandom[index] = actualPlacaRandom.gameObject;
-                lastPlacaRamdom = actualPlacaRandom.gameObject;
+                lastPlacaRandom = actualPlacaRandom.gameObject;
                 index++;
             }
+            else { PrintMessage(" CompareIfPlacasEquals() - Las placas son iguales"); }
+
+            PrintMessage(" CompareIfPlacasEquals() - DONE");
             return index;
         }
-
-        /*
-            Imprime en consola las placas / posiciones random despues completar la eleccion
-         */
-        private void PrintPlacasRandom()
-        {
-            for (int i = 0; i < PlacasRandom.Length; i++)
-            {
-                logController.PrintInConsole("Posicion random: " + PlacasRandom[i].transform.position);
-            }
-        }
-
         #endregion
 
         #region Placas Material Color
@@ -189,14 +193,45 @@ namespace MemoryPrototype.Placas
             Devuelve a las placas aleatorias su color original
          */
         public void SetOriginalMaterialColor()
-        {
-            logController.PrintInConsole("SetOriginalMaterialColor() - Devolviendo el color a las placas");
-            foreach (var placa in PlacasRandom)
-            {
-                placa.GetComponent<PlacaControl>().SetOriginalMaterialColor();
-            }
+        {            
+            foreach (var placa in PlacasRandom) { placa.GetComponent<PlacaControl>().SetOriginalMaterialColor(); }
+            PrintMessage(" SetOriginalMaterialColor() - DONE");
         }
 
+        #endregion
+
+        #region gestion de logs
+        /*
+            Imprime en consola las placas / posiciones random despues completar la eleccion
+         */
+        private void PrintPlacasRandom()
+        {
+            string stringToPrint = "";
+            for (int i = 0; i < PlacasRandom.Length; i++)
+            {
+                stringToPrint += "Posicion random: " + PlacasRandom[i].transform.position + "\n";
+            }
+            PrintMessage(stringToPrint);
+        }
+
+        /*
+            Imprime en consola la placa anterior
+         */
+        private void PrintLastPlacaRandom(GameObject lastPlacaRamdom)
+        {
+            string stringToPrint = "";
+            if (lastPlacaRamdom == null) { stringToPrint = "Posicion placa anterior: null"; }
+            else { stringToPrint = "Posicion placa anterior: " + lastPlacaRamdom.transform.position; }
+            PrintMessage(stringToPrint);
+        }        
+
+        /*
+            Usa el controlador de logs para imprimir un mensaje en consola
+         */
+        private void PrintMessage(string message)
+        {
+            logController.PrintInConsole(CLASS_NAME + message);
+        }
         #endregion
     }//END CLASS
 }

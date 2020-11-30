@@ -10,7 +10,7 @@ namespace MemoryPrototype.Data
         private const string CLASS_NAME = "LEVEL MANAGER";      //Constante con el nombre de la clase
 
         private const int MAX_RONDAS = 3;                       //Numero maximo de rondas
-        private const int MAX_FALLOS = 2;                       //Numero maximo de fallos
+        private const int MAX_FALLOS = 3;                       //Numero maximo de fallos
         
         private LogController logController;                    //Controlador de logs
         private int NumRonda { get; set; }                      //Numero de rondas en un nivel
@@ -100,7 +100,7 @@ namespace MemoryPrototype.Data
 
         #endregion
 
-        #region Comprobacion de maximos
+        #region Comprobacion de datos
         /*
             Comprueba si ha llegado al maximo de fallos
          */
@@ -129,15 +129,15 @@ namespace MemoryPrototype.Data
             PrintMessage(" Check if max rondas: " + (NumRonda == MAX_RONDAS));
             return NumRonda == MAX_RONDAS;
         }
-        #endregion
-
 
         public bool IsLevelOne()
         {
             return NumLevel == 1;
         }
 
-        #region Logs de datos
+        #endregion
+
+        #region Gestion de logs
 
         /*
             Imprime las propiedades por consola

@@ -101,8 +101,8 @@ namespace MemoryPrototype.Game.States
         
         /*
             Inicializa las placas random en funcion del numero de rondas
-            - Si es la primera fase, se inicializa con el numero de placas default
-            - Si es una fase superior, se inicializa con el numero de placas modificado
+            - Si es el primer nivel, se inicializa con el numero de placas default
+            - Si es un nivel superior, se inicializa con el numero de placas modificado
          */
         private void InitializePlacasRandom()
         {

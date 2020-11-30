@@ -14,7 +14,7 @@ namespace MemoryPrototype.Data
 
         private LevelManager levelManager;
 
-        private void Awake()
+        private void Start()
         {
             levelManager = GetComponent<LevelManager>();
         }
