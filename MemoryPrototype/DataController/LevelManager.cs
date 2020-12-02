@@ -14,7 +14,8 @@ namespace MemoryPrototype.Data
         
         private LogController logController;                    //Controlador de logs
         private int NumRonda { get; set; }                      //Numero de rondas en un nivel
-        public int NumLevel { get; set; }                      //Numero de niveles del juego
+        public int ActualLevel { get; set; }                    //Nivel Actual del juego
+        public int BeforeLevel { get; set; }                    //Nivel anterior del juego
         private int NumFallos { get; set; }                     //Numero de aciertos
         private int NumAciertos { get; set; }                   //Numero de fallos
 
@@ -28,7 +29,8 @@ namespace MemoryPrototype.Data
 
         private void InitializationData()
         {
-            NumLevel = 1;
+            ActualLevel = 1;
+            BeforeLevel = ActualLevel;
             SetLevel(" Inicializacion de datos: ");
             PrintData();
         }
@@ -73,7 +75,8 @@ namespace MemoryPrototype.Data
          */
         public void UpLevel()
         {
-            NumLevel++;
+            BeforeLevel = ActualLevel;
+            ActualLevel++;
             SetLevel(" Subida de nivel: ");
         }
 
@@ -83,7 +86,8 @@ namespace MemoryPrototype.Data
          */
         public void DownLevel()
         {
-            NumLevel--;
+            BeforeLevel = ActualLevel;
+            ActualLevel--;            
             SetLevel(" Bajada de nivel: ");            
         }        
 
@@ -129,12 +133,6 @@ namespace MemoryPrototype.Data
             PrintMessage(" Check if max rondas: " + (NumRonda == MAX_RONDAS));
             return NumRonda == MAX_RONDAS;
         }
-
-        public bool IsLevelOne()
-        {
-            return NumLevel == 1;
-        }
-
         #endregion
 
         #region Gestion de logs
@@ -149,7 +147,7 @@ namespace MemoryPrototype.Data
             if(message != null) { stringToPrint = message; }
 
             PrintMessage(stringToPrint + "\n" +
-                            " Level : " + NumLevel + "\n" +
+                            " Level : " + ActualLevel + "\n" +
                             " Ronda : " + NumRonda + "\n" +
                             " Aciertos : " + NumAciertos + "\n" +
                             " Fallos : " + NumFallos);

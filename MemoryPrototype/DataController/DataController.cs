@@ -35,7 +35,9 @@ namespace MemoryPrototype.Data
             levelManager.PrintData();            
         }
 
-        public int GetLevel() { return levelManager.NumLevel; }
+        public int GetActualLevel() { return levelManager.ActualLevel; }
+
+        public int GetBeforeLevel() { return levelManager.BeforeLevel;  }
         /*
             Sube el numero de rondas
          */

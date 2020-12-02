@@ -34,8 +34,6 @@ namespace MemoryPrototype.Placas
             placas = GetPlacasFromParent();              
             SetDefaultTags();
             InitializePlacasRandom();
-            SetRandomPlacas();
-            SetMarkedTag();
             PrintMessage(" PlacasInitialization - Awake() - DONE");
         }
 
@@ -75,6 +73,8 @@ namespace MemoryPrototype.Placas
         {
             NumPlacasRandom = numPlacas;
             InstantiatePlacasRandom(NumPlacasRandom);
+            SetRandomPlacas();
+            SetMarkedTag();
             PrintMessage(" InitializePlacasRandom(" + numPlacas + ") - DONE ");
         }
 
@@ -86,7 +86,6 @@ namespace MemoryPrototype.Placas
             PlacasRandom = new GameObject[numPlacas];
             PrintMessage(" InstantiatePlacasRandom(" + numPlacas + ") - DONE");
         }
-
         #endregion
 
         #region Gestion de Tags

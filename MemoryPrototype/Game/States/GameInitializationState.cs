@@ -14,7 +14,7 @@ namespace MemoryPrototype.Game.States
         private CharacterController characterController;                            //Controlador de personaje
         private DataController dataController;                            //Controlador de personaje
 
-        #region State Functions
+        #region Inicializacion del estado
 
         /*
             Constructor
@@ -28,6 +28,7 @@ namespace MemoryPrototype.Game.States
             characterController = gameControllerContext.CharacterController;
             dataController = gameControllerContext.DataController;
             OnEnter();
+            PrintMessage(" Inicializacion = "+base.IsInitialized+"- DONE");
         }
         
         /*
@@ -36,7 +37,7 @@ namespace MemoryPrototype.Game.States
          */
         private new void OnEnter()
         {
-            logController.PrintInConsole(STATE_NAME + " - ENTER");
+            PrintMessage(" - ENTER");
             base.OnEnter();
         }
 
@@ -53,6 +54,9 @@ namespace MemoryPrototype.Game.States
             OnExit();
         }
 
+        #endregion
+
+        #region Ejecucion del estado
         /*
             Funcion de ejecucion del estado
             - Checkea si se puede bajar o subir de nivel
@@ -61,58 +65,30 @@ namespace MemoryPrototype.Game.States
          */
         public override void OnExecution()
         {
-            logController.PrintInConsole(STATE_NAME + " - EXECUTION");            
-            PlacasInitialization();
+            PrintMessage(" - EXECUTION");            
+            PlacasRandomInitialization();
             CharacterInitialization();
         }
 
         /*
-            Indica que esta en esta funcion
-            Llama al OnExit() del padre para cambiar de estado
+            Iniclaliza las placas random para el turno
+            - Si el nivel actual es mayor que 1, inicializa con el numero de placas dado por el nivel
+            - Si el nivel actual es 1 pero ha bajado de nivel, se inicializa con el numero de placas default
+            - Si no se cumple ninguna condicino, significa que es el comienzo del juego, entonces ya estara
+                inicializado en el controlador de placas
          */
-        private void OnExit()
+        private void PlacasRandomInitialization()
         {
-            logController.PrintInConsole(STATE_NAME + " - EXIT");
-            //base.OnExit(new GameMovementState(gameControllerContext));
+            if (dataController.GetActualLevel() > 1) 
+            { 
+                placasController.InitializePlacasRandom(dataController.GetActualLevel()); 
+            }
+            else if (dataController.GetActualLevel() == 1 && dataController.GetBeforeLevel() > 1)
+            {
+                placasController.InitializePlacasRandom();
+            }
+            PrintMessage(" PlacasRandomInitialization() - NivelActual = "+ dataController.GetActualLevel());
         }
-
-        #endregion
-
-        #region Ronda y Fase
-
-        #endregion
-
-        #region PlacasInitialization
-
-        /*
-            Iniclaliza las placas para el turno
-            - Las placas se inicializan solo si
-         */
-        private void PlacasInitialization()
-        {       
-            //if getPreviousLevel > 1 and getLevel == 1 then placasInitializacion 
-            //(para el nivel 1, en el caso de que se haya bajado de nivel ya que el array
-            // seria mas grande y hay que volver a construir el de nivel 1)
-            if(dataController.GetLevel() > 1) { SetNextPlacasRandomInitialization(); }            
-            logController.PrintInConsole(STATE_NAME + " PlacasInitialization() - DONE");
-        }
-        
-        /*
-            Inicializa las placas random en funcion del numero de rondas
-            - Si es el primer nivel, se inicializa con el numero de placas default
-            - Si es un nivel superior, se inicializa con el numero de placas modificado
-         */
-        private void SetNextPlacasRandomInitialization()
-        {
-            placasController.InitializePlacasRandom(placasController.NumPlacasRandom);
-            placasController.SetRandomPlacas();
-            placasController.SetMarkedTag();
-            logController.PrintInConsole(STATE_NAME + " SetNextPlacasRandomInitialization() - DONE ");
-        }
-
-        #endregion
-
-        #region CharacterInitialization
 
         /*
             Inicializacion del personaje
@@ -131,5 +107,26 @@ namespace MemoryPrototype.Game.States
 
         #endregion
 
+        #region Terminacion del estado
+        /*
+            Indica que esta en esta funcion
+            Llama al OnExit() del padre para cambiar de estado
+         */
+        private void OnExit()
+        {
+            logController.PrintInConsole(STATE_NAME + " - EXIT");
+            //base.OnExit(new GameMovementState(gameControllerContext));
+        }
+        #endregion
+
+        #region Gestion de Logs
+        /*
+            Usa el controlador de logs para imprimir un mensaje en consola
+         */
+        private void PrintMessage(string message)
+        {
+            logController.PrintInConsole(STATE_NAME + message);
+        }
+        #endregion
     }//END CLASS
 }
