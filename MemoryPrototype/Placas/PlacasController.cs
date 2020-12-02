@@ -134,6 +134,7 @@ namespace MemoryPrototype.Placas
             Elige de manera aleaoria un numero de placas del tablero
             - Se asignaran tantas placas como valor tengamos en NumPlacasRandom
             - Con el valor index, controlamos que no sobrepasemos NumPlacasRandom
+            - Dos placas elegidas no pueden ser iguales
          */
         public void SetRandomPlacas()
         {            

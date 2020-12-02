@@ -21,31 +21,13 @@ namespace MemoryPrototype.Data
             levelManager = GetComponent<LevelManager>();
         }
 
-        /*
-            Checkea si se puede bajar o subir de nivel
-         */
-        public void CheckIfDownOrUpLevel()
-        {
-            if (levelManager.IsSuperiorLevel()) { levelManager.UpLevel(); }
-            else if (levelManager.HasPassedMaxIntentos())
-            {
-                if (!levelManager.IsLevelOne()) { levelManager.DownLevel(); }
-                else { levelManager.StayLevel(); }                 
-            }
-            levelManager.PrintData();            
-        }
-
         public int GetActualLevel() { return levelManager.ActualLevel; }
 
         public int GetBeforeLevel() { return levelManager.BeforeLevel;  }
-        /*
-            Sube el numero de rondas
-         */
-        public void UpRonda() { levelManager.NumRonda++; }
+                
+        public void UpLevel() { levelManager.UpLevel(); }
 
-        public void UpFallos() { levelManager.NumFallos++; }
-
-        public void UpAciertos() { levelManager.NumAciertos++; }
+        public void DownLevel() { levelManager.DownLevel(); }       
         
     }
 }

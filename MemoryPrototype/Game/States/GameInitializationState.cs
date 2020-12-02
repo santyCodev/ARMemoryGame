@@ -81,7 +81,7 @@ namespace MemoryPrototype.Game.States
         {
             if (dataController.GetActualLevel() > 1) 
             { 
-                placasController.InitializePlacasRandom(dataController.GetActualLevel()); 
+                placasController.InitializePlacasRandom(placasController.NumPlacasRandom); 
             }
             else if (dataController.GetActualLevel() == 1 && dataController.GetBeforeLevel() > 1)
             {
