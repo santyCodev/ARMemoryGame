@@ -12,12 +12,12 @@ namespace MemoryPrototype.Character
         private Vector3 nextPosition;                               //Siguiente posicion
         private float currentLerpTime;                              //Tiempo actual de interpolacion lineal
         private const float MOVE_LERP_TIME = 3;                     //Tiempo total de la interpolacion lineal
-
+        private const string CLASS_NAME = "CHARACTER CONTROLLER";
+        
         public delegate void FinishAction();                        //Delegado para el evento
         public static event FinishAction OnCharacterFinish;         //Evento para avisar que el character ha terminado
         
         #region Prepare for movement
-
         /*
             Prepara el personaje para su movimiento
             - Asigna las posiciones a recorrer
@@ -26,7 +26,8 @@ namespace MemoryPrototype.Character
         public void PrepareForMovement(GameObject[] placas)
         {
             positionsToWalk = placas;
-            SetFirstPosition(NewPosition(positionsToWalk[0].transform.position));            
+            SetFirstPosition(NewPosition(positionsToWalk[0].transform.position));
+            PrintMessage(" PrepareForMovement() - Placas a recorrer =  "+placas.Length);
         }
 
         /*
@@ -35,7 +36,7 @@ namespace MemoryPrototype.Character
         private void SetFirstPosition(Vector3 firstPosition)
         {
             transform.localPosition = firstPosition;
-            logController.PrintInConsole("setFirstPosition()- Primera posicion " + transform.localPosition);
+            PrintMessage(" setFirstPosition() - Primera posicion " + transform.localPosition);
         }
 
         /*
@@ -79,30 +80,27 @@ namespace MemoryPrototype.Character
                     yield return null;
                 }
                 MarkPlate(positionsToWalk[i]);
-                logController.PrintInConsole("MoveCharacter() - Chara ha llegado al destino " + nextPosition);
+                PrintMessage(" MoveCharacter() - Chara ha llegado al destino " + nextPosition);
                 SetFirstPosition(nextPosition);
             }
-            logController.PrintInConsole("MoveCharacter() - Chara ha terminado el recorrido ");
+            PrintMessage(" MoveCharacter() - Chara ha terminado el recorrido ");
 
             yield return new WaitForSeconds(0.5f);
             OnCharacterFinish();
         }
 
         /*
-            Calculo de la interpolacion lineal entre la posicion
-            actual del personaje y la posicion destino.
+            Calculo de la interpolacion lineal entre la posicion actual del personaje y la posicion destino.
             - El tiempo actual de recorrido se compara con el tiempo total, 
                 si este llega a sobrepasarlo, se iguala al total
-            - El tiempo de interpolacion es la operacion entre (currentLerpTime / moveLerpTime), 
-                cuando el resultado sea 1 habra terminado el recorrido y el personaje estara en el 
+            - El tiempo de interpolacion es la operacion entre (currentLerpTime / MOVE_LERP_TIME), 
+                cuando el resultado sea 1 habra terminado el recorrido
         */
         private void MoveToNextPosition()
         {
             currentLerpTime += Time.deltaTime;
             if (currentLerpTime >= MOVE_LERP_TIME) { currentLerpTime = MOVE_LERP_TIME; }
-
-            logController.PrintInConsole("MoveCharacter()- Moviendo chara a " + nextPosition);
-
+            PrintMessage(" MoveToNextPosition() - Moviendo chara a " + nextPosition);
             transform.localPosition = Vector3.Lerp(transform.position, nextPosition, (currentLerpTime / MOVE_LERP_TIME));
         }
 
@@ -113,7 +111,7 @@ namespace MemoryPrototype.Character
         {
             Vector3 newFinalPosition = new Vector3(position.x, transform.position.y, position.z);
             transform.LookAt(newFinalPosition);
-            logController.PrintInConsole("LookAtPosition - Mirando a la posicion = " + newFinalPosition);
+            PrintMessage(" LookAtNextPosition() - Mirando a la posicion = " + newFinalPosition);
         }
 
         /*
@@ -121,20 +119,40 @@ namespace MemoryPrototype.Character
          */
         private void MarkPlate(GameObject placa)
         {
-            logController.PrintInConsole("MarkPlate()- Marcando placa " + placa.transform.position);
+            PrintMessage(" MarkPlate()- Marcando placa " + placa.transform.position);
             placa.GetComponent<PlacaControl>().ChangeMaterialColor();
         }
 
         #endregion
 
+        #region Estado del personaje
+        /*
+            Activa o desactiva al personaje
+         */
         public void SetActiveCharacter(bool option) {
             gameObject.SetActive(option);
+            PrintMessage(" SetActiveCharacter() - Personaje activado = "+GetIsActive());
         }
 
+        /*
+            Devuelve si el personaje esta activo o no
+         */
         public bool GetIsActive()
-        {
+        {            
             return gameObject.activeSelf;
         }
+        #endregion
+
+        #region Gestion de Logs
+        /*
+            Usa el controlador de logs para imprimir un mensaje en consola
+         */
+        private void PrintMessage(string message)
+        {
+            logController.PrintInConsole(CLASS_NAME + message);
+        }
+        #endregion
+
     }//End Class
 }
 

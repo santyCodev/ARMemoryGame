@@ -99,10 +99,11 @@ namespace MemoryPrototype.Game.States
         {
             if (!characterController.GetIsActive())
             {
+                PrintMessage(" CharacterInitialization() - El personaje esta inactivo");
                 characterController.SetActiveCharacter(true);
             }
             characterController.PrepareForMovement(placasController.PlacasRandom);
-            logController.PrintInConsole(STATE_NAME + " Character Initialization - DONE");
+            PrintMessage(" CharacterInitialization() - DONE");
         }
 
         #endregion
@@ -114,7 +115,7 @@ namespace MemoryPrototype.Game.States
          */
         private void OnExit()
         {
-            logController.PrintInConsole(STATE_NAME + " - EXIT");
+            PrintMessage(" - EXIT");
             //base.OnExit(new GameMovementState(gameControllerContext));
         }
         #endregion
