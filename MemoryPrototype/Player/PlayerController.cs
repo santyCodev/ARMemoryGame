@@ -7,7 +7,7 @@ namespace MemoryPrototype.Player
     public class PlayerController : MonoBehaviour
     {
         public bool StartExecute { get; set; }                      //Indica que el player comienza a jugar
-        public delegate void PlacaSelected(GameObject placa);                       //Delegado para el evento
+        public delegate void PlacaSelected(GameObject placa);       //Delegado para el evento
         public static event PlacaSelected OnPlacaClicked;           //Evento para avisar que el player ha hecho click en una placa
 
 
