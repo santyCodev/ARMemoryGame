@@ -32,7 +32,6 @@ namespace MemoryPrototype.Data
             ActualLevel = 1;
             BeforeLevel = ActualLevel;
             SetLevel(" Inicializacion de datos: ");
-            PrintData();
         }
 
         #endregion

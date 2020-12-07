@@ -38,7 +38,7 @@ namespace MemoryPrototype.Game
         private void Start()
         {
             CurrentState = new GameInitializationState(this);
-            LogController.PrintInConsole(CLASS_NAME+" Current State - " +CurrentState);
+            LogController.PrintInConsole(CLASS_NAME+" Inicializando estado - " +CurrentState);
         }
 
         /*

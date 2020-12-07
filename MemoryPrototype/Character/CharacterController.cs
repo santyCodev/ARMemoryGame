@@ -1,5 +1,6 @@
 ﻿using MemoryPrototype.Logs;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MemoryPrototype.Character
@@ -8,7 +9,7 @@ namespace MemoryPrototype.Character
     {
         [SerializeField] private LogController logController;       //Controlador de logs
 
-        private GameObject[] positionsToWalk;                       //Coleccion de posiciones a recorrer
+        private List<GameObject> positionsToWalk;                   //Coleccion de posiciones a recorrer
         private Vector3 nextPosition;                               //Siguiente posicion
         private float currentLerpTime;                              //Tiempo actual de interpolacion lineal
         private const float MOVE_LERP_TIME = 3;                     //Tiempo total de la interpolacion lineal
@@ -23,11 +24,11 @@ namespace MemoryPrototype.Character
             - Asigna las posiciones a recorrer
             - Coloca al personaje en la primera posicion
         */
-        public void PrepareForMovement(GameObject[] placas)
+        public void PrepareForMovement(List<GameObject> placas)
         {
             positionsToWalk = placas;
             SetFirstPosition(NewPosition(positionsToWalk[0].transform.position));
-            PrintMessage(" PrepareForMovement() - Placas a recorrer =  "+placas.Length);
+            PrintMessage(" PrepareForMovement() - Placas a recorrer =  "+placas.Count);
         }
 
         /*
@@ -67,21 +68,24 @@ namespace MemoryPrototype.Character
         {
             MarkPlate(positionsToWalk[0]);
 
-            for (int i = 1; i < positionsToWalk.Length; i++)
+            foreach (var placaPosition in positionsToWalk)
             {
-                nextPosition = NewPosition(positionsToWalk[i].transform.position);
-                LookAtNextPosition(nextPosition);
-
-                currentLerpTime = 0;
-
-                while (transform.localPosition.x != nextPosition.x || transform.localPosition.z != nextPosition.z)
+                if (!placaPosition.Equals(positionsToWalk[0]))
                 {
-                    MoveToNextPosition();
-                    yield return null;
-                }
-                MarkPlate(positionsToWalk[i]);
-                PrintMessage(" MoveCharacter() - Chara ha llegado al destino " + nextPosition);
-                SetFirstPosition(nextPosition);
+                    nextPosition = NewPosition(placaPosition.transform.position);
+                    LookAtNextPosition(nextPosition);
+
+                    currentLerpTime = 0;
+
+                    while (transform.localPosition.x != nextPosition.x || transform.localPosition.z != nextPosition.z)
+                    {
+                        MoveToNextPosition();
+                        yield return null;
+                    }
+                    MarkPlate(placaPosition);
+                    PrintMessage(" MoveCharacter() - Chara ha llegado al destino " + nextPosition);
+                    SetFirstPosition(nextPosition);
+                }                    
             }
             PrintMessage(" MoveCharacter() - Chara ha terminado el recorrido ");
 

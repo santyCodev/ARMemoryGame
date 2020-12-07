@@ -28,7 +28,7 @@ namespace MemoryPrototype.Game.States
             characterController = gameControllerContext.CharacterController;
             dataController = gameControllerContext.DataController;
             OnEnter();
-            PrintMessage(" Inicializacion = "+base.IsInitialized+"- DONE");
+            PrintMessage(" Inicializacion = "+base.IsInitialized+" - DONE");
         }
         
         /*
@@ -73,8 +73,10 @@ namespace MemoryPrototype.Game.States
 
         private void Pruebas()
         {
+            PrintMessage(" Prueba si es nivel 1 - START");
             //Comprobar si es nivel 1
             PlacasRandomInitialization();
+            PrintMessage(" Prueba si es nivel 1 - DONE");
         }
 
         /*
@@ -87,8 +89,9 @@ namespace MemoryPrototype.Game.States
         private void PlacasRandomInitialization()
         {
             if (dataController.GetActualLevel() > 1) 
-            { 
-                placasController.InitializePlacasRandom(placasController.NumPlacasRandom); 
+            {
+                placasController.SetNumPlacasRandom(placasController.NumPlacasRandom++);
+                placasController.InitializePlacasRandom();
             }
             else if (dataController.GetActualLevel() == 1 && dataController.GetBeforeLevel() > 1)
             {
@@ -109,7 +112,7 @@ namespace MemoryPrototype.Game.States
                 PrintMessage(" CharacterInitialization() - El personaje esta inactivo");
                 characterController.SetActiveCharacter(true);
             }
-            characterController.PrepareForMovement(placasController.PlacasRandom);
+            characterController.PrepareForMovement(placasController.placasRandom);
             PrintMessage(" CharacterInitialization() - DONE");
         }
 

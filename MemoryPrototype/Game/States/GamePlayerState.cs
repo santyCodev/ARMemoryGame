@@ -13,7 +13,7 @@ namespace MemoryPrototype.Game.States
 
         private PlayerController playerController;                          //Controlador del jugador
         private PlacasController placasController;                          //Controlador de placas
-        private GameObject[] placasRandom;                                  //Las placas random
+        private List<GameObject> placasRandom;                                  //Las placas random
         private GameObject placaActual;                                     //La placa actual a comparar
         private int numPlacaActual;                                         //Indice de conteo de placas
         /*
@@ -43,8 +43,8 @@ namespace MemoryPrototype.Game.States
         private new void OnEnter()
         {
             logController.PrintInConsole(STATE_NAME + " - ENTER");
-            placasRandom = placasController.PlacasRandom;
-            numPlacaActual = placasRandom.Length - 1;
+            placasRandom = placasController.placasRandom;
+            numPlacaActual = placasRandom.Count - 1;
             placaActual = placasRandom[numPlacaActual];
             base.OnEnter();
         }
@@ -94,9 +94,9 @@ namespace MemoryPrototype.Game.States
         private void ComparePlacas(GameObject placaSelected)
         {
             //Si es la ultima placa
-            if (numPlacaActual == placasRandom.Length - 1) { CheckPlacas(true, placaSelected); }
+            if (numPlacaActual == placasRandom.Count - 1) { CheckPlacas(true, placaSelected); }
             //Si la placa es menor a la ultima y mayor que la primera
-            else if (numPlacaActual < placasRandom.Length - 1 && numPlacaActual > 0){ CheckPlacas(true, placaSelected); }
+            else if (numPlacaActual < placasRandom.Count - 1 && numPlacaActual > 0){ CheckPlacas(true, placaSelected); }
             //Si es la primera placa
             else if (numPlacaActual == 0){ CheckPlacas(false, placaSelected); }            
         }
