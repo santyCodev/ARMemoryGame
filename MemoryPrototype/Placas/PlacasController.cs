@@ -31,6 +31,7 @@ namespace MemoryPrototype.Placas
          */
         private void Awake()
         {
+            PrintMessage(" PlacasInitialization - Awake() - ENTER");
             placas = GetPlacasFromParent();              
             SetDefaultTags();
             InitializePlacasRandom();
@@ -42,6 +43,7 @@ namespace MemoryPrototype.Placas
          */
         private Transform[] GetPlacasFromParent()
         {
+            PrintMessage(" GetPlacasFromParent() - ENTER ");
             PrintMessage(" GetPlacasFromParent() - DONE ");
             return placasParent.GetComponentsInChildren<Transform>();
         }
@@ -51,6 +53,7 @@ namespace MemoryPrototype.Placas
          */
         private void SetDefaultTags()
         {
+            PrintMessage(" SetDefaultTags() - ENTER ");
             foreach (var placa in placas) { placa.gameObject.tag = DEFAULT_TAG; }
             PrintMessage(" SetDefaultTags() - DONE ");
         }
@@ -61,6 +64,7 @@ namespace MemoryPrototype.Placas
          */
         public void InitializePlacasRandom()
         {
+            PrintMessage(" InitializePlacasRandom(NUM_PLACAS_INITIAL) - ENTER ");
             InitializePlacasRandom(NUM_PLACAS_INITIAL);
             PrintMessage(" InitializePlacasRandom(NUM_PLACAS_INITIAL) - DONE ");
         }
@@ -71,6 +75,7 @@ namespace MemoryPrototype.Placas
          */
         public void InitializePlacasRandom(int numPlacas)
         {
+            PrintMessage(" InitializePlacasRandom(" + numPlacas + ") - ENTER ");
             NumPlacasRandom = numPlacas;
             InstantiatePlacasRandom(NumPlacasRandom);
             SetRandomPlacas();
@@ -83,6 +88,7 @@ namespace MemoryPrototype.Placas
          */
         private void InstantiatePlacasRandom(int numPlacas)
         {
+            PrintMessage(" InstantiatePlacasRandom(" + numPlacas + ") - ENTER");
             PlacasRandom = new GameObject[numPlacas];
             PrintMessage(" InstantiatePlacasRandom(" + numPlacas + ") - DONE");
         }
@@ -94,6 +100,7 @@ namespace MemoryPrototype.Placas
          */
         public void SetMarkedTag()
         {
+            PrintMessage(" SetMarkedTag() - ENTER");
             SetRandomTag(MARKED_TAG);
             PrintMessage(" SetMarkedTag() - DONE");
         }
@@ -112,6 +119,7 @@ namespace MemoryPrototype.Placas
          */
         private void SetRandomTag(string tagType)
         {
+            PrintMessage(" SetRandomTag(" + tagType + ") - ENTER");
             foreach (var placa in PlacasRandom) { placa.tag = tagType; }
             PrintMessage(" SetRandomTag(" + tagType + ") - DONE");
         }
@@ -137,17 +145,21 @@ namespace MemoryPrototype.Placas
             - Dos placas elegidas no pueden ser iguales
          */
         public void SetRandomPlacas()
-        {            
+        {
+            PrintMessage(" SetRandomPlacas() - ENTER");
             int index = 0;
             Transform actualPlacaRandom;
             GameObject lastPlacaRamdom = null;
 
+            PrintMessage(" SetRandomPlacas() - index = "+index+", NumPlacasRandom = "+NumPlacasRandom);
             while (index < NumPlacasRandom)
             {
                 actualPlacaRandom = GetPlacaRandom();
-                PrintMessage(" SetRandomPlacas() - Posicion placa actual: " + actualPlacaRandom.transform.position);
+                PrintMessage(" SetRandomPlacas() - Posicion placa actual: " + actualPlacaRandom.transform.position);                
                 if (logController.LogsActive) { PrintLastPlacaRandom(lastPlacaRamdom); }
-                index = CompareIfPlacasEquals(index, actualPlacaRandom, lastPlacaRamdom);                
+                index = CompareIfPlacasEquals(index, actualPlacaRandom, lastPlacaRamdom);
+                lastPlacaRamdom = actualPlacaRandom.gameObject;
+                PrintMessage(" SetRandomPlacas() - index = " + index + ", NumPlacasRandom = " + NumPlacasRandom);
             }
 
             if (logController.LogsActive) { PrintPlacasRandom(); }
@@ -159,8 +171,9 @@ namespace MemoryPrototype.Placas
          */
         private Transform GetPlacaRandom()
         {
+            PrintMessage(" GetPlacaRandom() - ENTER");
             int randomPosition;
-            randomPosition = UnityEngine.Random.Range(1, placas.Length);
+            randomPosition = UnityEngine.Random.Range(1, placas.Length);            
             PrintMessage(" GetPlacaRandom() - DONE");
             return placas[randomPosition];
         }
@@ -173,11 +186,12 @@ namespace MemoryPrototype.Placas
          */
         private int CompareIfPlacasEquals(int index, Transform actualPlacaRandom, GameObject lastPlacaRandom)
         {
+
+            PrintMessage(" CompareIfPlacasEquals() - ENTER");
             if (lastPlacaRandom == null || !actualPlacaRandom.Equals(lastPlacaRandom.transform))
             {
-                PrintMessage(" CompareIfPlacasEquals() - Placa actual = " + actualPlacaRandom.position+ "- Placa anterior = " + lastPlacaRandom.transform.position+ " - No son iguales");
-                PlacasRandom[index] = actualPlacaRandom.gameObject;
-                lastPlacaRandom = actualPlacaRandom.gameObject;
+                PrintMessage(" CompareIfPlacasEquals() - Las placas no son iguales");
+                PlacasRandom[index] = actualPlacaRandom.gameObject;                
                 index++;
             }
             else { PrintMessage(" CompareIfPlacasEquals() - Las placas son iguales"); }
@@ -219,10 +233,12 @@ namespace MemoryPrototype.Placas
          */
         private void PrintLastPlacaRandom(GameObject lastPlacaRamdom)
         {
-            string stringToPrint = "";
-            if (lastPlacaRamdom == null) { stringToPrint = "Posicion placa anterior: null"; }
-            else { stringToPrint = "Posicion placa anterior: " + lastPlacaRamdom.transform.position; }
+            PrintMessage(" PrintLastPlacaRandom() - ENTER");
+            string stringToPrint = " PrintLastPlacaRandom() - "; 
+            if (lastPlacaRamdom == null) { stringToPrint += " Posicion placa anterior: null"; }
+            else { stringToPrint += " Posicion placa anterior: " + lastPlacaRamdom.transform.position; }
             PrintMessage(stringToPrint);
+            PrintMessage(" PrintLastPlacaRandom() - DONE");
         }        
 
         /*

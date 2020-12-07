@@ -65,9 +65,16 @@ namespace MemoryPrototype.Game.States
          */
         public override void OnExecution()
         {
-            PrintMessage(" - EXECUTION");            
+            PrintMessage(" - EXECUTION");
+            Pruebas();
+            //PlacasRandomInitialization();
+            //CharacterInitialization();
+        }
+
+        private void Pruebas()
+        {
+            //Comprobar si es nivel 1
             PlacasRandomInitialization();
-            CharacterInitialization();
         }
 
         /*
