@@ -76,9 +76,10 @@ namespace MemoryPrototype.Game.States
         {
             PrintMessage(" Prueba si es nivel 1 - START");            
             PlacasRandomInitialization();
+            CharacterInitialization();
             PrintMessage(" Prueba si es nivel 1 - DONE");
 
-            Thread.Sleep(2000);
+            /*Thread.Sleep(2000);
 
             PrintMessage(" Prueba subida nivel 2 - START");
             placasController.NumPlacasRandom++;
@@ -92,6 +93,7 @@ namespace MemoryPrototype.Game.States
             placasController.NumPlacasRandom++;
             dataController.UpLevel();
             PlacasRandomInitialization();
+            CharacterInitialization();
             PrintMessage(" Prueba subida nivel 3 - DONE");
 
             Thread.Sleep(2000);
@@ -100,6 +102,7 @@ namespace MemoryPrototype.Game.States
             placasController.NumPlacasRandom--;
             dataController.DownLevel();
             PlacasRandomInitialization();
+            CharacterInitialization();
             PrintMessage(" Prueba subida nivel 2 - DONE");
 
             Thread.Sleep(2000);
@@ -108,7 +111,8 @@ namespace MemoryPrototype.Game.States
             placasController.NumPlacasRandom--;
             dataController.DownLevel();
             PlacasRandomInitialization();
-            PrintMessage(" Prueba subida nivel 1 - DONE");
+            CharacterInitialization();
+            PrintMessage(" Prueba subida nivel 1 - DONE");*/
         }
 
         /*
@@ -120,7 +124,7 @@ namespace MemoryPrototype.Game.States
          */
         private void PlacasRandomInitialization()
         {
-            if (ActualLvlMajOne() || ActualLvlOneOrBeforeLvlMajOne()) { placasController.InitializePlacasRandom(); }
+            if (ActualLvlMajOne() || ActualLvlOneAndBeforeLvlMajOne()) { placasController.InitializePlacasRandom(); }
             PrintMessage(" PlacasRandomInitialization() - NivelActual = "+ dataController.GetActualLevel());
         }
 
@@ -132,7 +136,7 @@ namespace MemoryPrototype.Game.States
         /*
             Devuelve true si el nivel actual es 1 y ademas el nivel anterior era mayor que 1
          */
-        private bool ActualLvlOneOrBeforeLvlMajOne() 
+        private bool ActualLvlOneAndBeforeLvlMajOne() 
         { return dataController.GetActualLevel() == 1 && dataController.GetBeforeLevel() > 1; }
 
         /*
@@ -161,7 +165,7 @@ namespace MemoryPrototype.Game.States
         private void OnExit()
         {
             PrintMessage(" - EXIT");
-            //base.OnExit(new GameMovementState(gameControllerContext));
+            base.OnExit(new GameMovementState(gameControllerContext));
         }
         #endregion
 

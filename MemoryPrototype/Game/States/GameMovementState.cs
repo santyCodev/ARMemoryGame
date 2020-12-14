@@ -13,7 +13,7 @@ namespace MemoryPrototype.Game.States
         private PlacasController placasController;                              //Controlador de placas
         private CharacterController characterController;                        //Controlador de personaje
 
-
+        #region Inicializacion del estado
         /*
             Constructor del estado
             - Llama al constructor del padre pasandole el contexto
@@ -29,15 +29,13 @@ namespace MemoryPrototype.Game.States
             OnEnter();
         }
 
-        #region State Functions
-
         /*
             Imprime que esta en esta funcion
             Inicializa el estado llamando al OnEnter del padre
          */
         private new void OnEnter()
         {
-            logController.PrintInConsole(STATE_NAME + " - ENTER");
+            PrintMessage(" - ENTER");
             base.OnEnter();
         }
 
@@ -51,7 +49,9 @@ namespace MemoryPrototype.Game.States
             OnExecution();
             yield return null;            
         }
+        #endregion
 
+        #region Ejecucion del estado
         /*
             Funcion de ejecucion del estado
             - Indica que esta en esta funcion
@@ -59,24 +59,9 @@ namespace MemoryPrototype.Game.States
          */
         public override void OnExecution()
         {
-            logController.PrintInConsole(STATE_NAME + " - EXECUTION");
+            PrintMessage(" - EXECUTION");
             characterController.MoveCharacter();
         }
-
-        /*
-            Indica que esta en esta funcion
-            - Quita la funcion CharacterHasEnd del evento OnCharacterFinish
-            - Llama al siguiente estado
-         */
-        private void OnExit()
-        {
-            logController.PrintInConsole(STATE_NAME + " - EXIT");
-            CharacterController.OnCharacterFinish -= CharacterHasEnd;
-            characterController.SetActiveCharacter(false);
-            base.OnExit(new GamePlayerState(gameControllerContext));
-        }       
-
-        #endregion
 
         #region Evento CharacterHasEnd
 
@@ -87,14 +72,43 @@ namespace MemoryPrototype.Game.States
             - Devuelve el color original a las placas random
             - Llama a la funcion onExit
          */
-        private void CharacterHasEnd() {
-            logController.PrintInConsole(STATE_NAME + " - El chara ha terminado de moverse");
+        private void CharacterHasEnd()
+        {
+            PrintMessage(" - El chara ha terminado de moverse");
             placasController.SetOriginalMaterialColor();
             OnExit();
         }
 
         #endregion
 
-    }
+        #endregion
+
+        #region Finalizacion del estado
+        /*
+            Indica que esta en esta funcion
+            - Quita la funcion CharacterHasEnd del evento OnCharacterFinish
+            - Llama al siguiente estado
+         */
+        private void OnExit()
+        {
+            PrintMessage(" - EXIT");
+            CharacterController.OnCharacterFinish -= CharacterHasEnd;
+            characterController.SetActiveCharacter(false);
+            //base.OnExit(new GamePlayerState(gameControllerContext));
+        }
+
+        #endregion
+
+        #region Gestion de Logs
+        /*
+            Usa el controlador de logs para imprimir un mensaje en consola
+         */
+        private void PrintMessage(string message)
+        {
+            logController.PrintInConsole(STATE_NAME + message);
+        }
+        #endregion
+    
+    }//END CLASS
 }
 

@@ -12,7 +12,7 @@ namespace MemoryPrototype.Character
         private List<GameObject> positionsToWalk;                   //Coleccion de posiciones a recorrer
         private Vector3 nextPosition;                               //Siguiente posicion
         private float currentLerpTime;                              //Tiempo actual de interpolacion lineal
-        private const float MOVE_LERP_TIME = 3;                     //Tiempo total de la interpolacion lineal
+        private const float MOVE_LERP_TIME = 1;                     //Tiempo total de la interpolacion lineal
         private const string CLASS_NAME = "CHARACTER CONTROLLER";
         
         public delegate void FinishAction();                        //Delegado para el evento
@@ -41,7 +41,7 @@ namespace MemoryPrototype.Character
         }
 
         /*
-           Situa al personaje en una posicion concreta, la posicion tiene que ajustar la variable Y del
+           Define la posicion que tomara el personaje, la posicion tiene que ajustar la variable Y del
            Vector3 a 0.5 para que el GameObject no se vea enterrado en el plano
         */
         private Vector3 NewPosition(Vector3 position)
@@ -77,11 +77,13 @@ namespace MemoryPrototype.Character
 
                     currentLerpTime = 0;
 
-                    while (transform.localPosition.x != nextPosition.x || transform.localPosition.z != nextPosition.z)
+                    //while (transform.localPosition.x != nextPosition.x || transform.localPosition.z != nextPosition.z)
+                    while(Vector3.Distance(nextPosition,transform.position) > Vector3.kEpsilon)
                     {
                         MoveToNextPosition();
                         yield return null;
                     }
+
                     MarkPlate(placaPosition);
                     PrintMessage(" MoveCharacter() - Chara ha llegado al destino " + nextPosition);
                     SetFirstPosition(nextPosition);

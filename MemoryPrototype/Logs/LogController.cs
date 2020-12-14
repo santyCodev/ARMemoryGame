@@ -26,9 +26,14 @@ namespace MemoryPrototype.Logs
                 el atributo logsActive desde el editor
          */
         public void PrintInConsole(string message)
-        {            
-            if (LogsActive) {
+        {
+            StartCoroutine(printLog(message));
+        }
 
+        private IEnumerator printLog(string message)
+        {
+            if (LogsActive)
+            {
                 //Write some text to the test.txt file
                 StreamWriter writer = new StreamWriter(path, true);
                 writer.WriteLine(message);
@@ -38,8 +43,9 @@ namespace MemoryPrototype.Logs
                 UnityEditor.AssetDatabase.ImportAsset(path);
                 TextAsset asset = (TextAsset)Resources.Load("test");
 
-                Debug.Log(message); 
+                //Debug.Log(message); 
             }
+            yield return null;
         }
     }
 }
