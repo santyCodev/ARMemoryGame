@@ -12,7 +12,7 @@ namespace MemoryPrototype.Character
         private List<GameObject> positionsToWalk;                   //Coleccion de posiciones a recorrer
         private Vector3 nextPosition;                               //Siguiente posicion
         private float currentLerpTime;                              //Tiempo actual de interpolacion lineal
-        private const float MOVE_LERP_TIME = 1;                     //Tiempo total de la interpolacion lineal
+        private const float LERP_SPEED_CONST = 1;                   //Constante de velocidad de la interpolacion lineal
         private const string CLASS_NAME = "CHARACTER CONTROLLER";
         
         public delegate void FinishAction();                        //Delegado para el evento
@@ -75,10 +75,7 @@ namespace MemoryPrototype.Character
                     nextPosition = NewPosition(placaPosition.transform.position);
                     LookAtNextPosition(nextPosition);
 
-                    currentLerpTime = 0;
-
-                    //while (transform.localPosition.x != nextPosition.x || transform.localPosition.z != nextPosition.z)
-                    while(Vector3.Distance(nextPosition,transform.position) > Vector3.kEpsilon)
+                    while (Vector3.Distance(nextPosition, transform.position) > Vector3.kEpsilon)
                     {
                         MoveToNextPosition();
                         yield return null;
@@ -97,18 +94,18 @@ namespace MemoryPrototype.Character
 
         /*
             Calculo de la interpolacion lineal entre la posicion actual del personaje y la posicion destino.
-            - El tiempo actual de recorrido se compara con el tiempo total, 
-                si este llega a sobrepasarlo, se iguala al total
-            - El tiempo de interpolacion es la operacion entre (currentLerpTime / MOVE_LERP_TIME), 
-                cuando el resultado sea 1 habra terminado el recorrido
+            - Se calcula la distancia entre la posicion actual y la de destino
+            - En funcion de esa distancia con la formula (1/distance+LERP_SPEED_CONST) el character se movera
+                al destino con una velocidad constante
+            - la constante LERP_SPEED_CONST, asigna una velocidad de movimiento, cuanto mas pequeña es la constante
+                mas rapida sera la velocidad de movimiento
         */
         private void MoveToNextPosition()
-        {
-            currentLerpTime += Time.deltaTime;
-            if (currentLerpTime >= MOVE_LERP_TIME) { currentLerpTime = MOVE_LERP_TIME; }
+        {            
             PrintMessage(" MoveToNextPosition() - Moviendo chara a " + nextPosition);
-            transform.localPosition = Vector3.Lerp(transform.position, nextPosition, (currentLerpTime / MOVE_LERP_TIME));
-        }
+            float distance = Vector3.Distance(nextPosition, transform.position);
+            transform.localPosition = Vector3.Lerp(transform.position, nextPosition, (1/(distance+LERP_SPEED_CONST)));            
+        }   
 
         /*
             Hace que el personaje mire hacia una posicicion concreta
