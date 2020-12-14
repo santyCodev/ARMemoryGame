@@ -93,6 +93,22 @@ namespace MemoryPrototype.Game.States
             dataController.UpLevel();
             PlacasRandomInitialization();
             PrintMessage(" Prueba subida nivel 3 - DONE");
+
+            Thread.Sleep(2000);
+
+            PrintMessage(" Prueba subida nivel 2 - START");
+            placasController.NumPlacasRandom--;
+            dataController.DownLevel();
+            PlacasRandomInitialization();
+            PrintMessage(" Prueba subida nivel 2 - DONE");
+
+            Thread.Sleep(2000);
+
+            PrintMessage(" Prueba subida nivel 1 - START");
+            placasController.NumPlacasRandom--;
+            dataController.DownLevel();
+            PlacasRandomInitialization();
+            PrintMessage(" Prueba subida nivel 1 - DONE");
         }
 
         /*
@@ -104,16 +120,20 @@ namespace MemoryPrototype.Game.States
          */
         private void PlacasRandomInitialization()
         {
-            if (dataController.GetActualLevel() > 1) 
-            {                
-                placasController.InitializePlacasRandom();
-            }
-            else if (dataController.GetActualLevel() == 1 && dataController.GetBeforeLevel() > 1)
-            {
-                placasController.InitializePlacasRandom();
-            }
+            if (ActualLvlMajOne() || ActualLvlOneOrBeforeLvlMajOne()) { placasController.InitializePlacasRandom(); }
             PrintMessage(" PlacasRandomInitialization() - NivelActual = "+ dataController.GetActualLevel());
         }
+
+        /*
+            Devuelve true si el nivel actual es mayor que 1
+         */
+        private bool ActualLvlMajOne() { return dataController.GetActualLevel() > 1;  }
+
+        /*
+            Devuelve true si el nivel actual es 1 y ademas el nivel anterior era mayor que 1
+         */
+        private bool ActualLvlOneOrBeforeLvlMajOne() 
+        { return dataController.GetActualLevel() == 1 && dataController.GetBeforeLevel() > 1; }
 
         /*
             Inicializacion del personaje
