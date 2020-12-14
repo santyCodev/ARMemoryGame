@@ -1,6 +1,7 @@
 ﻿using MemoryPrototype.Data;
 using MemoryPrototype.Placas;
 using System.Collections;
+using System.Threading;
 using UnityEngine;
 using CharacterController = MemoryPrototype.Character.CharacterController;
 
@@ -73,10 +74,25 @@ namespace MemoryPrototype.Game.States
 
         private void Pruebas()
         {
-            PrintMessage(" Prueba si es nivel 1 - START");
-            //Comprobar si es nivel 1
+            PrintMessage(" Prueba si es nivel 1 - START");            
             PlacasRandomInitialization();
             PrintMessage(" Prueba si es nivel 1 - DONE");
+
+            Thread.Sleep(2000);
+
+            PrintMessage(" Prueba subida nivel 2 - START");
+            placasController.NumPlacasRandom++;
+            dataController.UpLevel();
+            PlacasRandomInitialization();
+            PrintMessage(" Prueba subida nivel 2 - DONE");
+
+            Thread.Sleep(2000);
+
+            PrintMessage(" Prueba subida nivel 3 - START");
+            placasController.NumPlacasRandom++;
+            dataController.UpLevel();
+            PlacasRandomInitialization();
+            PrintMessage(" Prueba subida nivel 3 - DONE");
         }
 
         /*
@@ -89,8 +105,7 @@ namespace MemoryPrototype.Game.States
         private void PlacasRandomInitialization()
         {
             if (dataController.GetActualLevel() > 1) 
-            {
-                placasController.SetNumPlacasRandom(placasController.NumPlacasRandom++);
+            {                
                 placasController.InitializePlacasRandom();
             }
             else if (dataController.GetActualLevel() == 1 && dataController.GetBeforeLevel() > 1)

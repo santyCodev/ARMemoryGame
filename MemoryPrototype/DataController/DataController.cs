@@ -1,4 +1,5 @@
 ﻿using MemoryPrototype.Logs;
+using MemoryPrototype.Placas;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,7 @@ namespace MemoryPrototype.Data
         
         [SerializeField] private LogController logController;                                       //Controlador de logs
         public LogController LogController { get { return logController; } }                        //Controlador de Log
+        
         private LevelManager levelManager;                                                          //Level manager
 
         /*
