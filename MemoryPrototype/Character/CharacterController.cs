@@ -12,7 +12,7 @@ namespace MemoryPrototype.Character
         private List<GameObject> positionsToWalk;                   //Coleccion de posiciones a recorrer
         private Vector3 nextPosition;                               //Siguiente posicion
         private float currentLerpTime;                              //Tiempo actual de interpolacion lineal
-        private const float LERP_SPEED_CONST = 1;                   //Constante de velocidad de la interpolacion lineal
+        private const float LERP_SPEED_CONST = 1.2f;                   //Constante de velocidad de la interpolacion lineal
         private const string CLASS_NAME = "CHARACTER CONTROLLER";
         
         public delegate void FinishAction();                        //Delegado para el evento

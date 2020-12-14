@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using MemoryPrototype.Logs;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,45 +7,59 @@ namespace MemoryPrototype.Player
 {
     public class PlayerController : MonoBehaviour
     {
+        [SerializeField] private LogController logController;       //Controlador de logs
+
+        private const string CLASS_NAME = "PLAYER CONTROLLER";      //Constante con el nombre de la clase
         public bool StartExecute { get; set; }                      //Indica que el player comienza a jugar
         public delegate void PlacaSelected(GameObject placa);       //Delegado para el evento
         public static event PlacaSelected OnPlacaClicked;           //Evento para avisar que el player ha hecho click en una placa
 
+        #region Inicializacion
+        /*
+            Al tener StartExecute a false, indicamos al jugador
+                que aun no puede jugar.
+         */
+        void awake() { StartExecute = false; }
+        #endregion
 
-        // Start is called before the first frame update
-        void awake()
-        {
-            StartExecute = false;
-        }
+        #region Espera a jugar
+        /*
+            Aqui el jugador espera hasta que el GameMovementState
+                le de paso para jugar, asi ya tiene todo listo
+         */
+        void Update() { if (StartExecute) { LetPlayerClick(); } }
+        #endregion
 
-        // Update is called once per frame
-        void Update()
-        {
-            if (StartExecute) { LetPlayerClick(); }
-        }
-
+        #region funcionalidad raycasting
+        /*
+            Funcion que se llama en el turno del jugador
+            - Se llama a una funcion dependiendo del sistema
+                escritorio o android
+            - La funcion llamada dejara que el jugador eliga
+                una placa haciendo click (desktop) o con el touch
+                (android)
+         */
         private void LetPlayerClick()
         {
             #if UNITY_EDITOR
-                 //This is for Unity Testing
-                 ClickPointRaycastUnity();
+                PrintMessage(" LetPlayerClick() - Jugando en escritorio");  
+                //This is for Unity Testing
+                ClickPointRaycastUnity();
 
             #elif UNITY_ANDROID
-                 //This is for Android Devices
-                 ClickPointRaycastAndroid();
+                PrintMessage(" LetPlayerClick() - Jugando en android"); 
+                //This is for Android Devices
+                ClickPointRaycastAndroid();
             
             #endif
         }
 
         /**
-        - Recoge boton izquierdo del raton presionado
-        - Crea el rayo desde la posicion del raton
-        - Evalua si el rayo a colisionado con algun objeto en la variable hit
-        - Si es asi, activa el label y escribe el nombre del objeto en el hit
+            - Recoge boton izquierdo del raton presionado
+            - Recoge el rayo desde la posicion del raton            - 
         */
         private void ClickPointRaycastUnity()
         {
-
             if (Input.GetMouseButtonDown(0))
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -53,11 +68,9 @@ namespace MemoryPrototype.Player
         }
 
         /**
-        - Recoge el objeto touch del dedo en la pantalla
-        - Crea el rayo desde la posicion del dedo
-        - Evalua si el rayo a colisionado con algun objeto en la variable hit
-        - Si es asi, activa el label y escribe el nombre del objeto en el hit
-    */
+            - Recoge el objeto touch del dedo en la pantalla
+            - Crea el rayo desde la posicion del dedo
+        */
         private void ClickPointRaycastAndroid()
         {
 
@@ -71,20 +84,31 @@ namespace MemoryPrototype.Player
 
         /**
             Evalua si el rayo a colisionado con algun objeto en la variable hit
-            
+                - Al colisionar con una placa, llama al evento OnPlacaClicked, enviandole
+                    la placa al GameMovementState para comprobar si es correcto
         */
         private void GetPlacaForRaycastHit(Ray ray)
         {            
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))            {
-
-                OnPlacaClicked(hit.transform.gameObject);
-            }
-            else
+            PrintMessage(" GetPlacaForRaycastHit() - ENTER");            
+            if (Physics.Raycast(ray, out hit)) 
             {
-                Debug.Log("Raycast no colisionado");
+                OnPlacaClicked(hit.transform.gameObject);
+                PrintMessage(" GetPlacaForRaycastHit() - Placa seleccionada: " + hit.transform.position);
             }
+            else { PrintMessage(" - Raycast no colisionado"); }
+            PrintMessage(" GetPlacaForRaycastHit() - DONE");
         }
+        #endregion
+
+        #region Gestion de Logs
+        /*
+            Usa el controlador de logs para imprimir un mensaje en consola
+         */
+        private void PrintMessage(string message)
+        {
+            logController.PrintInConsole(CLASS_NAME + message);
+        }
+        #endregion
     }
 }
-

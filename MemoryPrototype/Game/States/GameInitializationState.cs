@@ -67,52 +67,55 @@ namespace MemoryPrototype.Game.States
         public override void OnExecution()
         {
             PrintMessage(" - EXECUTION");
-            Pruebas();
-            //PlacasRandomInitialization();
-            //CharacterInitialization();
+            PlacasRandomInitialization();
+            CharacterInitialization();
         }
 
         private void Pruebas()
         {
-            PrintMessage(" Prueba si es nivel 1 - START");            
-            PlacasRandomInitialization();
-            CharacterInitialization();
-            PrintMessage(" Prueba si es nivel 1 - DONE");
-
-            /*Thread.Sleep(2000);
-
-            PrintMessage(" Prueba subida nivel 2 - START");
+             PrintMessage(" Prueba si es nivel 1 - START");
+            placasController.NumPlacasRandom++;
+            dataController.UpLevel();
             placasController.NumPlacasRandom++;
             dataController.UpLevel();
             PlacasRandomInitialization();
-            PrintMessage(" Prueba subida nivel 2 - DONE");
+             CharacterInitialization();
+             PrintMessage(" Prueba si es nivel 1 - DONE");
 
-            Thread.Sleep(2000);
+             /*Thread.Sleep(2000);
 
-            PrintMessage(" Prueba subida nivel 3 - START");
-            placasController.NumPlacasRandom++;
-            dataController.UpLevel();
-            PlacasRandomInitialization();
-            CharacterInitialization();
-            PrintMessage(" Prueba subida nivel 3 - DONE");
+             PrintMessage(" Prueba subida nivel 2 - START");
+             placasController.NumPlacasRandom++;
+             dataController.UpLevel();
+             PlacasRandomInitialization();
+             PrintMessage(" Prueba subida nivel 2 - DONE");
 
-            Thread.Sleep(2000);
+             Thread.Sleep(2000);
 
-            PrintMessage(" Prueba subida nivel 2 - START");
-            placasController.NumPlacasRandom--;
-            dataController.DownLevel();
-            PlacasRandomInitialization();
-            CharacterInitialization();
-            PrintMessage(" Prueba subida nivel 2 - DONE");
+             PrintMessage(" Prueba subida nivel 3 - START");
+             placasController.NumPlacasRandom++;
+             dataController.UpLevel();
+             PlacasRandomInitialization();
+             CharacterInitialization();
+             PrintMessage(" Prueba subida nivel 3 - DONE");
 
-            Thread.Sleep(2000);
+             Thread.Sleep(2000);
 
-            PrintMessage(" Prueba subida nivel 1 - START");
-            placasController.NumPlacasRandom--;
-            dataController.DownLevel();
-            PlacasRandomInitialization();
-            CharacterInitialization();
-            PrintMessage(" Prueba subida nivel 1 - DONE");*/
+             PrintMessage(" Prueba subida nivel 2 - START");
+             placasController.NumPlacasRandom--;
+             dataController.DownLevel();
+             PlacasRandomInitialization();
+             CharacterInitialization();
+             PrintMessage(" Prueba subida nivel 2 - DONE");
+
+             Thread.Sleep(2000);
+
+             PrintMessage(" Prueba subida nivel 1 - START");
+             placasController.NumPlacasRandom--;
+             dataController.DownLevel();
+             PlacasRandomInitialization();
+             CharacterInitialization();
+             PrintMessage(" Prueba subida nivel 1 - DONE");*/
         }
 
         /*

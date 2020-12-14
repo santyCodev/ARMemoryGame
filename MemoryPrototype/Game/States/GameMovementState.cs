@@ -94,7 +94,7 @@ namespace MemoryPrototype.Game.States
             PrintMessage(" - EXIT");
             CharacterController.OnCharacterFinish -= CharacterHasEnd;
             characterController.SetActiveCharacter(false);
-            //base.OnExit(new GamePlayerState(gameControllerContext));
+            base.OnExit(new GamePlayerState(gameControllerContext));
         }
 
         #endregion

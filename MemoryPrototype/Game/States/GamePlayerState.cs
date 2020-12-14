@@ -13,9 +13,11 @@ namespace MemoryPrototype.Game.States
 
         private PlayerController playerController;                          //Controlador del jugador
         private PlacasController placasController;                          //Controlador de placas
-        private List<GameObject> placasRandom;                                  //Las placas random
+        private List<GameObject> placasRandom;                              //Las placas random
         private GameObject placaActual;                                     //La placa actual a comparar
-        private int numPlacaActual;                                         //Indice de conteo de placas
+        private int numPlaca;                                         //Indice de conteo de placas
+
+        #region Inicializacion de estado
         /*
             Constructor
                 - Recoge desde el gameController, el controlador de placas y del player
@@ -30,9 +32,7 @@ namespace MemoryPrototype.Game.States
             PlayerController.OnPlacaClicked += ComparePlacas;           
             OnEnter();
         }
-
-        #region State Functions
-
+        
         /*
             Imprime que esta en esta funcion
             - Recoge la lista de placas random
@@ -42,68 +42,67 @@ namespace MemoryPrototype.Game.States
          */
         private new void OnEnter()
         {
-            logController.PrintInConsole(STATE_NAME + " - ENTER");
+            PrintMessage(" - ENTER");
             placasRandom = placasController.placasRandom;
-            numPlacaActual = placasRandom.Count - 1;
-            placaActual = placasRandom[numPlacaActual];
+            numPlaca = placasRandom.Count - 1;
+            placaActual = placasRandom[numPlaca];
+            PrintMessage(" OnEnter() - Ultima placa: "+ numPlaca +" - "+placaActual.transform.position);
+            PrintMessage(" OnEnter() - DONE");
             base.OnEnter();
         }
+        #endregion
 
+        #region Ejecucion del estado
         /*
             Avisa al gameController que empieza la ejecucion
             Llama a la funcion OnExecution()
-            Despues espera un frame y llama a OnExit()
+            Despues espera un frame
          */
         public override IEnumerator StartState()
         {
             IsInitialized = false;
             OnExecution();
             yield return null;
-            //OnExit();
         }
 
         /*
             Funcion de ejecucion del estado
             - Indica que esta en esta funcion
-            - Da paso al jugador para que pueda hacer clickhol
+            - Da paso al jugador para que pueda hacer click en las placas
          */
         public override void OnExecution()
         {
-            logController.PrintInConsole(STATE_NAME + " - EXECUTION");
+            PrintMessage(" - EXECUTION");
             playerController.StartExecute = true;
         }
-
-        /*
-            Indica que esta en esta funcion
-            - 
-            - Desasigna la funcion ComparePlacas del evento OnPlacaClicked
-            - Llama al OnExit() del padre para cambiar de estado
-            
-         */
-        private void OnExit()
-        {
-            logController.PrintInConsole(STATE_NAME + " - EXIT");
-            PlayerController.OnPlacaClicked -= ComparePlacas;
-            base.OnExit(new GameInitializationState(gameControllerContext));
-        }
-
         #endregion
 
-        
-
+        #region Funcionalidad de comparacion de placas (evento)
+        /*
+            Evento llamado cuando el jugador ha terminado de elegir una placa
+            - Se comprueba si la placa elegida es la correcta en orden inverso
+                a la recorrida por el character
+         */
         private void ComparePlacas(GameObject placaSelected)
         {
             //Si es la ultima placa
-            if (numPlacaActual == placasRandom.Count - 1) { CheckPlacas(true, placaSelected); }
+            if (numPlaca == placasRandom.Count - 1) { CheckPlacas(true, placaSelected); }
             //Si la placa es menor a la ultima y mayor que la primera
-            else if (numPlacaActual < placasRandom.Count - 1 && numPlacaActual > 0){ CheckPlacas(true, placaSelected); }
+            else if (numPlaca < placasRandom.Count - 1 && numPlaca > 0) { CheckPlacas(true, placaSelected); }
             //Si es la primera placa
-            else if (numPlacaActual == 0){ CheckPlacas(false, placaSelected); }            
+            else if (numPlaca == 0) { CheckPlacas(false, placaSelected); }
         }
 
+        /*
+            Funcion que compara la placa seleccionada con la placa correspondiente
+                en la posicion del array
+                - Las placas se comparan en orden inverso de la lista
+                - needPlacaSiguiente se usa cuando en el momento de comparar una placa,
+                    sabemos si existe otra placa a comparar despues.
+         */
         private void CheckPlacas(bool needPlacaSiguiente, GameObject placaSelected)
         {
-            if (placasRandom[numPlacaActual].Equals(placaSelected))
+            if (placasRandom[numPlaca].Equals(placaSelected))
             {
                 if (logController.enabled) { PrintPlacaInfo("si", placaSelected); }
                 if (needPlacaSiguiente) { placaSiguiente(); }
@@ -113,34 +112,63 @@ namespace MemoryPrototype.Game.States
             {
                 if (logController.enabled) { PrintPlacaInfo("no", placaSelected); }
                 //gameControllerContext.NumRonda = 0;
-                OnExit();
+                //OnExit();
             }
         }
 
+        /*
+            Avanza a la siguiente placa a comparar, como es en orden inverso 
+                elegimos el indice de la placa desde la ultima de la lista
+                - Con el indice elegido elegimos la placa de esa posicion
+         */
         private void placaSiguiente()
         {
-            if(numPlacaActual > 0)
+            if (numPlaca > 0)
             {
-                numPlacaActual--;
-                placaActual = placasRandom[numPlacaActual];
-            }            
+                numPlaca--;
+                placaActual = placasRandom[numPlaca];
+            }
         }
 
         private void nextTurn()
         {
             //gameControllerContext.NumRonda++;
-            OnExit();
+            //OnExit();
         }
+        #endregion
 
-        
+        #region Finalizacion del estado
+        /*
+            Indica que esta en esta funcion
+            - 
+            - Desasigna la funcion ComparePlacas del evento OnPlacaClicked
+            - Llama al OnExit() del padre para cambiar de estado
+            
+         */
+        private void OnExit()
+        {
+            PrintMessage(" - EXIT");
+            PlayerController.OnPlacaClicked -= ComparePlacas;
+            //base.OnExit(new GameInitializationState(gameControllerContext));
+        }
+        #endregion
+
+        #region Gestion de Logs
         private void PrintPlacaInfo(string yesno, GameObject placaSelected)
         {
-            logController.PrintInConsole(STATE_NAME + "ComparePlacas() - Esa "+ yesno + "es la placa " + numPlacaActual);
-            logController.PrintInConsole(STATE_NAME + "ComparePlacas() - Placa random actual " + placasRandom[numPlacaActual].name);
-            logController.PrintInConsole(STATE_NAME + "ComparePlacas() - Placa seleccionada " + placaSelected.name);
+            PrintMessage(" ComparePlacas() - Esa "+ yesno + "es la placa " + numPlaca);
+            PrintMessage(" ComparePlacas() - Placa random actual " + placasRandom[numPlaca].name);
+            PrintMessage(" ComparePlacas() - Placa seleccionada " + placaSelected.name);
         }
-
         
+        /*
+            Usa el controlador de logs para imprimir un mensaje en consola
+         */
+        private void PrintMessage(string message)
+        {
+            logController.PrintInConsole(STATE_NAME + message);
+        }
+        #endregion
     }
 }
 
