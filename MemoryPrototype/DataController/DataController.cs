@@ -29,7 +29,17 @@ namespace MemoryPrototype.Data
                 
         public void UpLevel() { levelManager.UpLevel(); }
 
-        public void DownLevel() { levelManager.DownLevel(); }       
-        
+        public void DownLevel() { levelManager.DownLevel(); }
+
+        public void UpAcierto() { levelManager.UpAcierto(); }
+
+        public void UpRonda() { levelManager.UpRonda(); }
+
+        public void UpFallo() { levelManager.UpFallo(); }
+
+        public bool IsMaxAciertos(int numPlacas) { return levelManager.IsMaxAciertos(numPlacas); }
+
+        public bool IsMaxRondas() { return levelManager.IsMaxRondas(); }
+
+        public bool IsMaxFallos() { return levelManager.IsMaxFallos(); }
     }
-}

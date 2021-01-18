@@ -127,8 +127,8 @@ namespace MemoryPrototype.Game.States
          */
         private void PlacasRandomInitialization()
         {
+            PrintMessage(" PlacasRandomInitialization() - NivelActual = " + dataController.GetActualLevel());
             if (ActualLvlMajOne() || ActualLvlOneAndBeforeLvlMajOne()) { placasController.InitializePlacasRandom(); }
-            PrintMessage(" PlacasRandomInitialization() - NivelActual = "+ dataController.GetActualLevel());
         }
 
         /*

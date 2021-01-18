@@ -7,6 +7,7 @@ public class PlacaControl : MonoBehaviour
     public Color ActualColor { get; set; }
     private Material material;
     private Color32 newColor;
+    private Color32 failColor;
 
     /*
         Recibe el material desde el componente Renderer
@@ -15,6 +16,7 @@ public class PlacaControl : MonoBehaviour
     {
         material = GetComponent<Renderer>().material;
         newColor = new Color32(0, 104, 111, 255);
+        failColor = new Color32(255,95,0,255);
     }
 
     /*
@@ -23,6 +25,12 @@ public class PlacaControl : MonoBehaviour
     public void ChangeMaterialColor() {
         ActualColor = material.color;
         material.SetColor("_Color", newColor);
+    }
+
+    public void ChangeMaterialFailColor()
+    {
+        ActualColor = material.color;
+        material.SetColor("_Color", failColor);
     }
 
     /*

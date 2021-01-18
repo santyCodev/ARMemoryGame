@@ -19,7 +19,7 @@ namespace MemoryPrototype.Player
             Al tener StartExecute a false, indicamos al jugador
                 que aun no puede jugar.
          */
-        void awake() { StartExecute = false; }
+        void Awake() { StartExecute = false; }
         #endregion
 
         #region Espera a jugar

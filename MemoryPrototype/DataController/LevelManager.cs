@@ -43,7 +43,7 @@ namespace MemoryPrototype.Data
         public void UpAcierto() 
         {
             NumAciertos++;
-            PrintData("El jugador ha acertado: ");
+            PrintData(" El jugador ha acertado: ("+ActualLevel+","+NumRonda+","+NumAciertos+","+NumFallos+")");
         }
 
         /*
@@ -54,7 +54,7 @@ namespace MemoryPrototype.Data
         {
             NumFallos++;
             NumAciertos = 0;
-            PrintData("El jugador ha fallado: ");
+            PrintData(" El jugador ha fallado: (" + ActualLevel + "," + NumRonda + "," + NumAciertos + "," + NumFallos + ")");
         }
 
         /*
@@ -65,7 +65,7 @@ namespace MemoryPrototype.Data
         {
             NumRonda++;
             NumAciertos = 0;
-            PrintData("Subida de ronda: ");
+            PrintData(" Subida de ronda: (" + ActualLevel + "," + NumRonda + "," + NumAciertos + "," + NumFallos + ")");
         }
 
         /*
@@ -120,7 +120,7 @@ namespace MemoryPrototype.Data
          */
         public bool IsMaxAciertos(int maxAciertos)
         {
-            PrintMessage(" Check if max aciertos: " + (NumAciertos == maxAciertos));
+            PrintMessage(" IsMaxAciertos("+ maxAciertos + ") Check if max aciertos: " + (NumAciertos == maxAciertos));
             return NumAciertos == maxAciertos;
         }
 
