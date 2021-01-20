@@ -9,10 +9,10 @@ namespace MemoryPrototype.Data
     public class DataController : MonoBehaviour
     {
         private const string CLASS_NAME = "DATA CONTROLLER";                                        //Constante con el nombre de la clase
-        
+
         [SerializeField] private LogController logController;                                       //Controlador de logs
         public LogController LogController { get { return logController; } }                        //Controlador de Log
-        
+
         private LevelManager levelManager;                                                          //Level manager
 
         /*
@@ -25,8 +25,8 @@ namespace MemoryPrototype.Data
 
         public int GetActualLevel() { return levelManager.ActualLevel; }
 
-        public int GetBeforeLevel() { return levelManager.BeforeLevel;  }
-                
+        public int GetBeforeLevel() { return levelManager.BeforeLevel; }
+
         public void UpLevel() { levelManager.UpLevel(); }
 
         public void DownLevel() { levelManager.DownLevel(); }
@@ -43,3 +43,4 @@ namespace MemoryPrototype.Data
 
         public bool IsMaxFallos() { return levelManager.IsMaxFallos(); }
     }
+}

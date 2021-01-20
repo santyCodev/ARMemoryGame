@@ -41,13 +41,11 @@ namespace MemoryPrototype.Player
          */
         private void LetPlayerClick()
         {
-            #if UNITY_EDITOR
-                PrintMessage(" LetPlayerClick() - Jugando en escritorio");  
+            #if UNITY_EDITOR                  
                 //This is for Unity Testing
                 ClickPointRaycastUnity();
 
-            #elif UNITY_ANDROID
-                PrintMessage(" LetPlayerClick() - Jugando en android"); 
+            #elif UNITY_ANDROID 
                 //This is for Android Devices
                 ClickPointRaycastAndroid();
             
@@ -93,8 +91,8 @@ namespace MemoryPrototype.Player
             PrintMessage(" GetPlacaForRaycastHit() - ENTER");            
             if (Physics.Raycast(ray, out hit)) 
             {
-                OnPlacaClicked(hit.transform.gameObject);
                 PrintMessage(" GetPlacaForRaycastHit() - Placa seleccionada: " + hit.transform.position);
+                OnPlacaClicked(hit.transform.gameObject);
             }
             else { PrintMessage(" - Raycast no colisionado"); }
             PrintMessage(" GetPlacaForRaycastHit() - DONE");

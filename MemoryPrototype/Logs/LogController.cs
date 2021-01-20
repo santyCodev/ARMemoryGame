@@ -27,23 +27,23 @@ namespace MemoryPrototype.Logs
          */
         public void PrintInConsole(string message)
         {
-            StartCoroutine(printLog(message));
+            StartCoroutine(PrintLog(message));
         }
 
-        private IEnumerator printLog(string message)
+        private IEnumerator PrintLog(string message)
         {
             if (LogsActive)
             {
-                //Write some text to the test.txt file
-                StreamWriter writer = new StreamWriter(path, true);
-                writer.WriteLine(message);
-                writer.Close();
+                ////Write some text to the test.txt file
+                //StreamWriter writer = new StreamWriter(path, true);
+                //writer.WriteLine(message);
+                //writer.Close();
 
-                //Re-import the file to update the reference in the editor
-                UnityEditor.AssetDatabase.ImportAsset(path);
-                TextAsset asset = (TextAsset)Resources.Load("test");
+                ////Re-import the file to update the reference in the editor
+                //UnityEditor.AssetDatabase.ImportAsset(path);
+                //TextAsset asset = (TextAsset)Resources.Load("test");
 
-                //Debug.Log(message); 
+                Debug.Log(message); 
             }
             yield return null;
         }

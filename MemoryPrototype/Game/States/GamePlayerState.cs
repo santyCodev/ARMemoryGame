@@ -29,6 +29,7 @@ namespace MemoryPrototype.Game.States
          */
         public GamePlayerState(GameController context) : base(context)
         {
+            dataController = gameControllerContext.DataController;
             placasController = gameControllerContext.PlacasController;
             playerController = gameControllerContext.PlayerController;
             PlayerController.OnPlacaClicked += CheckPlacas;           
@@ -48,7 +49,7 @@ namespace MemoryPrototype.Game.States
             placasRandom = placasController.placasRandom;
             numPlaca = placasRandom.Count - 1;
             placaActual = placasRandom[numPlaca];
-            PrintMessage(" OnEnter() - Ultima placa: "+ numPlaca +" - "+placaActual.transform.position);
+            PrintMessage(" OnEnter() - Se espera la placa: "+ placasRandom[numPlaca].name +" - "+placaActual.transform.position);
             PrintMessage(" OnEnter() - DONE");
             base.OnEnter();
         }
@@ -81,34 +82,20 @@ namespace MemoryPrototype.Game.States
 
         #region Funcionalidad de comparacion de placas (evento)
         /*
-            Evento llamado cuando el jugador ha terminado de elegir una placa (OnPlacaClicked)
-            - Se comprueba si la placa elegida es la correcta en orden inverso
-                a la recorrida por el character
-         */
-        //private void ComparePlacas(GameObject placaSelected)
-        //{
-        //    PrintMessage(" ComparePlacas() - INICIO");
-        //    //Si es la ultima placa
-        //    if (numPlaca == placasRandom.Count - 1) { CheckPlacas(placaSelected); }
-        //    //Si la placa es menor a la ultima y mayor que la primera
-        //    else if (numPlaca < placasRandom.Count - 1 && numPlaca > 0) { CheckPlacas(placaSelected); }
-        //    //Si es la primera placa
-        //    else if (numPlaca == 0) { CheckPlacas(placaSelected); }
-        //    PrintMessage(" ComparePlacas() - FIN");
-        //}
-
-        /*
             Funcion que compara la placa seleccionada con la placa correspondiente
                 en la posicion del array
                 - Las placas se comparan en orden inverso de la lista
                 - Si las placas comparadas son iguales = ACIERTO:
-                    - se comprueba maximos de acierto y ronda, y subida de nivel
-                        - Si la comprobacion es true, cambia de turno
-                    - en caso contrario, se espera la placa siguiente
+                    - Se marca de nuevo el color de la placa
+                    - Se sube el numero de aciertos
+                    - Se comprueba si se necesita una siguiente placa
+                        - Si necesita la siguiente placa, se espera la placa siguiente
+                        - Si no la necesita, comprueba si ha llegado al maximo de aciertos, y sale del turno                     
                 - Si las placas comparadas no son iguales = FALLO
-                    - se comprueba maximo de fallo y bajada de nivel
-                    - Se cambia de turno
-                    
+                    - Se marca el color de la placa a naranja
+                    - Se sube el contador de fallos
+                    - Se comprueba el maximo de fallos
+                    - sale del turno
          */
         private void CheckPlacas(GameObject placaSelected)
         {
@@ -117,14 +104,19 @@ namespace MemoryPrototype.Game.States
             {                
                 PrintMessage(" CheckPlacas() - La placa "+ placaSelected.name +" y la placa "+ placasRandom[numPlaca].name+"son iguales");
                 placasRandom[numPlaca].GetComponent<PlacaControl>().ChangeMaterialColor();
-                if (GestionAciertos()) { //OnExit();
-                }
-                else { placaSiguiente(); }
+                dataController.UpAcierto();
+                if(NeedPlacaSiguiente()){ SetPlacaSiguiente(); }
+                else 
+                { 
+                    GestionAciertos();
+                    //OnExit();
+                }              
             }
             else//fallo
             {
                 PrintMessage(" CheckPlacas() - La placa " + placaSelected.name + " y la placa " + placasRandom[numPlaca].name + "NO son iguales");
                 placasRandom[numPlaca].GetComponent<PlacaControl>().ChangeMaterialFailColor();
+                dataController.UpFallo();
                 GestionFallos();
                 //OnExit();
             }
@@ -136,53 +128,61 @@ namespace MemoryPrototype.Game.States
                 elegimos el indice de la placa desde la ultima de la lista
                 - Con el indice elegido elegimos la placa de esa posicion
          */
-        private void placaSiguiente()
+        private void SetPlacaSiguiente()
         {
-            PrintMessage(" placaSiguiente() - INICIO");
-            PrintMessage(" placaSiguiente() - Se necesita la placa siguiente del recorrido");
+            PrintMessage(" SetPlacaSiguiente() - INICIO");
+            PrintMessage(" SetPlacaSiguiente() - Placa actual = " + placaActual.name);
             if (numPlaca > 0)
             {
                 numPlaca--;
                 placaActual = placasRandom[numPlaca];
-                PrintMessage(" placaSiguiente() - Placa siguiente: " + placaActual.name);
+                PrintMessage(" SetPlacaSiguiente() - Placa siguiente: " + placaActual.name);
             }
-            PrintMessage(" placaSiguiente() - FIN");
+            PrintMessage(" SetPlacaSiguiente() - FIN");
         }
+
+        /*
+            Si es la ultima placa o es la placa inferior a la ultima pero superior a la primera
+                devuelve true
+            En caso contrario, si es la primera placa
+                devuevle false
+         */
+        private bool NeedPlacaSiguiente() { return (numPlaca == placasRandom.Count - 1) || (numPlaca < placasRandom.Count - 1 && numPlaca > 0); }
         #endregion
 
         #region Logica de aciertos, fallos, rondas y niveles
 
         /*
-            Se comprueba si se ha subido un acierto y si ha llegado al maximo:
-                - Si ha llegado al maximo de aciertos, comprueba si se ha subido de rondas
-                - Si ha llegado al maximo de rondas, se sube de nivel
+            Se comprueba si ha llegado al maximo de aciertos
+                - Si es correcto se sube el contador de rondas
+                - Se comprueba el maximo de rondas
+                    Si es correcto se sube de nivel
          */
-        private bool GestionAciertos()
+        private void GestionAciertos()
         {
-            bool result = false;
-
-            if (CheckAciertos())
+            PrintMessage(" GestionAciertos() - INICIO");
+            if (dataController.IsMaxAciertos(placasRandom.Count))
             {
                 PrintMessage(" GestionAciertos() - Se ha llegado al maximo de aciertos");
-                if (CheckRondas())
+                dataController.UpRonda();
+                if (dataController.IsMaxRondas())
                 {
                     PrintMessage(" GestionAciertos() - Se ha llegado al maximo de rondas");
                     dataController.UpLevel();
                 }
-                result = true;
-            }           
-
-            return result;
+            }
+            PrintMessage(" GestionAciertos() - FIN");
         }
 
         /*
-            Se comprueba si se ha subido un fallo y si ha llegado al maximo:
-                - Si ha llegado al maximo de fallos, comprueba si el nivel es mayor a 1
-                - Si el nivel actual es mayor que 1, se baja de nivel
+            Se comprueba si ha llegado al maximo de fallos
+                - Si es correcto se comprueba que el nivel actual sea mayor que 1
+                    - Si es correcto baja el nivel actual
          */
         private void GestionFallos()
         {
-            if (CheckFallos())
+            PrintMessage(" GestionFallos() - INICIO");
+            if (dataController.IsMaxFallos())
             {
                 PrintMessage(" GestionFallos() - Se ha llegado al maximo de fallos");
                 if (dataController.GetActualLevel() > 1)
@@ -191,38 +191,8 @@ namespace MemoryPrototype.Game.States
                     dataController.DownLevel();
                 }
             }
-        }
-
-        /*
-            Sube el contador de aciertos y comprueba si se ha llegado al maximo de aciertos
-            Para comprobar el maximo de aciertos: numero de placas == numero de aciertos
-         */
-        private bool CheckAciertos()
-        {
-            dataController.UpAcierto();
-            return dataController.IsMaxAciertos(placasRandom.Count);
-        }
-
-        /*
-            Sube el contador de rondas y comprueba si se ha llegado al maximo de rondas
-            Para comprobar el maximo de rondas: numero de rondas == MAX_RONDAS
-         */
-        private bool CheckRondas()
-        {
-            dataController.UpRonda();
-            return dataController.IsMaxRondas();
-        }
-
-        /*
-            Sube el contador de fallos y comprueba si se ha llegado al maximo de fallos
-            Para comprobar el maximo de fallos: numero de fallos == MAX_FALLOS
-         */
-        private bool CheckFallos()
-        {
-            dataController.UpFallo();
-            return dataController.IsMaxFallos();
-        }
-
+            PrintMessage(" GestionFallos() - FIN");
+        }        
         #endregion
 
         #region Finalizacion del estado
