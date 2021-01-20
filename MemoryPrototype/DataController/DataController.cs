@@ -27,6 +27,10 @@ namespace MemoryPrototype.Data
 
         public int GetBeforeLevel() { return levelManager.BeforeLevel; }
 
+        public int GetActualRonda() { return levelManager.NumRonda; }
+
+        public void ResetFallos() { levelManager.ResetFallos(); }
+
         public void UpLevel() { levelManager.UpLevel(); }
 
         public void DownLevel() { levelManager.DownLevel(); }

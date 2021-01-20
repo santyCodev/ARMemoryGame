@@ -109,7 +109,7 @@ namespace MemoryPrototype.Game.States
                 else 
                 { 
                     GestionAciertos();
-                    //OnExit();
+                    OnExit();
                 }              
             }
             else//fallo
@@ -118,7 +118,7 @@ namespace MemoryPrototype.Game.States
                 placasRandom[numPlaca].GetComponent<PlacaControl>().ChangeMaterialFailColor();
                 dataController.UpFallo();
                 GestionFallos();
-                //OnExit();
+                OnExit();
             }
             PrintMessage(" CheckPlacas() - FIN");
         }
@@ -160,16 +160,21 @@ namespace MemoryPrototype.Game.States
          */
         private void GestionAciertos()
         {
+            bool isUpLevel = false;
             PrintMessage(" GestionAciertos() - INICIO");
             if (dataController.IsMaxAciertos(placasRandom.Count))
             {
-                PrintMessage(" GestionAciertos() - Se ha llegado al maximo de aciertos");
-                dataController.UpRonda();
+                PrintMessage(" GestionAciertos() - Se ha llegado al maximo de aciertos");                
                 if (dataController.IsMaxRondas())
                 {
                     PrintMessage(" GestionAciertos() - Se ha llegado al maximo de rondas");
+                    placasController.NumPlacasRandom++;
                     dataController.UpLevel();
+                    isUpLevel = true;
                 }
+
+                if (!isUpLevel) { dataController.UpRonda(); }
+                
             }
             PrintMessage(" GestionAciertos() - FIN");
         }
@@ -188,7 +193,12 @@ namespace MemoryPrototype.Game.States
                 if (dataController.GetActualLevel() > 1)
                 {
                     PrintMessage(" GestionFallos() - Se va a bajar de nivel");
+                    placasController.NumPlacasRandom--;
                     dataController.DownLevel();
+                }
+                else if(dataController.GetActualLevel() == 1)
+                {
+                    dataController.ResetFallos();
                 }
             }
             PrintMessage(" GestionFallos() - FIN");
@@ -207,7 +217,8 @@ namespace MemoryPrototype.Game.States
         {
             PrintMessage(" - EXIT");
             PlayerController.OnPlacaClicked -= CheckPlacas;
-            //base.OnExit(new GameInitializationState(gameControllerContext));
+            placasController.SetOriginalMaterialColor();
+            base.OnExit(new GameInitializationState(gameControllerContext));
         }
         #endregion
 

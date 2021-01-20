@@ -13,7 +13,7 @@ namespace MemoryPrototype.Data
         private const int MAX_FALLOS = 3;                       //Numero maximo de fallos
         
         private LogController logController;                    //Controlador de logs
-        private int NumRonda { get; set; }                      //Numero de rondas en un nivel
+        public int NumRonda { get; set; }                      //Numero de rondas en un nivel
         public int ActualLevel { get; set; }                    //Nivel Actual del juego
         public int BeforeLevel { get; set; }                    //Nivel anterior del juego
         private int NumFallos { get; set; }                     //Numero de aciertos
@@ -99,6 +99,11 @@ namespace MemoryPrototype.Data
             NumFallos = 0;
             NumAciertos = 0;
             PrintData(message);
+        }
+
+        public void ResetFallos()
+        {
+            NumFallos = 0;
         }
 
         #endregion
