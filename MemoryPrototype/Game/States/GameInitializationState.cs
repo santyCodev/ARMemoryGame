@@ -13,7 +13,7 @@ namespace MemoryPrototype.Game.States
 
         private PlacasController placasController;                                  //Controlador de placas
         private CharacterController characterController;                            //Controlador de personaje
-        private DataController dataController;                            //Controlador de personaje
+        private DataController dataController;                                      //Controlador de personaje
 
         #region Inicializacion del estado
 
@@ -67,56 +67,11 @@ namespace MemoryPrototype.Game.States
         public override void OnExecution()
         {
             PrintMessage(" - EXECUTION");
-            PlacasRandomInitialization();
+            PrintMessage(" OnExecution() - NivelActual = " + dataController.GetActualLevel());
+            placasController.InitializePlacasRandom();
+            //PlacasRandomInitialization();
             CharacterInitialization();
-        }
-
-        private void Pruebas()
-        {
-             PrintMessage(" Prueba si es nivel 1 - START");
-            placasController.NumPlacasRandom++;
-            dataController.UpLevel();
-            placasController.NumPlacasRandom++;
-            dataController.UpLevel();
-            PlacasRandomInitialization();
-             CharacterInitialization();
-             PrintMessage(" Prueba si es nivel 1 - DONE");
-
-             /*Thread.Sleep(2000);
-
-             PrintMessage(" Prueba subida nivel 2 - START");
-             placasController.NumPlacasRandom++;
-             dataController.UpLevel();
-             PlacasRandomInitialization();
-             PrintMessage(" Prueba subida nivel 2 - DONE");
-
-             Thread.Sleep(2000);
-
-             PrintMessage(" Prueba subida nivel 3 - START");
-             placasController.NumPlacasRandom++;
-             dataController.UpLevel();
-             PlacasRandomInitialization();
-             CharacterInitialization();
-             PrintMessage(" Prueba subida nivel 3 - DONE");
-
-             Thread.Sleep(2000);
-
-             PrintMessage(" Prueba subida nivel 2 - START");
-             placasController.NumPlacasRandom--;
-             dataController.DownLevel();
-             PlacasRandomInitialization();
-             CharacterInitialization();
-             PrintMessage(" Prueba subida nivel 2 - DONE");
-
-             Thread.Sleep(2000);
-
-             PrintMessage(" Prueba subida nivel 1 - START");
-             placasController.NumPlacasRandom--;
-             dataController.DownLevel();
-             PlacasRandomInitialization();
-             CharacterInitialization();
-             PrintMessage(" Prueba subida nivel 1 - DONE");*/
-        }
+        }        
 
         /*
             Iniclaliza las placas random para el turno
@@ -134,7 +89,7 @@ namespace MemoryPrototype.Game.States
             }
         }
 
-        private bool ActualLvlOneAndActualRondaMajOne() { return (dataController.GetActualLevel() == 1) && (dataController.GetActualRonda() > 1); }
+        private bool ActualLvlOneAndActualRondaMajOne() { return (dataController.GetActualLevel() == 1); } //&& (dataController.GetActualRonda() > 1); }
         /*
             Devuelve true si el nivel actual es mayor que 1
          */

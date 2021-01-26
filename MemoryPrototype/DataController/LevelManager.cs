@@ -101,9 +101,10 @@ namespace MemoryPrototype.Data
             PrintData(message);
         }
 
-        public void ResetFallos()
+        public void ResetLevelOne()
         {
-            NumFallos = 0;
+            //BeforeLevel = ActualLevel;
+            SetLevel(" Reinicio level 1");
         }
 
         #endregion

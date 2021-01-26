@@ -29,7 +29,7 @@ namespace MemoryPrototype.Data
 
         public int GetActualRonda() { return levelManager.NumRonda; }
 
-        public void ResetFallos() { levelManager.ResetFallos(); }
+        public void ResetLevelOne() { levelManager.ResetLevelOne(); }
 
         public void UpLevel() { levelManager.UpLevel(); }
 

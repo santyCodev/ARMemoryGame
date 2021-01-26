@@ -35,7 +35,6 @@ namespace MemoryPrototype.Placas
             NumPlacasRandom = NUM_PLACAS_INITIAL;
             placas = GetPlacasFromParent();              
             SetDefaultTags();
-            InitializePlacasRandom();
             PrintMessage(" PlacasInitialization - Awake() - DONE");
         }
 

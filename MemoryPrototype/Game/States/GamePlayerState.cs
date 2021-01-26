@@ -198,7 +198,7 @@ namespace MemoryPrototype.Game.States
                 }
                 else if(dataController.GetActualLevel() == 1)
                 {
-                    dataController.ResetFallos();
+                    dataController.ResetLevelOne();
                 }
             }
             PrintMessage(" GestionFallos() - FIN");
