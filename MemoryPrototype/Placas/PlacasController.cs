@@ -17,7 +17,7 @@ namespace MemoryPrototype.Placas
         private Transform[] placas;                                 //Array que contendra a todas las placas
 
         public List<GameObject> placasRandom;                       //Array con las placas random elegidas
-        public int NumPlacasRandom { get;  set; }                   //Numero de las placas random
+        public int NumPlacasRandom { get;  set; }                   //Numero de las placas random        
 
         #region Inicializacion de placas
 

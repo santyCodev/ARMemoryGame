@@ -95,10 +95,9 @@ namespace MemoryPrototype.Character
         /*
             Calculo de la interpolacion lineal entre la posicion actual del personaje y la posicion destino.
             - Se calcula la distancia entre la posicion actual y la de destino
-            - En funcion de esa distancia con la formula (1/distance+LERP_SPEED_CONST) el character se movera
+            - En funcion de esa distancia con la formula (1/(distance+LERP_SPEED_CONST)) el character se movera
                 al destino con una velocidad constante
-            - la constante LERP_SPEED_CONST, asigna una velocidad de movimiento, cuanto mas pequeña es la constante
-                mas rapida sera la velocidad de movimiento
+            - Cuanto mas pequeña es la constante LERP_SPEED_CONST, mas rapida sera la velocidad de movimiento
         */
         private void MoveToNextPosition()
         {            
