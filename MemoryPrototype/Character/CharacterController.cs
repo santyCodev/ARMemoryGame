@@ -68,6 +68,8 @@ namespace MemoryPrototype.Character
         {
             MarkPlate(positionsToWalk[0]);
 
+            yield return new WaitForSeconds(0.3f);
+
             foreach (var placaPosition in positionsToWalk)
             {
                 if (!placaPosition.Equals(positionsToWalk[0]))
