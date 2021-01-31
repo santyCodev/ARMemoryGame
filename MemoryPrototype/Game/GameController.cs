@@ -24,6 +24,7 @@ namespace MemoryPrototype.Game
         [SerializeField] private CharacterController characterController;                           //Controlador de personaje      
         [SerializeField] private PlayerController playerController;                                 //Controlador del jugador
         [SerializeField] private DataController dataController;                                     //Controlador de datos
+        [SerializeField] private GUIController guiController;                                       //Controlador de GUI
 
         public IState CurrentState { get; set; }                                                    //Estado actual
         public LogController LogController { get { return logController; } }                        //Controlador de Log
