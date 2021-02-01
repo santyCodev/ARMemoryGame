@@ -11,8 +11,9 @@ namespace MemoryPrototype.Data
         private const string CLASS_NAME = "DATA CONTROLLER";                                        //Constante con el nombre de la clase
 
         [SerializeField] private LogController logController;                                       //Controlador de logs
+        [SerializeField] private GUIController guiController;                                       //Controlador de GUI
         public LogController LogController { get { return logController; } }                        //Controlador de Log
-
+        
         private LevelManager levelManager;                                                          //Level manager
 
         /*
@@ -21,6 +22,8 @@ namespace MemoryPrototype.Data
         private void Start()
         {
             levelManager = GetComponent<LevelManager>();
+            levelManager.logController = LogController;
+            guiController.ActualizarDatosLevel(levelManager.NumFallos, levelManager.NumAciertos, GetActualRonda(), GetActualLevel());
         }
 
         public int GetActualLevel() { return levelManager.ActualLevel; }
@@ -29,17 +32,41 @@ namespace MemoryPrototype.Data
 
         public int GetActualRonda() { return levelManager.NumRonda; }
 
-        public void ResetLevelOne() { levelManager.ResetLevelOne(); }
+        public void ResetLevelOne() 
+        { 
+            levelManager.ResetLevelOne();
+            guiController.ActualizarDatosLevel(levelManager.NumFallos, levelManager.NumAciertos, GetActualRonda(), GetActualLevel());
+        }
 
-        public void UpLevel() { levelManager.UpLevel(); }
+        public void UpLevel()
+        {
+            levelManager.UpLevel();
+            guiController.ActualizarDatosLevel(levelManager.NumFallos, levelManager.NumAciertos, GetActualRonda(), GetActualLevel() );
+        }
 
-        public void DownLevel() { levelManager.DownLevel(); }
+        public void DownLevel() 
+        { 
+            levelManager.DownLevel();
+            guiController.ActualizarDatosLevel(levelManager.NumFallos, levelManager.NumAciertos, GetActualRonda(), GetActualLevel());
+        }
 
-        public void UpAcierto() { levelManager.UpAcierto(); }
+        public void UpAcierto() 
+        { 
+            levelManager.UpAcierto();
+            guiController.ActualizarDatosLevel(levelManager.NumFallos, levelManager.NumAciertos, GetActualRonda(), GetActualLevel());
+        }
 
-        public void UpRonda() { levelManager.UpRonda(); }
+        public void UpRonda() 
+        { 
+            levelManager.UpRonda();
+            guiController.ActualizarDatosLevel(levelManager.NumFallos, levelManager.NumAciertos, GetActualRonda(), GetActualLevel());
+        }
 
-        public void UpFallo() { levelManager.UpFallo(); }
+        public void UpFallo() 
+        { 
+            levelManager.UpFallo();
+            guiController.ActualizarDatosLevel(levelManager.NumFallos, levelManager.NumAciertos, GetActualRonda(), GetActualLevel());
+        }
 
         public bool IsMaxAciertos(int numPlacas) { return levelManager.IsMaxAciertos(numPlacas); }
 

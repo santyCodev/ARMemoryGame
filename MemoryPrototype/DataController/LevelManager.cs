@@ -12,18 +12,17 @@ namespace MemoryPrototype.Data
         private const int MAX_RONDAS = 3;                       //Numero maximo de rondas
         private const int MAX_FALLOS = 3;                       //Numero maximo de fallos
         
-        private LogController logController;                    //Controlador de logs
+        public LogController logController;                    //Controlador de logs
         public int NumRonda { get; set; }                      //Numero de rondas en un nivel
         public int ActualLevel { get; set; }                    //Nivel Actual del juego
         public int BeforeLevel { get; set; }                    //Nivel anterior del juego
-        private int NumFallos { get; set; }                     //Numero de aciertos
-        private int NumAciertos { get; set; }                   //Numero de fallos
+        public int NumFallos { get; set; }                     //Numero de aciertos
+        public int NumAciertos { get; set; }                   //Numero de fallos
 
         #region Inicializacion de datos
 
-        private void Start()
-        {
-            logController = GetComponent<DataController>().LogController;
+        private void Awake()
+        {            
             InitializationData();
         }
 

@@ -32,31 +32,52 @@ namespace MemoryPrototype.Game
         public CharacterController CharacterController { get { return characterController; } }      //Controlador de Personaje
         public PlayerController PlayerController { get { return playerController; } }               //Controlador de Personaje            
         public DataController DataController { get { return dataController; } }                     //Controlador de datos            
+        public GUIController GuiController { get { return guiController; } }                        //Controlador de datos
 
-        /*
-            Asigna el primer estado del juego
-         */
+        #region Start, Update y cambio de estado
+        /* Activa la pantalla de titulo de la GUI */
         private void Start()
         {
-            CurrentState = new GameInitializationState(this);
-            LogController.PrintInConsole(CLASS_NAME+" Inicializando estado - " +CurrentState);
+            guiController.ActivatePageTitle();
         }
 
-        /*
-            Cuando el estado actual este inicializado, se ejecuta
-         */
+        /* Cuando el estado actual este inicializado, se ejecuta */
         void Update()
         {
-            if (CurrentState.Initialized()){ StartCoroutine(CurrentState.StartState()); }
+            if (CurrentState.Initialized()) { StartCoroutine(CurrentState.StartState()); }
         }
 
-        /*
-            Cambia de estado
-         */
+        /* Cambia de estado */
         public void ChangeState(IState state)
         {
             CurrentState = state;
         }
+        #endregion
+          
+        #region Evento para activar primer estado
+        /* Suscribe el evento de GUI CuentaAtrasEnd */
+        private void OnEnable()
+        {
+            GUIController.OnCuentaAtrasTerminada += CuentaAtrasEnd;
+        }
+
+        /* Da de baja al evento de GUI CuentaAtrasEnd */
+        private void OnDisable()
+        {
+            GUIController.OnCuentaAtrasTerminada -= CuentaAtrasEnd;
+        }
+
+        /* 
+         * Evento llamado cuando termina la cuenta atras
+         *  - Asigna el estado de inicializacion para comenzar el juego
+         */
+        public void CuentaAtrasEnd()
+        {
+            guiController.ActivateDatosLevel();
+            CurrentState = new GameInitializationState(this);
+            LogController.PrintInConsole(CLASS_NAME + " Inicializando estado - " + CurrentState);
+        }
+        #endregion
 
     } //END CLASS
 }
