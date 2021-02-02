@@ -11,6 +11,7 @@ using MemoryPrototype.Logs;
 using CharacterController = MemoryPrototype.Character.CharacterController;
 using MemoryPrototype.Player;
 using MemoryPrototype.Data;
+using MemoryPrototype.Gui;
 
 namespace MemoryPrototype.Game 
 {

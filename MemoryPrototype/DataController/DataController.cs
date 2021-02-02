@@ -1,4 +1,5 @@
-﻿using MemoryPrototype.Logs;
+﻿using MemoryPrototype.Gui;
+using MemoryPrototype.Logs;
 using MemoryPrototype.Placas;
 using System.Collections;
 using System.Collections.Generic;
