@@ -106,16 +106,22 @@ namespace MemoryPrototype.Game.States
                 PrintMessage(" CheckPlacas() - La placa "+ placaSelected.name +" y la placa "+ placasRandom[numPlaca].name+" SI son iguales");                
                 placasRandom[numPlaca].GetComponent<PlacaControl>().ChangeMaterialColor();
                 dataController.UpAcierto();
-                if(NeedPlacaSiguiente()){ SetPlacaSiguiente(); }
+                dataController.UpAciertosTotales();
+                if(NeedPlacaSiguiente())
+                { 
+                    SetPlacaSiguiente();
+                    playerController.StartExecute = true;
+                }
                 else { GestionAciertos(); }              
             }
             else//fallo
             {
                 PrintMessage(" CheckPlacas() - La placa " + placaSelected.name + " y la placa " + placasRandom[numPlaca].name + " NO son iguales");                
                 dataController.UpFallo();
+                dataController.UpFallosTotales();
                 placasRandom[numPlaca].GetComponent<PlacaControl>().FailAnimation();                 
             }
-            PrintMessage(" CheckPlacas() - FIN");
+            PrintMessage(" CheckPlacas() - FIN");            
         }
 
         /*
@@ -224,6 +230,7 @@ namespace MemoryPrototype.Game.States
         private void OnExit()
         {
             PrintMessage(" - EXIT");
+            playerController.StartExecute = false;
             PlayerController.OnPlacaClicked -= CheckPlacas;
             PlacaControl.OnPlacaAnimationFail -= CheckFallosAndEndTurn;
             PlacaControl.OnPlacaAnimationSuccess -= CheckRondasAndEndTurn;

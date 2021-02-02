@@ -7,25 +7,19 @@ public class GUIController : MonoBehaviour
 {
     private const string ACIERTOS = "Aciertos: ";
     private const string FALLOS = "Fallos: ";
-    private const string RONDA = "Ronda: ";
-    private const string NIVEL = "Nivel: ";
+    private const int CUENTA = 10;
 
     [SerializeField] private GameObject pageTitle;
     [SerializeField] private GameObject pageInstructions;
     [SerializeField] private GameObject datosLevel;
-    [SerializeField] private TextMeshProUGUI[] datosLevelList;
-
-    private TextMeshProUGUI fallosText;
-    private TextMeshProUGUI aciertosText;
-    private TextMeshProUGUI rondasText;
-    private TextMeshProUGUI nivelText;
-    
+       
     [SerializeField] private TextMeshProUGUI cuentaAtrasGOText;
     [SerializeField] private TextMeshProUGUI cuentaAtrasBarraText;
     [SerializeField] private TextMeshProUGUI aciertoText;
     [SerializeField] private TextMeshProUGUI falloText;
 
     private int cuentaAtrasGo;
+    private int cuentaAtras;
 
     public delegate void GoNextState();                             //Delegado para el evento
     public static event GoNextState OnCuentaAtrasTerminada;         //Evento para avisar que la cuenta atras ha terminado
@@ -33,12 +27,10 @@ public class GUIController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        fallosText = datosLevelList[0];
-        aciertosText = datosLevelList[1];
-        rondasText = datosLevelList[2];
-        nivelText = datosLevelList[3];
-
+        aciertoText.text = ACIERTOS;
+        falloText.text = FALLOS;
         cuentaAtrasGo = 3;
+        cuentaAtras = CUENTA;
     }
 
     #region Activacion y desactivacion de elementos GUI
@@ -47,16 +39,14 @@ public class GUIController : MonoBehaviour
     public void ActivatePageInstructions() { pageInstructions.SetActive(true); }
     public void DesactivatePageInstructions() { pageInstructions.SetActive(false); }
     public void ActivateDatosLevel() { datosLevel.SetActive(true); }
-    public void DesactivateDatosLevel() { datosLevel.SetActive(true); }
+    public void DesactivateDatosLevel() { datosLevel.SetActive(false); }
     #endregion
 
     #region Actualizar datos de nivel
-    public void ActualizarDatosLevel(int numFallos, int numAciertos, int numRondas, int numLevel)
-    {        
-        nivelText.text = NIVEL + numLevel.ToString();
-        rondasText.text = RONDA + numRondas.ToString();
-        aciertosText.text = ACIERTOS + numAciertos.ToString();
-        fallosText.text = FALLOS + numFallos.ToString();
+    public void ActualizarDatosLevel(int numFallos, int numAciertos)
+    {  
+        aciertoText.text = ACIERTOS + numAciertos.ToString();
+        falloText.text = FALLOS + numFallos.ToString();
     }
     #endregion
 
@@ -107,6 +97,26 @@ public class GUIController : MonoBehaviour
         yield return new WaitForSeconds(1);
         cuentaAtrasGOText.gameObject.SetActive(false);
         OnCuentaAtrasTerminada();
+    }
+
+    public void StartCuentaAtrasBarra()
+    {        
+        StartCoroutine(CuentaAtrasBarra());        
+    }
+    IEnumerator CuentaAtrasBarra()
+    {
+        cuentaAtrasBarraText.gameObject.SetActive(true);
+
+        while (cuentaAtras > 0)
+        {
+            cuentaAtrasBarraText.text = cuentaAtras.ToString();
+            cuentaAtras--;
+            yield return new WaitForSeconds(1);
+        }
+
+        cuentaAtrasBarraText.text = "SE ACABO";
+        yield return new WaitForSeconds(1);
+        cuentaAtrasBarraText.gameObject.SetActive(false);
     }
     #endregion
 

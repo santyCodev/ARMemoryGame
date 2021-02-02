@@ -15,6 +15,7 @@ namespace MemoryPrototype.Data
         public LogController LogController { get { return logController; } }                        //Controlador de Log
         
         private LevelManager levelManager;                                                          //Level manager
+        private EstadisticasManager estadisticasManager;
 
         /*
             Obtiene el levelManager para acceder a sus funciones
@@ -23,55 +24,47 @@ namespace MemoryPrototype.Data
         {
             levelManager = GetComponent<LevelManager>();
             levelManager.logController = LogController;
-            guiController.ActualizarDatosLevel(levelManager.NumFallos, levelManager.NumAciertos, GetActualRonda(), GetActualLevel());
+            estadisticasManager = GetComponent<EstadisticasManager>();
+            guiController.ActualizarDatosLevel(estadisticasManager.FallosTotales, estadisticasManager.AciertosTotales);
         }
 
+        #region Funciones level manager
         public int GetActualLevel() { return levelManager.ActualLevel; }
 
         public int GetBeforeLevel() { return levelManager.BeforeLevel; }
 
         public int GetActualRonda() { return levelManager.NumRonda; }
 
-        public void ResetLevelOne() 
-        { 
-            levelManager.ResetLevelOne();
-            guiController.ActualizarDatosLevel(levelManager.NumFallos, levelManager.NumAciertos, GetActualRonda(), GetActualLevel());
-        }
+        public void ResetLevelOne() { levelManager.ResetLevelOne(); }
 
-        public void UpLevel()
-        {
-            levelManager.UpLevel();
-            guiController.ActualizarDatosLevel(levelManager.NumFallos, levelManager.NumAciertos, GetActualRonda(), GetActualLevel() );
-        }
+        public void UpLevel() { levelManager.UpLevel(); }
 
-        public void DownLevel() 
-        { 
-            levelManager.DownLevel();
-            guiController.ActualizarDatosLevel(levelManager.NumFallos, levelManager.NumAciertos, GetActualRonda(), GetActualLevel());
-        }
+        public void DownLevel() { levelManager.DownLevel(); }
 
-        public void UpAcierto() 
-        { 
-            levelManager.UpAcierto();
-            guiController.ActualizarDatosLevel(levelManager.NumFallos, levelManager.NumAciertos, GetActualRonda(), GetActualLevel());
-        }
+        public void UpAcierto() { levelManager.UpAcierto(); }
 
-        public void UpRonda() 
-        { 
-            levelManager.UpRonda();
-            guiController.ActualizarDatosLevel(levelManager.NumFallos, levelManager.NumAciertos, GetActualRonda(), GetActualLevel());
-        }
+        public void UpRonda() { levelManager.UpRonda(); }
 
-        public void UpFallo() 
-        { 
-            levelManager.UpFallo();
-            guiController.ActualizarDatosLevel(levelManager.NumFallos, levelManager.NumAciertos, GetActualRonda(), GetActualLevel());
-        }
+        public void UpFallo() { levelManager.UpFallo(); }
 
         public bool IsMaxAciertos(int numPlacas) { return levelManager.IsMaxAciertos(numPlacas); }
 
         public bool IsMaxRondas() { return levelManager.IsMaxRondas(); }
 
         public bool IsMaxFallos() { return levelManager.IsMaxFallos(); }
+        #endregion
+
+        #region Funciones estadisticas manager
+        public void UpAciertosTotales() 
+        { 
+            estadisticasManager.AciertosTotales++;
+            guiController.ActualizarDatosLevel(estadisticasManager.FallosTotales, estadisticasManager.AciertosTotales);
+        }
+        public void UpFallosTotales() 
+        { 
+            estadisticasManager.FallosTotales++;
+            guiController.ActualizarDatosLevel(estadisticasManager.FallosTotales, estadisticasManager.AciertosTotales);
+        }
+        #endregion
     }
 }

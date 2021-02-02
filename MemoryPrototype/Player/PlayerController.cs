@@ -27,7 +27,7 @@ namespace MemoryPrototype.Player
             Aqui el jugador espera hasta que el GameMovementState
                 le de paso para jugar, asi ya tiene todo listo
          */
-        void Update() { if (StartExecute) { LetPlayerClick(); } }
+        void Update() { LetPlayerClick(); }
         #endregion
 
         #region funcionalidad raycasting
@@ -57,10 +57,11 @@ namespace MemoryPrototype.Player
             - Recoge el rayo desde la posicion del raton            - 
         */
         private void ClickPointRaycastUnity()
-        {
-            if (Input.GetMouseButtonDown(0))
+        {            
+            if (Input.GetMouseButtonDown(0) && StartExecute)
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                StartExecute = false;
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);                
                 GetPlacaForRaycastHit(ray);
             }
         }
@@ -72,9 +73,11 @@ namespace MemoryPrototype.Player
         private void ClickPointRaycastAndroid()
         {
 
-            if ((Input.GetTouch(0).phase == TouchPhase.Stationary) ||
-               (Input.GetTouch(0).phase == TouchPhase.Moved && Input.GetTouch(0).deltaPosition.magnitude < 1.2f))
+            if (StartExecute && 
+                ((Input.GetTouch(0).phase == TouchPhase.Stationary) ||
+                 (Input.GetTouch(0).phase == TouchPhase.Moved && Input.GetTouch(0).deltaPosition.magnitude < 1.2f)))
             {
+                StartExecute = false;
                 Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
                 GetPlacaForRaycastHit(ray);
             }
