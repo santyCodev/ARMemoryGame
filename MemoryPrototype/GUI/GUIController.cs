@@ -16,6 +16,7 @@ namespace MemoryPrototype.Gui
         [SerializeField] private GameObject seccionInstrucciones;
         [SerializeField] private GameObject seccionAciertosFallos;
         [SerializeField] private GameObject seccionBarraCuentaAtras;
+        [SerializeField] private GameObject seccionResultados;
 
         [SerializeField] private TextMeshProUGUI cuentaAtrasGOText;
         [SerializeField] private TextMeshProUGUI aciertoText;
@@ -26,7 +27,9 @@ namespace MemoryPrototype.Gui
         private int cuentaAtras;
 
         public delegate void GoNextState();                             //Delegado para el evento
-        public static event GoNextState OnCuentaAtrasTerminada;         //Evento para avisar que la cuenta atras ha terminado
+        public static event GoNextState OnCuentaAtrasTerminada;         //Evento para avisar que la cuenta de GO atras ha terminado
+        public delegate void EndGame();                                 //Delegado para el evento
+        public static event EndGame OnBarraCuentaAtrasTerminada;        //Evento para avisar que la cuenta atras de barra ha terminado
 
         // Start is called before the first frame update
         void Start()
@@ -48,6 +51,8 @@ namespace MemoryPrototype.Gui
         public void DesactivateDatosLevel() { seccionAciertosFallos.SetActive(false); }
         public void ActivateBarraCuentaAtras() { seccionBarraCuentaAtras.SetActive(true); }
         public void DesactivateBarraCuentaAtras() { seccionBarraCuentaAtras.SetActive(false); }
+        public void ActivateResultados() { seccionResultados.SetActive(true); }
+        public void DesactivateResultados() { seccionResultados.SetActive(false); }
         #endregion
 
         #region Actualizar datos de nivel
@@ -107,6 +112,13 @@ namespace MemoryPrototype.Gui
             OnCuentaAtrasTerminada();
         }
 
+        /* 
+         *  Corrutina que activa la seccion de la barra de cuenta atras
+         *  Ejecuta el conteo regresivo y va actualizando el valor
+         *      de la barra en la UI para que se vea animada
+         *  Cuando termina, desactiva la seccion de la barra     
+         *  Y llama el evento OnBarraCuentaAtrasTerminada para finalizar el juego
+         */
         public void StartCuentaAtrasBarra()
         {
             StartCoroutine(CuentaAtrasBarra());
@@ -124,6 +136,7 @@ namespace MemoryPrototype.Gui
             
             yield return new WaitForSeconds(1);
             DesactivateBarraCuentaAtras();
+            OnBarraCuentaAtrasTerminada();
         }
         #endregion
 

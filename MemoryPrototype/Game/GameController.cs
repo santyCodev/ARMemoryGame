@@ -69,7 +69,7 @@ namespace MemoryPrototype.Game
         }
 
         /* 
-         * Evento llamado cuando termina la cuenta atras
+         * Evento llamado cuando termina la cuenta atras de GO
          *  - Asigna el estado de inicializacion para comenzar el juego
          */
         public void CuentaAtrasEnd()

@@ -11,6 +11,7 @@ namespace MemoryPrototype.Player
 
         private const string CLASS_NAME = "PLAYER CONTROLLER";      //Constante con el nombre de la clase
         public bool StartExecute { get; set; }                      //Indica que el player comienza a jugar
+        public bool StopPlayer { get; set; }                      
         public delegate void PlacaSelected(GameObject placa);       //Delegado para el evento
         public static event PlacaSelected OnPlacaClicked;           //Evento para avisar que el player ha hecho click en una placa
 
@@ -19,7 +20,11 @@ namespace MemoryPrototype.Player
             Al tener StartExecute a false, indicamos al jugador
                 que aun no puede jugar.
          */
-        void Awake() { StartExecute = false; }
+        void Awake() 
+        { 
+            StartExecute = false;
+            StopPlayer = false;
+        }
         #endregion
 
         #region Espera a jugar
@@ -58,11 +63,18 @@ namespace MemoryPrototype.Player
         */
         private void ClickPointRaycastUnity()
         {            
-            if (Input.GetMouseButtonDown(0) && StartExecute)
+            if (!StopPlayer)
             {
-                StartExecute = false;
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);                
-                GetPlacaForRaycastHit(ray);
+                if(StartExecute && Input.GetMouseButtonDown(0))
+                {
+                    StartExecute = false;
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    GetPlacaForRaycastHit(ray);
+                }                
+            }
+            else
+            {
+                Debug.Log("Ha terminado en " + CLASS_NAME);                
             }
         }
 
@@ -72,14 +84,20 @@ namespace MemoryPrototype.Player
         */
         private void ClickPointRaycastAndroid()
         {
-
-            if (StartExecute && 
+            if (!StopPlayer)
+            {
+                if (StartExecute &&
                 ((Input.GetTouch(0).phase == TouchPhase.Stationary) ||
                  (Input.GetTouch(0).phase == TouchPhase.Moved && Input.GetTouch(0).deltaPosition.magnitude < 1.2f)))
+                {
+                    StartExecute = false;
+                    Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
+                    GetPlacaForRaycastHit(ray);
+                }
+            }
+            else
             {
-                StartExecute = false;
-                Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
-                GetPlacaForRaycastHit(ray);
+                Debug.Log("Ha terminado en " + CLASS_NAME);
             }
         }
 

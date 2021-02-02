@@ -1,4 +1,5 @@
 ﻿using MemoryPrototype.Data;
+using MemoryPrototype.Gui;
 using MemoryPrototype.Placas;
 using MemoryPrototype.Player;
 using System.Collections;
@@ -16,9 +17,11 @@ namespace MemoryPrototype.Game.States
         private PlayerController playerController;                          //Controlador del jugador
         private PlacasController placasController;                          //Controlador de placas
         private PlacaControl placaControl;
+        private GUIController guiController;                                //Controlador de GUI
         private List<GameObject> placasRandom;                              //Las placas random
         private GameObject placaActual;                                     //La placa actual a comparar
         private int numPlaca;                                         //Indice de conteo de placas
+        private ResultsState resultsState;
 
         #region Inicializacion de estado
         /*
@@ -33,9 +36,11 @@ namespace MemoryPrototype.Game.States
             dataController = gameControllerContext.DataController;
             placasController = gameControllerContext.PlacasController;
             playerController = gameControllerContext.PlayerController;
+            guiController = gameControllerContext.GuiController;
             PlayerController.OnPlacaClicked += CheckPlacas;
             PlacaControl.OnPlacaAnimationFail += CheckFallosAndEndTurn;
             PlacaControl.OnPlacaAnimationSuccess += CheckRondasAndEndTurn;
+            GUIController.OnBarraCuentaAtrasTerminada += StopPlayer;
             OnEnter();
         }
         
@@ -219,6 +224,14 @@ namespace MemoryPrototype.Game.States
         }
         #endregion
 
+        #region Evento stopPlayer
+        private void StopPlayer()
+        {
+            playerController.StopPlayer = true;
+            OnExit();
+        }
+        #endregion
+
         #region Finalizacion del estado
         /*
             - Desasigna la funcion CheckPlacas del evento OnPlacaClicked
@@ -234,8 +247,17 @@ namespace MemoryPrototype.Game.States
             PlayerController.OnPlacaClicked -= CheckPlacas;
             PlacaControl.OnPlacaAnimationFail -= CheckFallosAndEndTurn;
             PlacaControl.OnPlacaAnimationSuccess -= CheckRondasAndEndTurn;
-            placasController.SetOriginalMaterialColor();
-            base.OnExit(new GameInitializationState(gameControllerContext));
+            GUIController.OnBarraCuentaAtrasTerminada -= StopPlayer;
+            if (playerController.StopPlayer)
+            {
+                resultsState = ResultsState.GetResultState(gameControllerContext);
+                base.OnExit(resultsState);
+            }
+            else
+            {
+                placasController.SetOriginalMaterialColor();
+                base.OnExit(new GameInitializationState(gameControllerContext));
+            }            
         }
         #endregion
 

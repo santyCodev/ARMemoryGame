@@ -14,7 +14,8 @@ namespace MemoryPrototype.Character
         private float currentLerpTime;                              //Tiempo actual de interpolacion lineal
         private const float LERP_SPEED_CONST = 1.7f;                   //Constante de velocidad de la interpolacion lineal
         private const string CLASS_NAME = "CHARACTER CONTROLLER";
-        
+
+        public bool StopWalk;
         public delegate void FinishAction();                        //Delegado para el evento
         public static event FinishAction OnCharacterFinish;         //Evento para avisar que el character ha terminado
         
@@ -27,6 +28,7 @@ namespace MemoryPrototype.Character
         public void PrepareForMovement(List<GameObject> placas)
         {
             positionsToWalk = placas;
+            StopWalk = false;
             SetFirstPosition(NewPosition(positionsToWalk[0].transform.position));
             PrintMessage(" PrepareForMovement() - Placas a recorrer =  "+placas.Count);
         }
@@ -72,21 +74,29 @@ namespace MemoryPrototype.Character
 
             foreach (var placaPosition in positionsToWalk)
             {
-                if (!placaPosition.Equals(positionsToWalk[0]))
+                if (!StopWalk)
                 {
-                    nextPosition = NewPosition(placaPosition.transform.position);
-                    LookAtNextPosition(nextPosition);
-
-                    while (Vector3.Distance(nextPosition, transform.position) > Vector3.kEpsilon)
+                    if (!placaPosition.Equals(positionsToWalk[0]))
                     {
-                        MoveToNextPosition();
-                        yield return null;
-                    }
+                        nextPosition = NewPosition(placaPosition.transform.position);
+                        LookAtNextPosition(nextPosition);
 
-                    MarkPlate(placaPosition);
-                    PrintMessage(" MoveCharacter() - Chara ha llegado al destino " + nextPosition);
-                    SetFirstPosition(nextPosition);
-                }                    
+                        while (Vector3.Distance(nextPosition, transform.position) > Vector3.kEpsilon)
+                        {
+                            MoveToNextPosition();
+                            yield return null;
+                        }
+
+                        MarkPlate(placaPosition);
+                        PrintMessage(" MoveCharacter() - Chara ha llegado al destino " + nextPosition);
+                        SetFirstPosition(nextPosition);
+                    }
+                }                
+                else
+                {
+                    Debug.Log("Ha terminado en "+CLASS_NAME);
+                    break;
+                }
             }
             PrintMessage(" MoveCharacter() - Chara ha terminado el recorrido ");
 

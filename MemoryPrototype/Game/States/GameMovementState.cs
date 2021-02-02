@@ -1,4 +1,5 @@
-﻿using MemoryPrototype.Placas;
+﻿using MemoryPrototype.Gui;
+using MemoryPrototype.Placas;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +13,8 @@ namespace MemoryPrototype.Game.States
         private const string STATE_NAME = "GAME MOVEMENT STATE";                //Constante con el nombre de la clase
         private PlacasController placasController;                              //Controlador de placas
         private CharacterController characterController;                        //Controlador de personaje
+        private GUIController guiController;                                    //Controlador de GUI
+        private ResultsState resultsState;
 
         #region Inicializacion del estado
         /*
@@ -25,7 +28,9 @@ namespace MemoryPrototype.Game.States
         {            
             characterController = gameControllerContext.CharacterController;
             placasController = gameControllerContext.PlacasController;
+            guiController = gameControllerContext.GuiController;
             CharacterController.OnCharacterFinish += CharacterHasEnd;
+            GUIController.OnBarraCuentaAtrasTerminada += StopCharacter;
             OnEnter();
         }
 
@@ -79,6 +84,11 @@ namespace MemoryPrototype.Game.States
             OnExit();
         }
 
+        private void StopCharacter()
+        {
+            characterController.StopWalk = true;            
+        }
+
         #endregion
 
         #endregion
@@ -86,15 +96,29 @@ namespace MemoryPrototype.Game.States
         #region Finalizacion del estado
         /*
             Indica que esta en esta funcion
-            - Quita la funcion CharacterHasEnd del evento OnCharacterFinish
-            - Llama al siguiente estado
+            - Da de baja la funcion CharacterHasEnd del evento OnCharacterFinish
+            - Da de baja la funcion StopCharacter del evento OnBarraCuentaAtrasTerminada
+            - Evalua si el character ha parado:
+                - Si es correcto transita al estado final "ResultState"
+                - Si no es correcto desactiva el character y transita al siguiente estado
+                    "GamePlayerState"
          */
         private void OnExit()
         {
             PrintMessage(" - EXIT");
             CharacterController.OnCharacterFinish -= CharacterHasEnd;
-            characterController.SetActiveCharacter(false);
-            base.OnExit(new GamePlayerState(gameControllerContext));
+            GUIController.OnBarraCuentaAtrasTerminada -= StopCharacter;
+            if (characterController.StopWalk)
+            {
+                resultsState = ResultsState.GetResultState(gameControllerContext);
+                base.OnExit(resultsState);
+            }
+            else
+            {
+                characterController.SetActiveCharacter(false);
+                base.OnExit(new GamePlayerState(gameControllerContext));
+            }
+            
         }
 
         #endregion
