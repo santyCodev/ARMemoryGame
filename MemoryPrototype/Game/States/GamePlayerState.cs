@@ -250,8 +250,8 @@ namespace MemoryPrototype.Game.States
             GUIController.OnBarraCuentaAtrasTerminada -= StopPlayer;
             if (playerController.StopPlayer)
             {
-                resultsState = ResultsState.GetResultState(gameControllerContext);
-                base.OnExit(resultsState);
+                guiController.ActivateResultados();
+                gameControllerContext.CurrentState = null;
             }
             else
             {

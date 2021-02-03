@@ -100,7 +100,7 @@ namespace MemoryPrototype.Character
             }
             PrintMessage(" MoveCharacter() - Chara ha terminado el recorrido ");
 
-            yield return new WaitForSeconds(0.5f);
+            if (!StopWalk) { yield return new WaitForSeconds(0.5f); }
             OnCharacterFinish();
         }
 

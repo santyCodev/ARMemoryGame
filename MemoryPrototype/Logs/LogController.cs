@@ -34,16 +34,16 @@ namespace MemoryPrototype.Logs
         {
             if (LogsActive)
             {
-                //Write some text to the test.txt file
-                StreamWriter writer = new StreamWriter(path, true);
-                writer.WriteLine(message);
-                writer.Close();
+                ////Write some text to the test.txt file
+                //StreamWriter writer = new StreamWriter(path, true);
+                //writer.WriteLine(message);
+                //writer.Close();
 
-                //Re-import the file to update the reference in the editor
-                UnityEditor.AssetDatabase.ImportAsset(path);
-                TextAsset asset = (TextAsset)Resources.Load("test");
+                ////Re-import the file to update the reference in the editor
+                //UnityEditor.AssetDatabase.ImportAsset(path);
+                //TextAsset asset = (TextAsset)Resources.Load("test");
 
-                //Debug.Log(message); 
+                Debug.Log(message); 
             }
             yield return null;
         }

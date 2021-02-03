@@ -64,8 +64,9 @@ namespace MemoryPrototype.Game.States
          */
         public override void OnExecution()
         {
-            PrintMessage(" - EXECUTION");
+            PrintMessage(" OnExecution() - START");
             characterController.MoveCharacter();
+            PrintMessage(" OnExecution() - END");
         }
 
         #region Evento CharacterHasEnd
@@ -79,14 +80,17 @@ namespace MemoryPrototype.Game.States
          */
         private void CharacterHasEnd()
         {
-            PrintMessage(" - El chara ha terminado de moverse");
+            PrintMessage(" CharacterHasEnd() - START");
             placasController.SetOriginalMaterialColor();
             OnExit();
+            PrintMessage(" CharacterHasEnd() - END");
         }
 
         private void StopCharacter()
         {
-            characterController.StopWalk = true;            
+            PrintMessage(" StopCharacter() - START");
+            characterController.StopWalk = true;
+            PrintMessage(" StopCharacter() - END");
         }
 
         #endregion
@@ -105,20 +109,20 @@ namespace MemoryPrototype.Game.States
          */
         private void OnExit()
         {
-            PrintMessage(" - EXIT");
+            PrintMessage(" OnExit() - START");
             CharacterController.OnCharacterFinish -= CharacterHasEnd;
             GUIController.OnBarraCuentaAtrasTerminada -= StopCharacter;
             if (characterController.StopWalk)
             {
-                resultsState = ResultsState.GetResultState(gameControllerContext);
-                base.OnExit(resultsState);
+                guiController.ActivateResultados();
+                gameControllerContext.CurrentState = null;
             }
             else
             {
                 characterController.SetActiveCharacter(false);
                 base.OnExit(new GamePlayerState(gameControllerContext));
             }
-            
+            PrintMessage(" OnExit() - END");
         }
 
         #endregion

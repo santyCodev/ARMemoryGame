@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 namespace MemoryPrototype.Gui
 {
@@ -84,6 +85,11 @@ namespace MemoryPrototype.Gui
         {
             DesactivatePageInstructions();
             StartCoroutine(CuentaAtrasGo());
+        }
+
+        public void ButtonExitAction()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
         #endregion
 
