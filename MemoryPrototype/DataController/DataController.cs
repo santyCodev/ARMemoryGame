@@ -13,20 +13,19 @@ namespace MemoryPrototype.Data
 
         [SerializeField] private LogController logController;                                       //Controlador de logs
         [SerializeField] private GUIController guiController;                                       //Controlador de GUI
-        public LogController LogController { get { return logController; } }                        //Controlador de Log
-        
-        private LevelManager levelManager;                                                          //Level manager
-        private EstadisticasManager estadisticasManager;
+        [SerializeField] private GameObject estadisticasManager;
+        private EstadisticasManager estadisticas;
+        public LogController LogController { get { return logController; } }                        //Controlador de Log        
+        private LevelManager levelManager;                                                          //Level manager        
 
         /*
             Obtiene el levelManager para acceder a sus funciones
          */
         private void Start()
         {
+            estadisticas = estadisticasManager.GetComponent<EstadisticasManager>();
             levelManager = GetComponent<LevelManager>();
-            levelManager.logController = LogController;
-            estadisticasManager = GetComponent<EstadisticasManager>();
-            guiController.ActualizarDatosLevel(estadisticasManager.FallosTotales, estadisticasManager.AciertosTotales);
+            levelManager.logController = LogController;            
         }
 
         #region Funciones level manager
@@ -57,14 +56,14 @@ namespace MemoryPrototype.Data
 
         #region Funciones estadisticas manager
         public void UpAciertosTotales() 
-        { 
-            estadisticasManager.AciertosTotales++;
-            guiController.ActualizarDatosLevel(estadisticasManager.FallosTotales, estadisticasManager.AciertosTotales);
+        {
+            estadisticas.AciertosTotales++;
+            guiController.ActualizarDatosLevel(estadisticas.FallosTotales, estadisticas.AciertosTotales);
         }
         public void UpFallosTotales() 
-        { 
-            estadisticasManager.FallosTotales++;
-            guiController.ActualizarDatosLevel(estadisticasManager.FallosTotales, estadisticasManager.AciertosTotales);
+        {
+            estadisticas.FallosTotales++;
+            guiController.ActualizarDatosLevel(estadisticas.FallosTotales, estadisticas.AciertosTotales);
         }
         #endregion
     }

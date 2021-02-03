@@ -4,15 +4,17 @@ using UnityEngine;
 
 namespace MemoryPrototype.Data
 {    public class EstadisticasManager : MonoBehaviour
-    {
-        private const string CLASS_NAME = "ESTADISTICAS MANAGER";
+    {        
+        private static EstadisticasManager instance;
         public int AciertosTotales { get; set; }
         public int FallosTotales { get; set; }
+        
+        private void Start()
+        {            
+            DontDestroyOnLoad(gameObject);
 
-        private void Awake()
-        {
-            AciertosTotales = 0;
-            FallosTotales = 0;
+            if(instance == null) { instance = this; }
+            else if(instance != this){ Destroy(gameObject); }
         }
     }
 }
