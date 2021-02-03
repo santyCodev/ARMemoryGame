@@ -39,13 +39,17 @@ namespace MemoryPrototype.Game
         /* Activa la pantalla de titulo de la GUI */
         private void Start()
         {
+            CurrentState = null;
             guiController.ActivatePageTitle();
         }
 
         /* Cuando el estado actual este inicializado, se ejecuta */
         void Update()
         {
-            if (CurrentState.Initialized()) { StartCoroutine(CurrentState.StartState()); }
+            if (CurrentState != null)
+            {
+                if (CurrentState.Initialized()) { StartCoroutine(CurrentState.StartState()); }            
+            }
         }
 
         /* Cambia de estado */
