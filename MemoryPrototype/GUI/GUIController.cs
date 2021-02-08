@@ -33,7 +33,7 @@ namespace MemoryPrototype.Gui
         public static event EndGame OnBarraCuentaAtrasTerminada;        //Evento para avisar que la cuenta atras de barra ha terminado
 
         // Start is called before the first frame update
-        void Start()
+        void Awake()
         {
             aciertoText.text = ACIERTOS;
             falloText.text = FALLOS;
@@ -57,9 +57,13 @@ namespace MemoryPrototype.Gui
         #endregion
 
         #region Actualizar datos de nivel
-        public void ActualizarDatosLevel(int numFallos, int numAciertos)
+        public void ActualizarAciertosLevel(int numAciertos)
         {
-            aciertoText.text = ACIERTOS + numAciertos.ToString();
+            aciertoText.text = ACIERTOS + numAciertos.ToString();            
+        }
+
+        public void ActualizarFallosLevel(int numFallos)
+        {
             falloText.text = FALLOS + numFallos.ToString();
         }
         #endregion

@@ -5,16 +5,17 @@ using UnityEngine;
 namespace MemoryPrototype.Data
 {    public class EstadisticasManager : MonoBehaviour
     {        
-        private static EstadisticasManager instance;
-        public int AciertosTotales { get; set; }
-        public int FallosTotales { get; set; }
+        public static EstadisticasManager instance;
+        [SerializeField] private int aciertosTotales;
+        [SerializeField] private int fallosTotales;
         
-        private void Start()
-        {            
+        public int AciertosTotales { get { return aciertosTotales; } set { aciertosTotales = value; } }
+        public int FallosTotales { get { return fallosTotales; } set { fallosTotales = value; } }
+        private void Awake()
+        {
+            if (instance == null) { instance = this; }
+            else if (instance != this) { Destroy(gameObject); }
             DontDestroyOnLoad(gameObject);
-
-            if(instance == null) { instance = this; }
-            else if(instance != this){ Destroy(gameObject); }
         }
     }
 }
