@@ -92,11 +92,7 @@ namespace MemoryPrototype.Character
                         SetFirstPosition(nextPosition);
                     }
                 }                
-                else
-                {
-                    Debug.Log("Ha terminado en "+CLASS_NAME);
-                    break;
-                }
+                else { break; }
             }
             PrintMessage(" MoveCharacter() - Chara ha terminado el recorrido ");
 

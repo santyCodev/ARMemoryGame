@@ -4,6 +4,7 @@ using MemoryPrototype.Placas;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace MemoryPrototype.Data
 {
@@ -15,7 +16,11 @@ namespace MemoryPrototype.Data
         [SerializeField] private GameObject guiController;                                       //Controlador de GUI   
         private GUIController gui;
         public LogController LogController { get { return logController; } }                        //Controlador de Log        
-        private LevelManager levelManager;                                                          //Level manager        
+        private LevelManager levelManager;                                                         //Level manager        
+        private TimeSpan startTimeReaction;
+        private TimeSpan stopTimeReaction;
+        private TimeSpan startTimeAccuracy;
+        private TimeSpan stopTimeAccuracy;
 
         /*
             Obtiene el levelManager para acceder a sus funciones
@@ -25,8 +30,6 @@ namespace MemoryPrototype.Data
             gui = guiController.GetComponent<GUIController>();
             levelManager = GetComponent<LevelManager>();
             levelManager.logController = LogController;
-            gui.ActualizarAciertosLevel(EstadisticasManager.instance.AciertosTotales);
-            gui.ActualizarFallosLevel(EstadisticasManager.instance.FallosTotales);
         }
 
         #region Funciones level manager
@@ -59,12 +62,56 @@ namespace MemoryPrototype.Data
         public void UpAciertosTotales() 
         {            
             EstadisticasManager.instance.AciertosTotales++;
-            gui.ActualizarAciertosLevel(EstadisticasManager.instance.AciertosTotales);
+            EstadisticasManager.instance.AciertosSesion++;
+            gui.ActualizarAciertosLevel(EstadisticasManager.instance.AciertosSesion);
         }
         public void UpFallosTotales() 
         {            
             EstadisticasManager.instance.FallosTotales++;
-            gui.ActualizarFallosLevel(EstadisticasManager.instance.FallosTotales);
+            EstadisticasManager.instance.FallosSesion++;
+            gui.ActualizarFallosLevel(EstadisticasManager.instance.FallosSesion);
+        }
+        #endregion
+
+        #region Medicion de tiempo
+        public void StartReactionMedition() 
+        {
+            startTimeReaction = new TimeSpan(DateTime.Now.Ticks);
+        }
+
+        public void StopReactionMedition()
+        {
+            stopTimeReaction = new TimeSpan(DateTime.Now.Ticks);
+            SendTimeMedition();
+        }
+
+        private void SendTimeMedition()
+        {
+            EstadisticasManager.instance.setReactionTime(stopTimeReaction.Subtract(startTimeReaction).TotalSeconds);
+        }
+
+        public void StartAccuracyMedition()
+        {
+            startTimeAccuracy = new TimeSpan(DateTime.Now.Ticks);
+        }
+
+        public void StopAccuracyMedition()
+        {
+            stopTimeAccuracy = new TimeSpan(DateTime.Now.Ticks);
+            SendTimeAccuracy();
+        }
+
+        private void SendTimeAccuracy()
+        {
+            EstadisticasManager.instance.setAccuracyTime(stopTimeAccuracy.Subtract(startTimeAccuracy).TotalSeconds);
+        }
+        #endregion
+
+        #region Final de la sesion y recogida de resultados
+        public void EndSession()
+        {
+            EstadisticasManager.instance.EndSession();
+            gui.ActivateResultados();
         }
         #endregion
     }

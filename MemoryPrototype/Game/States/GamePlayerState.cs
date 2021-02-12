@@ -22,6 +22,7 @@ namespace MemoryPrototype.Game.States
         private GameObject placaActual;                                     //La placa actual a comparar
         private int numPlaca;                                         //Indice de conteo de placas
         private ResultsState resultsState;
+        private bool isReactionMedition;
 
         #region Inicializacion de estado
         /*
@@ -38,6 +39,7 @@ namespace MemoryPrototype.Game.States
             playerController = gameControllerContext.PlayerController;
             guiController = gameControllerContext.GuiController;
             PlayerController.OnPlacaClicked += CheckPlacas;
+            PlayerController.OnClickedReaction += SendReactionTime;
             PlacaControl.OnPlacaAnimationFail += CheckFallosAndEndTurn;
             PlacaControl.OnPlacaAnimationSuccess += CheckRondasAndEndTurn;
             GUIController.OnBarraCuentaAtrasTerminada += StopPlayer;
@@ -85,6 +87,10 @@ namespace MemoryPrototype.Game.States
         {
             PrintMessage(" - EXECUTION");
             playerController.StartExecute = true;
+            isReactionMedition = true;
+            dataController.StartReactionMedition();
+            dataController.StartAccuracyMedition();
+            //comenzar a medir el tiempo de reaccion
         }
         #endregion
 
@@ -111,11 +117,13 @@ namespace MemoryPrototype.Game.States
                 PrintMessage(" CheckPlacas() - La placa "+ placaSelected.name +" y la placa "+ placasRandom[numPlaca].name+" SI son iguales");                
                 placasRandom[numPlaca].GetComponent<PlacaControl>().ChangeMaterialColor();
                 dataController.UpAcierto();
+                dataController.StopAccuracyMedition();
                 dataController.UpAciertosTotales();
                 if(NeedPlacaSiguiente())
                 { 
                     SetPlacaSiguiente();
                     playerController.StartExecute = true;
+                    dataController.StartAccuracyMedition();
                 }
                 else { GestionAciertos(); }              
             }
@@ -154,6 +162,17 @@ namespace MemoryPrototype.Game.States
                 devuevle false
          */
         private bool NeedPlacaSiguiente() { return (numPlaca == placasRandom.Count - 1) || (numPlaca < placasRandom.Count - 1 && numPlaca > 0); }
+        #endregion
+
+        #region Funcionalidad de envio de tiempo de reaccion (evento)
+        private void SendReactionTime()
+        {
+            if (isReactionMedition)
+            {
+                isReactionMedition = false;
+                dataController.StopReactionMedition();
+            }            
+        }
         #endregion
 
         #region Logica de aciertos, fallos, rondas y niveles
@@ -245,12 +264,13 @@ namespace MemoryPrototype.Game.States
             PrintMessage(" - EXIT");
             playerController.StartExecute = false;
             PlayerController.OnPlacaClicked -= CheckPlacas;
+            PlayerController.OnClickedReaction -= SendReactionTime;
             PlacaControl.OnPlacaAnimationFail -= CheckFallosAndEndTurn;
             PlacaControl.OnPlacaAnimationSuccess -= CheckRondasAndEndTurn;
             GUIController.OnBarraCuentaAtrasTerminada -= StopPlayer;
             if (playerController.StopPlayer)
             {
-                guiController.ActivateResultados();
+                dataController.EndSession();
                 gameControllerContext.CurrentState = null;
             }
             else

@@ -14,7 +14,8 @@ namespace MemoryPrototype.Player
         public bool StopPlayer { get; set; }                      
         public delegate void PlacaSelected(GameObject placa);       //Delegado para el evento
         public static event PlacaSelected OnPlacaClicked;           //Evento para avisar que el player ha hecho click en una placa
-
+        public delegate void PlacaClicked();       //Delegado para el evento
+        public static event PlacaClicked OnClickedReaction;           //Evento para avisar que el player ha hecho click en una placa
         #region Inicializacion
         /*
             Al tener StartExecute a false, indicamos al jugador
@@ -67,14 +68,11 @@ namespace MemoryPrototype.Player
             {
                 if(StartExecute && Input.GetMouseButtonDown(0))
                 {
+                    OnClickedReaction();
                     StartExecute = false;
                     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                     GetPlacaForRaycastHit(ray);
                 }                
-            }
-            else
-            {
-                Debug.Log("Ha terminado en " + CLASS_NAME);                
             }
         }
 
@@ -90,14 +88,11 @@ namespace MemoryPrototype.Player
                 ((Input.GetTouch(0).phase == TouchPhase.Stationary) ||
                  (Input.GetTouch(0).phase == TouchPhase.Moved && Input.GetTouch(0).deltaPosition.magnitude < 1.2f)))
                 {
+                    OnClickedReaction();
                     StartExecute = false;
                     Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
                     GetPlacaForRaycastHit(ray);
                 }
-            }
-            else
-            {
-                Debug.Log("Ha terminado en " + CLASS_NAME);
             }
         }
 

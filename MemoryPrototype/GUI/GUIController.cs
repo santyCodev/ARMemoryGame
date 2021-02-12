@@ -26,6 +26,8 @@ namespace MemoryPrototype.Gui
         private TimeBarControl timeBarControl;
         private int cuentaAtrasGo;
         private int cuentaAtras;
+        private int numAciertos;
+        private int numFallos;
 
         public delegate void GoNextState();                             //Delegado para el evento
         public static event GoNextState OnCuentaAtrasTerminada;         //Evento para avisar que la cuenta de GO atras ha terminado
@@ -39,8 +41,12 @@ namespace MemoryPrototype.Gui
             falloText.text = FALLOS;
             cuentaAtrasGo = 3;
             cuentaAtras = CUENTA;
+            numAciertos = 0;
+            numFallos = 0;
             timeBarControl = seccionBarraCuentaAtras.GetComponent<TimeBarControl>();
             timeBarControl.SetMaxTime(CUENTA);
+            ActualizarAciertosLevel(0);
+            ActualizarFallosLevel(0);
         }
 
         #region Activacion y desactivacion de elementos GUI
@@ -58,12 +64,12 @@ namespace MemoryPrototype.Gui
 
         #region Actualizar datos de nivel
         public void ActualizarAciertosLevel(int numAciertos)
-        {
+        {            
             aciertoText.text = ACIERTOS + numAciertos.ToString();            
         }
 
         public void ActualizarFallosLevel(int numFallos)
-        {
+        {            
             falloText.text = FALLOS + numFallos.ToString();
         }
         #endregion

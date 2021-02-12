@@ -1,4 +1,5 @@
-﻿using MemoryPrototype.Gui;
+﻿using MemoryPrototype.Data;
+using MemoryPrototype.Gui;
 using MemoryPrototype.Placas;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace MemoryPrototype.Game.States
         private PlacasController placasController;                              //Controlador de placas
         private CharacterController characterController;                        //Controlador de personaje
         private GUIController guiController;                                    //Controlador de GUI
+        private DataController dataController;
         private ResultsState resultsState;
 
         #region Inicializacion del estado
@@ -25,7 +27,8 @@ namespace MemoryPrototype.Game.States
             - Llama a OnEnter
          */
         public GameMovementState(GameController context) : base(context)
-        {            
+        {
+            dataController = gameControllerContext.DataController;
             characterController = gameControllerContext.CharacterController;
             placasController = gameControllerContext.PlacasController;
             guiController = gameControllerContext.GuiController;
@@ -114,7 +117,7 @@ namespace MemoryPrototype.Game.States
             GUIController.OnBarraCuentaAtrasTerminada -= StopCharacter;
             if (characterController.StopWalk)
             {
-                guiController.ActivateResultados();
+                dataController.EndSession();                
                 gameControllerContext.CurrentState = null;
             }
             else
