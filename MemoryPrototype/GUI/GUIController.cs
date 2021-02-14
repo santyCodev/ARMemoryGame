@@ -9,25 +9,25 @@ namespace MemoryPrototype.Gui
 {
     public class GUIController : MonoBehaviour
     {
-        private const string ACIERTOS = "Aciertos: ";
-        private const string FALLOS = "Fallos: ";
-        private const int CUENTA = 500;
-
         [SerializeField] private GameObject seccionTitle;
         [SerializeField] private GameObject seccionInstrucciones;
-        [SerializeField] private GameObject seccionAciertosFallos;
-        [SerializeField] private GameObject seccionBarraCuentaAtras;
+        [SerializeField] private GameObject seccionLevel;
         [SerializeField] private GameObject seccionResultados;
 
+        //instrucciones
         [SerializeField] private TextMeshProUGUI cuentaAtrasGOText;
+        private int cuentaAtrasGo;
+
+        //juego / incluyen los metodos actualizarAciertos/FallosLevel()
+        private const string ACIERTOS = "ACIERTOS: ";
+        private const string FALLOS = "FALLOS: ";
+        private const int CUENTA = 700;
         [SerializeField] private TextMeshProUGUI aciertoText;
         [SerializeField] private TextMeshProUGUI falloText;
-        
-        private TimeBarControl timeBarControl;
-        private int cuentaAtrasGo;
         private int cuentaAtras;
-        private int numAciertos;
-        private int numFallos;
+        private TimeBarControl timeBarControl;
+
+        //Resultados
 
         public delegate void GoNextState();                             //Delegado para el evento
         public static event GoNextState OnCuentaAtrasTerminada;         //Evento para avisar que la cuenta de GO atras ha terminado
@@ -41,40 +41,17 @@ namespace MemoryPrototype.Gui
             falloText.text = FALLOS;
             cuentaAtrasGo = 3;
             cuentaAtras = CUENTA;
-            numAciertos = 0;
-            numFallos = 0;
-            timeBarControl = seccionBarraCuentaAtras.GetComponent<TimeBarControl>();
+            timeBarControl = seccionLevel.GetComponent<TimeBarControl>();
             timeBarControl.SetMaxTime(CUENTA);
             ActualizarAciertosLevel(0);
             ActualizarFallosLevel(0);
         }
 
-        #region Activacion y desactivacion de elementos GUI
+        #region Seccion Titulo
+        /* Activacion y desactivacion de la seccion de titulo*/
         public void ActivatePageTitle() { seccionTitle.SetActive(true); }
         public void DesactivatePageTitle() { seccionTitle.SetActive(false); }
-        public void ActivatePageInstructions() { seccionInstrucciones.SetActive(true); }
-        public void DesactivatePageInstructions() { seccionInstrucciones.SetActive(false); }
-        public void ActivateDatosLevel() { seccionAciertosFallos.SetActive(true); }
-        public void DesactivateDatosLevel() { seccionAciertosFallos.SetActive(false); }
-        public void ActivateBarraCuentaAtras() { seccionBarraCuentaAtras.SetActive(true); }
-        public void DesactivateBarraCuentaAtras() { seccionBarraCuentaAtras.SetActive(false); }
-        public void ActivateResultados() { seccionResultados.SetActive(true); }
-        public void DesactivateResultados() { seccionResultados.SetActive(false); }
-        #endregion
 
-        #region Actualizar datos de nivel
-        public void ActualizarAciertosLevel(int numAciertos)
-        {            
-            aciertoText.text = ACIERTOS + numAciertos.ToString();            
-        }
-
-        public void ActualizarFallosLevel(int numFallos)
-        {            
-            falloText.text = FALLOS + numFallos.ToString();
-        }
-        #endregion
-
-        #region Acciones de boton
         /* 
          * Evento de boton llamado con el boton start
          *  - Desactiva la pantalla de titulo
@@ -85,6 +62,12 @@ namespace MemoryPrototype.Gui
             DesactivatePageTitle();
             ActivatePageInstructions();
         }
+        #endregion
+
+        #region Seccion Instrucciones
+        /* Activacion y desactivacion de la seccion instrucciones */
+        public void ActivatePageInstructions() { seccionInstrucciones.SetActive(true); }
+        public void DesactivatePageInstructions() { seccionInstrucciones.SetActive(false); }
 
         /* 
          * Evento de boton llamado con el boton Go de las instrucciones
@@ -97,15 +80,8 @@ namespace MemoryPrototype.Gui
             StartCoroutine(CuentaAtrasGo());
         }
 
-        public void ButtonExitAction()
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
-        #endregion
-
-        #region Corrutinas
         /* 
-         * Corrutina para mostrar en Gui la cuenta atras
+         * Corrutina para mostrar en Gui la cuenta atras y Go
          *  - Activa el texto cuentaAtrasGo
          *  - Hace la cuenta atras hasta que llega a cero
          *  - Muestra la palabra GO
@@ -127,21 +103,35 @@ namespace MemoryPrototype.Gui
             cuentaAtrasGOText.gameObject.SetActive(false);
             OnCuentaAtrasTerminada();
         }
+        #endregion
+
+        #region Seccion Juego
+        /* Activacion y desactivacion de la seccion de juego */
+        public void ActivateSeccionLevel() { seccionLevel.SetActive(true); }
+        public void DesactivateSeccionLevel() { seccionLevel.SetActive(false); }
+
+        /* Actualizacion de aciertos y fallos de la gui */
+        public void ActualizarAciertosLevel(int numAciertos) { aciertoText.text = ACIERTOS + numAciertos.ToString(); }
+        public void ActualizarFallosLevel(int numFallos) { falloText.text = FALLOS + numFallos.ToString(); }
 
         /* 
-         *  Corrutina que activa la seccion de la barra de cuenta atras
-         *  Ejecuta el conteo regresivo y va actualizando el valor
-         *      de la barra en la UI para que se vea animada
-         *  Cuando termina, desactiva la seccion de la barra     
-         *  Y llama el evento OnBarraCuentaAtrasTerminada para finalizar el juego
+         *  Metodo que se llama cuando comienza el juego
+         *  - Inicia la corrutina para mostrar los parametros 
+         *      de aciertos y fallos y para mostrar la barra de tiempo de juego
+         *  
          */
-        public void StartCuentaAtrasBarra()
+        public void StartLevelGame()
         {
-            StartCoroutine(CuentaAtrasBarra());
+            StartCoroutine(ShowBarraAndParameters());
         }
-        IEnumerator CuentaAtrasBarra()
+
+        /* 
+         * Corrutina que muestra los aciertos, fallos y decrementa la barra de
+            cuenta atras
+        */
+        IEnumerator ShowBarraAndParameters()
         {
-            ActivateBarraCuentaAtras();
+            ActivateSeccionLevel();
 
             while (cuentaAtras > 0)
             {
@@ -151,11 +141,24 @@ namespace MemoryPrototype.Gui
             }
             
             yield return new WaitForSeconds(1);
-            DesactivateBarraCuentaAtras();
+            DesactivateSeccionLevel();
             OnBarraCuentaAtrasTerminada();
         }
         #endregion
 
+        #region Seccion Resultados
+        /* Metodos de activacion y desactivacion de la seccion resultados */
+        public void ActivateResultados() { seccionResultados.SetActive(true); }
+        public void DesactivateResultados() { seccionResultados.SetActive(false); }
+
+        /* 
+        * Hace un reload de toda la scene, para empezar con todo en estado inicial
+        */
+        public void ButtonExitAction()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+        #endregion
     }
 }
 

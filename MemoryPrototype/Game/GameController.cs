@@ -78,8 +78,7 @@ namespace MemoryPrototype.Game
          */
         public void CuentaAtrasEnd()
         {
-            guiController.ActivateDatosLevel();
-            guiController.StartCuentaAtrasBarra();
+            guiController.StartLevelGame();
             CurrentState = new GameInitializationState(this);
             LogController.PrintInConsole(CLASS_NAME + " Inicializando estado - " + CurrentState);
         }
