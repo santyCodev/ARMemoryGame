@@ -1,18 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class GUIInstruccionesSection : MonoBehaviour
+namespace MemoryPrototype.Gui
 {
-    // Start is called before the first frame update
-    void Start()
+    public class GUIInstruccionesSection : MonoBehaviour
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        #region Seccion Instrucciones
+        /* Activacion y desactivacion de la seccion instrucciones */
+        public void ActivatePageInstructions() { gameObject.SetActive(true); }
+        public void DesactivatePageInstructions() { gameObject.SetActive(false); }
+        #endregion
     }
 }
+

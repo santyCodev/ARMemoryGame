@@ -61,13 +61,11 @@ namespace MemoryPrototype.Data
         #region Funciones estadisticas manager
         public void UpAciertosTotales() 
         {            
-            EstadisticasManager.instance.AciertosTotales++;
             EstadisticasManager.instance.AciertosSesion++;
             gui.ActualizarAciertosLevel(EstadisticasManager.instance.AciertosSesion);
         }
         public void UpFallosTotales() 
         {            
-            EstadisticasManager.instance.FallosTotales++;
             EstadisticasManager.instance.FallosSesion++;
             gui.ActualizarFallosLevel(EstadisticasManager.instance.FallosSesion);
         }
@@ -87,7 +85,7 @@ namespace MemoryPrototype.Data
 
         private void SendTimeMedition()
         {
-            EstadisticasManager.instance.setReactionTime(stopTimeReaction.Subtract(startTimeReaction).TotalSeconds);
+            EstadisticasManager.instance.SetReactionTime(stopTimeReaction.Subtract(startTimeReaction).TotalSeconds);
         }
 
         public void StartAccuracyMedition()
@@ -103,7 +101,7 @@ namespace MemoryPrototype.Data
 
         private void SendTimeAccuracy()
         {
-            EstadisticasManager.instance.setAccuracyTime(stopTimeAccuracy.Subtract(startTimeAccuracy).TotalSeconds);
+            EstadisticasManager.instance.SetAccuracyTime(stopTimeAccuracy.Subtract(startTimeAccuracy).TotalSeconds);
         }
         #endregion
 

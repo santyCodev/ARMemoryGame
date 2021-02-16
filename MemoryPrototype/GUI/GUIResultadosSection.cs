@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GUIResultadosSection : MonoBehaviour
+namespace MemoryPrototype.Gui
 {
-    // Start is called before the first frame update
-    void Start()
+    public class GUIResultadosSection : MonoBehaviour
     {
-        
-    }
+        // Start is called before the first frame update
+        void Start()
+        {
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        }
+
+        /* Metodos de activacion y desactivacion de la seccion resultados */
+        public void ActivateResultados() { gameObject.SetActive(true); }
+        public void DesactivateResultados() { gameObject.SetActive(false); }
+
     }
 }
+

@@ -14,37 +14,37 @@ namespace MemoryPrototype.Gui
         [SerializeField] private GameObject seccionLevel;
         [SerializeField] private GameObject seccionResultados;
 
-        //instrucciones
-        [SerializeField] private TextMeshProUGUI cuentaAtrasGOText;
-        private int cuentaAtrasGo;
-
-        //juego / incluyen los metodos actualizarAciertos/FallosLevel()
-        private const string ACIERTOS = "ACIERTOS: ";
-        private const string FALLOS = "FALLOS: ";
-        private const int CUENTA = 700;
-        [SerializeField] private TextMeshProUGUI aciertoText;
-        [SerializeField] private TextMeshProUGUI falloText;
-        private int cuentaAtras;
-        private TimeBarControl timeBarControl;
-
-        //Resultados
+        private GUIInstruccionesSection guiInstrucciones;
+        private GUILevelSection guiLevelGame;
+        private GUIResultadosSection guiResultados;
 
         public delegate void GoNextState();                             //Delegado para el evento
         public static event GoNextState OnCuentaAtrasTerminada;         //Evento para avisar que la cuenta de GO atras ha terminado
         public delegate void EndGame();                                 //Delegado para el evento
         public static event EndGame OnBarraCuentaAtrasTerminada;        //Evento para avisar que la cuenta atras de barra ha terminado
 
+        [SerializeField] private TextMeshProUGUI cuentaAtrasGOText;
+        private int cuentaAtrasGo;
+
         // Start is called before the first frame update
-        void Awake()
+        void Start()
         {
-            aciertoText.text = ACIERTOS;
-            falloText.text = FALLOS;
+            guiInstrucciones = seccionInstrucciones.GetComponent<GUIInstruccionesSection>();
+            guiLevelGame = seccionLevel.GetComponent<GUILevelSection>();
+            guiResultados = seccionResultados.GetComponent<GUIResultadosSection>();
             cuentaAtrasGo = 3;
-            cuentaAtras = CUENTA;
-            timeBarControl = seccionLevel.GetComponent<TimeBarControl>();
-            timeBarControl.SetMaxTime(CUENTA);
-            ActualizarAciertosLevel(0);
-            ActualizarFallosLevel(0);
+        }
+
+        /* Suscribe el evento de GUI CuentaAtrasEnd */
+        private void OnEnable()
+        {
+            GUILevelSection.OnLevelGameEnd += EndLevelGame;            
+        }
+
+        /* Da de baja al evento de GUI CuentaAtrasEnd */
+        private void OnDisable()
+        {
+            GUILevelSection.OnLevelGameEnd -= EndLevelGame;
         }
 
         #region Seccion Titulo
@@ -60,25 +60,25 @@ namespace MemoryPrototype.Gui
         public void ButtonStartAction()
         {
             DesactivatePageTitle();
-            ActivatePageInstructions();
+            guiInstrucciones.ActivatePageInstructions();
         }
         #endregion
 
         #region Seccion Instrucciones
-        /* Activacion y desactivacion de la seccion instrucciones */
-        public void ActivatePageInstructions() { seccionInstrucciones.SetActive(true); }
-        public void DesactivatePageInstructions() { seccionInstrucciones.SetActive(false); }
-
         /* 
          * Evento de boton llamado con el boton Go de las instrucciones
          *  - Desactiva la pagina de instrucciones
          *  - Arranca la corrutina para la cuentra atras y GO
          */
-        public void ButtonGoAction()
+        public void GoToGame()
         {
-            DesactivatePageInstructions();
-            StartCoroutine(CuentaAtrasGo());
-        }
+            guiInstrucciones.DesactivatePageInstructions();
+            StartCuentaAtrasGO();
+        }        
+        #endregion
+
+        #region Cuenta atras GO
+        public void StartCuentaAtrasGO() { StartCoroutine(CuentaAtrasGo()); }
 
         /* 
          * Corrutina para mostrar en Gui la cuenta atras y Go
@@ -106,50 +106,24 @@ namespace MemoryPrototype.Gui
         #endregion
 
         #region Seccion Juego
-        /* Activacion y desactivacion de la seccion de juego */
-        public void ActivateSeccionLevel() { seccionLevel.SetActive(true); }
-        public void DesactivateSeccionLevel() { seccionLevel.SetActive(false); }
-
-        /* Actualizacion de aciertos y fallos de la gui */
-        public void ActualizarAciertosLevel(int numAciertos) { aciertoText.text = ACIERTOS + numAciertos.ToString(); }
-        public void ActualizarFallosLevel(int numFallos) { falloText.text = FALLOS + numFallos.ToString(); }
-
         /* 
          *  Metodo que se llama cuando comienza el juego
          *  - Inicia la corrutina para mostrar los parametros 
          *      de aciertos y fallos y para mostrar la barra de tiempo de juego
-         *  
          */
-        public void StartLevelGame()
-        {
-            StartCoroutine(ShowBarraAndParameters());
-        }
+        public void StartLevelGame() { guiLevelGame.StartLevelGame(); }
 
-        /* 
-         * Corrutina que muestra los aciertos, fallos y decrementa la barra de
-            cuenta atras
-        */
-        IEnumerator ShowBarraAndParameters()
-        {
-            ActivateSeccionLevel();
+        public void ActualizarAciertosLevel(int aciertos) { guiLevelGame.ActualizarAciertosLevel(aciertos); }
 
-            while (cuentaAtras > 0)
-            {
-                cuentaAtras--;
-                timeBarControl.SetTime(cuentaAtras);
-                yield return null;
-            }
-            
-            yield return new WaitForSeconds(1);
-            DesactivateSeccionLevel();
-            OnBarraCuentaAtrasTerminada();
-        }
+        public void ActualizarFallosLevel(int fallos) { guiLevelGame.ActualizarFallosLevel(fallos); }
+
+        public void EndLevelGame() { OnBarraCuentaAtrasTerminada(); }
         #endregion
 
         #region Seccion Resultados
         /* Metodos de activacion y desactivacion de la seccion resultados */
-        public void ActivateResultados() { seccionResultados.SetActive(true); }
-        public void DesactivateResultados() { seccionResultados.SetActive(false); }
+        public void ActivateResultados() { guiResultados.ActivateResultados(); }
+        public void DesactivateResultados() { guiResultados.DesactivateResultados(); }
 
         /* 
         * Hace un reload de toda la scene, para empezar con todo en estado inicial
