@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using MemoryPrototype.Data;
 
 namespace MemoryPrototype.Gui
 {
@@ -22,9 +23,12 @@ namespace MemoryPrototype.Gui
         public static event GoNextState OnCuentaAtrasTerminada;         //Evento para avisar que la cuenta de GO atras ha terminado
         public delegate void EndGame();                                 //Delegado para el evento
         public static event EndGame OnBarraCuentaAtrasTerminada;        //Evento para avisar que la cuenta atras de barra ha terminado
+        public delegate void EndResultadosGUI();                                 //Delegado para el evento
+        public static event EndResultadosGUI OnFinResultados;        //Evento para avisar que la cuenta atras de barra ha terminado
 
         [SerializeField] private TextMeshProUGUI cuentaAtrasGOText;
         private int cuentaAtrasGo;
+        private int contadorFinResultados;
 
         // Start is called before the first frame update
         void Start()
@@ -33,18 +37,21 @@ namespace MemoryPrototype.Gui
             guiLevelGame = seccionLevel.GetComponent<GUILevelSection>();
             guiResultados = seccionResultados.GetComponent<GUIResultadosSection>();
             cuentaAtrasGo = 3;
+            contadorFinResultados = 0;
         }
 
         /* Suscribe el evento de GUI CuentaAtrasEnd */
         private void OnEnable()
         {
-            GUILevelSection.OnLevelGameEnd += EndLevelGame;            
+            GUILevelSection.OnLevelGameEnd += EndLevelGame;
+            GUIResultadosSection.OnEndResultados += EndResultados;
         }
 
         /* Da de baja al evento de GUI CuentaAtrasEnd */
         private void OnDisable()
         {
             GUILevelSection.OnLevelGameEnd -= EndLevelGame;
+            GUIResultadosSection.OnEndResultados -= EndResultados;
         }
 
         #region Seccion Titulo
@@ -124,6 +131,20 @@ namespace MemoryPrototype.Gui
         /* Metodos de activacion y desactivacion de la seccion resultados */
         public void ActivateResultados() { guiResultados.ActivateResultados(); }
         public void DesactivateResultados() { guiResultados.DesactivateResultados(); }
+
+        public void SetResultParameters(float recordAciertos, float aciertosSesion, float fallosSesion, float mediaReaction,
+                                        float percentPrecision, float recordReaction, float recordPrecision)
+        {
+            guiResultados.SetDescription(recordAciertos, recordReaction, recordPrecision);
+            guiResultados.SetAciertosFallos(aciertosSesion, fallosSesion);
+            guiResultados.SetMediasSlider(mediaReaction, percentPrecision);
+        }
+
+        public void EndResultados()
+        {
+            contadorFinResultados++;
+            if (contadorFinResultados == 2) { OnFinResultados(); }
+        }
 
         /* 
         * Hace un reload de toda la scene, para empezar con todo en estado inicial

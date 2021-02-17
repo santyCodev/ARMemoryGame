@@ -29,7 +29,17 @@ namespace MemoryPrototype.Data
         {            
             gui = guiController.GetComponent<GUIController>();
             levelManager = GetComponent<LevelManager>();
-            levelManager.logController = LogController;
+            levelManager.logController = LogController;            
+        }
+
+        private void OnEnable()
+        {
+            GUIController.OnFinResultados += ResetParameters;
+        }
+
+        private void OnDisable()
+        {
+            GUIController.OnFinResultados -= ResetParameters;
         }
 
         #region Funciones level manager
@@ -110,7 +120,13 @@ namespace MemoryPrototype.Data
         {
             EstadisticasManager.instance.EndSession();
             gui.ActivateResultados();
+            gui.SetResultParameters(EstadisticasManager.instance.RecordAciertos, EstadisticasManager.instance.AciertosSesion,
+                                    EstadisticasManager.instance.FallosSesion, EstadisticasManager.instance.MediaReaction,
+                                    EstadisticasManager.instance.PercentPrecision, EstadisticasManager.instance.RecordReaction,
+                                    EstadisticasManager.instance.RecordPrecision);            
         }
+
+        public void ResetParameters() { EstadisticasManager.instance.SetInitialParameters(); }
         #endregion
     }
 }

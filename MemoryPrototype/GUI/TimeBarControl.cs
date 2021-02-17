@@ -19,6 +19,16 @@ namespace MemoryPrototype.Gui
         {
             slider.value = time;
         }
+
+        public void SetTimeFloat(float time)
+        {
+            slider.value = time;
+        }
+
+        public void SetMaxTimePercent(float time)
+        {
+            slider.maxValue = time;
+        }
     }
 }
 

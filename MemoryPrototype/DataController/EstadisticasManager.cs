@@ -5,17 +5,19 @@ namespace MemoryPrototype.Data
     public class EstadisticasManager : MonoBehaviour
     {
         public static EstadisticasManager instance;
-        private float mediaReaction;
-        private float mediaPrecision;
-        private float percentPrecision;
-        private float recordReaction;
-        private float recordPrecision;
+        
         private List<float> tiemposReaction;
         private List<float> tiemposAccurancy;
 
         public int AciertosSesion { get; set; }
         public int FallosSesion { get; set; }
         public int RecordAciertos { get; set; }
+        public float MediaReaction { get; set; }
+        public float MediaPrecision { get; set; }
+        public float PercentPrecision { get; set; }
+        public float RecordReaction { get; set; }
+        public float RecordPrecision { get; set; }
+
 
         private void Awake()
         {
@@ -44,35 +46,28 @@ namespace MemoryPrototype.Data
         {
             if (RecordAciertos < AciertosSesion) { RecordAciertos = AciertosSesion; }
             
-            mediaReaction = MediaCalc(tiemposReaction);
-            mediaPrecision = MediaCalc(tiemposAccurancy);
-            percentPrecision = PercentValue(tiemposAccurancy, mediaPrecision);            
+            MediaReaction = MediaCalc(tiemposReaction);
+            MediaPrecision = MediaCalc(tiemposAccurancy);
+            PercentPrecision = PercentValue(tiemposAccurancy, MediaPrecision);            
 
-            if (recordReaction == 0 || recordReaction > mediaReaction) { recordReaction = mediaReaction; }
-            if (recordPrecision < percentPrecision) { recordPrecision = percentPrecision; }
+            if (RecordReaction == 0 || RecordReaction > MediaReaction) { RecordReaction = MediaReaction; }
+            if (RecordPrecision < PercentPrecision) { RecordPrecision = PercentPrecision; }
+            
+        }
 
-            Debug.Log("Record de aciertos = " + RecordAciertos);
-            Debug.Log("Aciertos en esta sesion = " + AciertosSesion);
-            Debug.Log("Fallos en esta sesion = " + FallosSesion);
-            Debug.Log("Media de reaccion en esta sesion = " + mediaReaction.ToString("0.00") + " seconds");
-            Debug.Log("Media de precision en esta sesion = " + percentPrecision + "%");
-            Debug.Log("Record de reaccion = " + recordReaction.ToString("0.00") + " seconds");
-            Debug.Log("Record de precision = " + recordPrecision + "%");
-
+        public void SetInitialParameters()
+        {
             AciertosSesion = 0;
             FallosSesion = 0;
-            mediaReaction = 0;
-            mediaPrecision = 0;
-            percentPrecision = 0;
+            MediaReaction = 0;
+            MediaPrecision = 0;
+            PercentPrecision = 0;
         }
 
         private void ShowTimes(List<float> list, string timeType)
         {
             string times = "";
-            foreach (var time in list)
-            {
-                times += time.ToString() + "," ;
-            }
+            foreach (var time in list) { times += time.ToString() + "," ; }
             Debug.Log(timeType + "= [" + times + "]");
         }
 
@@ -95,7 +90,6 @@ namespace MemoryPrototype.Data
             float maxTime = MaxValueList(list);
             return (media * 100) / maxTime;
         }
-
     }
 }
 
