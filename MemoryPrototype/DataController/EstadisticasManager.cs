@@ -34,12 +34,10 @@ namespace MemoryPrototype.Data
         public void SetReactionTime(double time) 
         { 
             tiemposReaction.Add((float)time);
-            ShowTimes(tiemposReaction, "tiemposReaction");
         }
         public void SetAccuracyTime(double time) 
         { 
             tiemposAccurancy.Add((float)time);
-            ShowTimes(tiemposAccurancy, "tiemposAccurancy");
         }
 
         public void EndSession()
@@ -62,13 +60,6 @@ namespace MemoryPrototype.Data
             MediaReaction = 0;
             MediaPrecision = 0;
             PercentPrecision = 0;
-        }
-
-        private void ShowTimes(List<float> list, string timeType)
-        {
-            string times = "";
-            foreach (var time in list) { times += time.ToString() + "," ; }
-            Debug.Log(timeType + "= [" + times + "]");
         }
 
         private float MediaCalc(List<float> list)

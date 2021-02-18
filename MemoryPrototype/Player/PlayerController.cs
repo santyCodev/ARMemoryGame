@@ -47,14 +47,14 @@ namespace MemoryPrototype.Player
          */
         private void LetPlayerClick()
         {
-            #if UNITY_EDITOR                  
+            #if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBGL
                 //This is for Unity Testing
                 ClickPointRaycastUnity();
 
-            #elif UNITY_ANDROID 
+            #elif UNITY_ANDROID
                 //This is for Android Devices
                 ClickPointRaycastAndroid();
-            
+
             #endif
         }
 
