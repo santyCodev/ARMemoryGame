@@ -54,6 +54,7 @@ public class PlacaControl : MonoBehaviour
     /* Cambia al color de acierto, despues anima la placa con una courritina */
     public void SuccessAnimation()
     {
+        PrintMessage("SuccessAnimation() - INICIO");
         ChangeMaterialSuccessColor();
         StartCoroutine(PlacaAnimation(true));
     }
@@ -61,6 +62,7 @@ public class PlacaControl : MonoBehaviour
     /* Cambia al color de fallo, despues anima la placa con una courritina */
     public void FailAnimation()
     {
+        PrintMessage("FailAnimation() - INICIO");
         ChangeMaterialFailColor();
         StartCoroutine(PlacaAnimation(false));
     }
@@ -73,10 +75,10 @@ public class PlacaControl : MonoBehaviour
         - Si el parametro = true, lanza el evento para gestionar aciertos
         - Si el parametro = false, lanza el evento para gestionar fallos
      */
-    IEnumerator PlacaAnimation(bool animType)
+    public IEnumerator PlacaAnimation(bool animType)
     {
         PrintMessage("PlacaAnimation() - INICIO");
-        actualPosition = transform.localPosition;
+        actualPosition = transform.position;
         actualScale = transform.localScale;
 
         while (Vector3.Distance(targetPosition, transform.position) > Vector3.kEpsilon)
@@ -85,7 +87,7 @@ public class PlacaControl : MonoBehaviour
             yield return null;
         }
 
-        transform.localPosition = actualPosition;
+        transform.position = actualPosition;
         transform.localScale = actualScale;
 
         if (animType) { OnPlacaAnimationSuccess(); }
@@ -106,7 +108,7 @@ public class PlacaControl : MonoBehaviour
         PrintMessage(" ChangePositionAndScale() - TargetPosition = "+ targetPosition +", TargetScale = " +targetScale);
         float positionDistance = Vector3.Distance(targetPosition, transform.position);
         float scaleDistance = Vector3.Distance(targetScale, transform.localScale);
-        transform.localPosition = Vector3.Lerp(transform.position, targetPosition, (1 / (positionDistance + LERP_SPEED_CONST)));
+        transform.position = Vector3.Lerp(transform.position, targetPosition, (1 / (positionDistance + LERP_SPEED_CONST)));
         transform.localScale = Vector3.Lerp(transform.localScale, targetScale, (1 / (scaleDistance + LERP_SPEED_CONST)));
     }
 

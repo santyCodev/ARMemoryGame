@@ -84,6 +84,17 @@ namespace MemoryPrototype.Game
         }
         #endregion
 
+        #region Funciones llamadas desde el evento OnTargetFound y OnTargetLost
+        public void OnImageTargetFound()
+        {
+            guiController.DesactivateSeccionPatron();
+        }
+
+        public void OnImageTargetLost()
+        {
+            guiController.ActivateSeccionPatron();
+        }
+        #endregion
     } //END CLASS
 }
 

@@ -23,6 +23,7 @@ namespace MemoryPrototype.Game.States
         private int numPlaca;                                         //Indice de conteo de placas
         private ResultsState resultsState;
         private bool isReactionMedition;
+        private PlacaControl actualPlacaControl;
 
         #region Inicializacion de estado
         /*

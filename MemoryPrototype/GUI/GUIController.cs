@@ -14,6 +14,10 @@ namespace MemoryPrototype.Gui
         [SerializeField] private GameObject seccionInstrucciones;
         [SerializeField] private GameObject seccionLevel;
         [SerializeField] private GameObject seccionResultados;
+        [SerializeField] private GameObject seccionPatronTrack;
+        [SerializeField] private TextMeshProUGUI cuentaAtrasGOText;
+
+        private GameObject seccionActual;
 
         private GUIInstruccionesSection guiInstrucciones;
         private GUILevelSection guiLevelGame;
@@ -25,8 +29,7 @@ namespace MemoryPrototype.Gui
         public static event EndGame OnBarraCuentaAtrasTerminada;        //Evento para avisar que la cuenta atras de barra ha terminado
         public delegate void EndResultadosGUI();                                 //Delegado para el evento
         public static event EndResultadosGUI OnFinResultados;        //Evento para avisar que la cuenta atras de barra ha terminado
-
-        [SerializeField] private TextMeshProUGUI cuentaAtrasGOText;
+                
         private int cuentaAtrasGo;
         private int contadorFinResultados;
 
@@ -56,8 +59,16 @@ namespace MemoryPrototype.Gui
 
         #region Seccion Titulo
         /* Activacion y desactivacion de la seccion de titulo*/
-        public void ActivatePageTitle() { seccionTitle.SetActive(true); }
-        public void DesactivatePageTitle() { seccionTitle.SetActive(false); }
+        public void ActivatePageTitle() 
+        { 
+            seccionTitle.SetActive(true);
+            seccionActual = seccionTitle;
+        }
+        public void DesactivatePageTitle() 
+        { 
+            seccionTitle.SetActive(false);
+            seccionActual = null;
+        }
 
         /* 
          * Evento de boton llamado con el boton start
@@ -68,6 +79,7 @@ namespace MemoryPrototype.Gui
         {
             DesactivatePageTitle();
             guiInstrucciones.ActivatePageInstructions();
+            seccionActual = seccionInstrucciones;
         }
         #endregion
 
@@ -80,6 +92,7 @@ namespace MemoryPrototype.Gui
         public void GoToGame()
         {
             guiInstrucciones.DesactivatePageInstructions();
+            seccionActual = null;
             StartCuentaAtrasGO();
         }        
         #endregion
@@ -97,6 +110,7 @@ namespace MemoryPrototype.Gui
         IEnumerator CuentaAtrasGo()
         {
             cuentaAtrasGOText.gameObject.SetActive(true);
+            seccionActual = cuentaAtrasGOText.gameObject;
 
             while (cuentaAtrasGo > 0)
             {
@@ -107,7 +121,10 @@ namespace MemoryPrototype.Gui
 
             cuentaAtrasGOText.text = "GO";
             yield return new WaitForSeconds(1);
+
             cuentaAtrasGOText.gameObject.SetActive(false);
+            seccionActual = null;
+
             OnCuentaAtrasTerminada();
         }
         #endregion
@@ -118,19 +135,35 @@ namespace MemoryPrototype.Gui
          *  - Inicia la corrutina para mostrar los parametros 
          *      de aciertos y fallos y para mostrar la barra de tiempo de juego
          */
-        public void StartLevelGame() { guiLevelGame.StartLevelGame(); }
+        public void StartLevelGame() 
+        { 
+            guiLevelGame.StartLevelGame();
+            seccionActual = seccionLevel;
+        }
 
         public void ActualizarAciertosLevel(int aciertos) { guiLevelGame.ActualizarAciertosLevel(aciertos); }
 
         public void ActualizarFallosLevel(int fallos) { guiLevelGame.ActualizarFallosLevel(fallos); }
 
-        public void EndLevelGame() { OnBarraCuentaAtrasTerminada(); }
+        public void EndLevelGame() 
+        {
+            seccionActual = null;
+            OnBarraCuentaAtrasTerminada();        
+        }
         #endregion
 
         #region Seccion Resultados
         /* Metodos de activacion y desactivacion de la seccion resultados */
-        public void ActivateResultados() { guiResultados.ActivateResultados(); }
-        public void DesactivateResultados() { guiResultados.DesactivateResultados(); }
+        public void ActivateResultados() 
+        { 
+            guiResultados.ActivateResultados();
+            seccionActual = seccionResultados;
+        }
+        public void DesactivateResultados() 
+        { 
+            guiResultados.DesactivateResultados();
+            seccionActual = null;
+        }
 
         public void SetResultParameters(float recordAciertos, float aciertosSesion, float fallosSesion, float mediaReaction,
                                         float percentPrecision, float recordReaction, float recordPrecision)
@@ -152,6 +185,30 @@ namespace MemoryPrototype.Gui
         public void ButtonExitAction()
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+        #endregion
+
+        #region Seccion Patron Track
+        /* Activacion y desactivacion de la seccion de titulo*/
+        public void ActivateSeccionPatron() 
+        {
+            seccionActual.SetActive(false);
+            seccionPatronTrack.SetActive(true); 
+        }
+        public void DesactivateSeccionPatron() 
+        { 
+            seccionPatronTrack.SetActive(false);
+            seccionActual.SetActive(true);
+        }
+
+        /* 
+         * Evento de boton llamado con el boton start
+         *  - Desactiva la pantalla de titulo
+         *  - Activa la pagina de instrucciones     
+         */
+        public void ButtonSeguirAction()
+        {
+            DesactivateSeccionPatron();            
         }
         #endregion
     }

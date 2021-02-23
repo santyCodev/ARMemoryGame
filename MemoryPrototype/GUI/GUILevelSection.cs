@@ -9,7 +9,7 @@ namespace MemoryPrototype.Gui
     {        
         private const string ACIERTOS = "ACIERTOS: ";
         private const string FALLOS = "FALLOS: ";
-        private const int CUENTA = 800;
+        private const int CUENTA = 2000;
 
         [SerializeField] private TextMeshProUGUI aciertoText;
         [SerializeField] private TextMeshProUGUI falloText;

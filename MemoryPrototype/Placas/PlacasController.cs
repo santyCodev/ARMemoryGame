@@ -216,7 +216,6 @@ namespace MemoryPrototype.Placas
             foreach (var placa in placasRandom) { placa.GetComponent<PlacaControl>().SetOriginalMaterialColor(); }
             PrintMessage(" SetOriginalMaterialColor() - DONE");
         }
-
         #endregion
 
         #region gestion de logs
