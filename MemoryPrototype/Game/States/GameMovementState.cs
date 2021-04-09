@@ -16,7 +16,6 @@ namespace MemoryPrototype.Game.States
         private CharacterController characterController;                        //Controlador de personaje
         private GUIController guiController;                                    //Controlador de GUI
         private DataController dataController;
-        private ResultsState resultsState;
 
         #region Inicializacion del estado
         /*
@@ -84,7 +83,7 @@ namespace MemoryPrototype.Game.States
         private void CharacterHasEnd()
         {
             PrintMessage(" CharacterHasEnd() - START");
-            placasController.SetOriginalMaterialColor();
+            placasController.ChangeOriginalMaterial();
             OnExit();
             PrintMessage(" CharacterHasEnd() - END");
         }

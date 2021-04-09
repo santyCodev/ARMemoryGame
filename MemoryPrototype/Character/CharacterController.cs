@@ -7,12 +7,14 @@ namespace MemoryPrototype.Character
 {
     public class CharacterController : MonoBehaviour
     {
+        private const float FIRST_POS_Y = 0.0f;
         [SerializeField] private LogController logController;       //Controlador de logs
 
         private List<GameObject> positionsToWalk;                   //Coleccion de posiciones a recorrer
         private Vector3 nextPosition;                               //Siguiente posicion
         private float currentLerpTime;                              //Tiempo actual de interpolacion lineal
-        private const float LERP_SPEED_CONST = 1.7f;                   //Constante de velocidad de la interpolacion lineal
+        private const float LERP_SPEED_CONST = 2.0f;                   //Constante de velocidad de la interpolacion lineal para Andoroid
+        private const float LERP_SPEED_CONST_GL = 2.8f;                   //Constante de velocidad de la interpolacion lineal para webGl
         private const string CLASS_NAME = "CHARACTER CONTROLLER";
 
         public bool StopWalk;
@@ -43,12 +45,11 @@ namespace MemoryPrototype.Character
         }
 
         /*
-           Define la posicion que tomara el personaje, la posicion tiene que ajustar la variable Y del
-           Vector3 a 0.5 para que el GameObject no se vea enterrado en el plano
+           Define la posicion que tomara el personaje
         */
         private Vector3 NewPosition(Vector3 position)
         {
-            return new Vector3(position.x, 0.5f, position.z);
+            return new Vector3(position.x, position.y, position.z);
         }
         #endregion
 
@@ -71,7 +72,6 @@ namespace MemoryPrototype.Character
             MarkPlate(positionsToWalk[0]);
 
             yield return new WaitForSeconds(0.3f);
-
             foreach (var placaPosition in positionsToWalk)
             {
                 if (!StopWalk)
@@ -82,7 +82,7 @@ namespace MemoryPrototype.Character
                         LookAtNextPosition(nextPosition);
 
                         while (Vector3.Distance(nextPosition, transform.position) > Vector3.kEpsilon)
-                        {
+                        {                            
                             MoveToNextPosition();
                             yield return null;
                         }
@@ -111,9 +111,17 @@ namespace MemoryPrototype.Character
         {            
             PrintMessage(" MoveToNextPosition() - Moviendo chara a " + nextPosition);
             float distance = Vector3.Distance(nextPosition, transform.position);
-            transform.localPosition = Vector3.Lerp(transform.position, nextPosition, (1/(distance+LERP_SPEED_CONST)));            
+            transform.localPosition = Vector3.Lerp(transform.position, nextPosition, (1 / (distance + GetLerpSpeed())));            
         }   
 
+        private float GetLerpSpeed()
+        {
+            #if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBGL
+                       return LERP_SPEED_CONST_GL;
+            #elif UNITY_ANDROID
+                       return LERP_SPEED_CONST;
+            #endif
+        }
         /*
             Hace que el personaje mire hacia una posicicion concreta
          */
@@ -130,7 +138,7 @@ namespace MemoryPrototype.Character
         private void MarkPlate(GameObject placa)
         {
             PrintMessage(" MarkPlate()- Marcando placa " + placa.transform.position);
-            placa.GetComponent<PlacaControl>().ChangeMaterialColor();
+            placa.GetComponent<PlacaControl>().ChangeMarkedMaterial();
         }
 
         #endregion

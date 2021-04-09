@@ -71,23 +71,7 @@ namespace MemoryPrototype.Game.States
             placasController.InitializePlacasRandom();
             //PlacasRandomInitialization();
             CharacterInitialization();
-        }        
-
-        /*
-            Iniclaliza las placas random para el turno
-            - Si el nivel actual es mayor que 1, inicializa con el numero de placas dado por el nivel
-            - Si el nivel actual es 1 pero ha bajado de nivel, se inicializa con el numero de placas default
-            - Si no se cumple ninguna condicino, significa que es el comienzo del juego, entonces ya estara
-                inicializado en el controlador de placas
-         */
-        private void PlacasRandomInitialization()
-        {
-            PrintMessage(" PlacasRandomInitialization() - NivelActual = " + dataController.GetActualLevel());
-            if (ActualLvlMajOne() || ActualLvlOneAndBeforeLvlMajOne() || ActualLvlOneAndActualRondaMajOne()) 
-            {                 
-                placasController.InitializePlacasRandom();
-            }
-        }
+        }      
 
         private bool ActualLvlOneAndActualRondaMajOne() { return (dataController.GetActualLevel() == 1); } //&& (dataController.GetActualRonda() > 1); }
         /*

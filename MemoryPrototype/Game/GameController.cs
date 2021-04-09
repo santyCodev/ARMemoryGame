@@ -36,11 +36,18 @@ namespace MemoryPrototype.Game
         public GUIController GuiController { get { return guiController; } }                        //Controlador de datos
 
         #region Start, Update y cambio de estado
-        /* Activa la pantalla de titulo de la GUI */
+
+        /*  
+           Dependiendo de la variable isExitInfo persistente:
+            - si es true va directamente al juego desde la cuenta atras
+            - si es false va a la pantalla de titulo
+         */
         private void Start()
         {
             CurrentState = null;
-            guiController.ActivatePageTitle();
+            if (DataController.GetIsExitInfo()) { guiController.ActivarCuentaAtrasGame(); }
+            else { guiController.ActivatePantallaTitle(); }
+            DataController.SaveIsExitInfo(false);
         }
 
         /* Cuando el estado actual este inicializado, se ejecuta */

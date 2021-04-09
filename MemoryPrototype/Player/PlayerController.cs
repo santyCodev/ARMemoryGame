@@ -106,13 +106,18 @@ namespace MemoryPrototype.Player
         private void GetPlacaForRaycastHit(Ray ray)
         {            
             RaycastHit hit;
-            PrintMessage(" GetPlacaForRaycastHit() - ENTER");            
-            if (Physics.Raycast(ray, out hit)) 
-            {
+            PrintMessage(" GetPlacaForRaycastHit() - ENTER");
+            
+            if (Physics.Raycast(ray, out hit))
+            {                    
                 PrintMessage(" GetPlacaForRaycastHit() - Placa seleccionada: " + hit.transform.position);
                 OnPlacaClicked(hit.transform.gameObject);
             }
-            else { PrintMessage(" - Raycast no colisionado"); }
+            else
+            {
+                StartExecute = true;
+            }            
+            
             PrintMessage(" GetPlacaForRaycastHit() - DONE");
         }
         #endregion

@@ -5,22 +5,22 @@ using UnityEngine;
 
 public class PlacaControl : MonoBehaviour
 {
-    private const string CLASS_NAME = "PLACA CONTROL";                                        //Constante con el nombre de la clase
+    private const string CLASS_NAME = "PLACA CONTROL";              //Constante con el nombre de la clase
+    private const float MAX_Y = 0.5f;                               //Altura maxima de placa
+    private const float MAX_SCALE = 1.3f;                           //Escala maxima de placa
+    private const float LERP_SPEED_CONST = 2f;                      //Constante de velocidad de la interpolacion lineal
 
-    [SerializeField] private LogController logController;                                       //Controlador de logs
-    
-    private Material material;
-    private Color32 actualColor;
-    private Color32 markedColor;
-    private Color32 failColor;
-    private Color32 successColor;
+    [SerializeField] private LogController logController;           //Controlador de logs    
+    [SerializeField] private Material[] material;                   //Lista de materiales    
+        
     public delegate void PlacaAnimated();                           //Delegado para el evento
     public static event PlacaAnimated OnPlacaAnimationFail;         //Evento para avisar que la placa ha terminado la animacion de fallo
     public static event PlacaAnimated OnPlacaAnimationSuccess;      //Evento para avisar que la placa ha terminado la animacion de acierto
 
-    private const float MAX_Y = 0.1f;                               //Altura maxima de placa
-    private const float MAX_SCALE = 1.3f;                           //Escala maxima de placa
-    private const float LERP_SPEED_CONST = 2f;                   //Constante de velocidad de la interpolacion lineal
+    private Renderer rend;
+    private Color32 failColor;
+    private Color32 successColor;
+    private Color32 originalColor;    
     private Vector3 targetPosition;
     private Vector3 actualPosition;
     private Vector3 targetScale;
@@ -31,23 +31,42 @@ public class PlacaControl : MonoBehaviour
      */
     void Start()
     {
-        material = GetComponent<Renderer>().material;
-        actualColor = material.color;
-        markedColor = new Color32(0, 104, 111, 255);
-        failColor = new Color32(255, 95, 0, 255);
-        successColor = new Color32(0, 255, 2, 255);
+        failColor = new Color32(255, 64, 64, 255);
+        originalColor = new Color32(255, 255, 255, 255);
+        successColor = new Color32(197, 255, 118, 255);
+        rend = GetComponent<Renderer>();
+        rend.enabled = true;
+        ChangeOriginalMaterial();
         targetPosition = new Vector3(transform.localPosition.x, MAX_Y, transform.localPosition.z);
         targetScale = new Vector3(MAX_SCALE, transform.localScale.y, MAX_SCALE);
     }
 
-    #region Cambio de color
-    /* Cambia el color original del material */
-    public void ChangeMaterialColor() { material.SetColor("_Color", markedColor); }
-    public void ChangeMaterialFailColor() { material.SetColor("_Color", failColor); }
-    public void ChangeMaterialSuccessColor() { material.SetColor("_Color", successColor); }
+    #region Cambio de material
+    /* Asigna el material original [0]*/
+    public void ChangeOriginalMaterial() 
+    { 
+        rend.material = material[0];
+        rend.material.SetColor("_Color", originalColor);
+    }
 
-    /* Devuelve el color original del material */
-    public void SetOriginalMaterialColor() { material.SetColor("_Color", actualColor); }
+    /* Asigna el material de fallo [1]*/
+    public void ChangeFailMaterial() 
+    { 
+        rend.material = material[1];
+        rend.material.SetColor("_Color", failColor);
+    }
+
+    /* Asigna el material de acierto [2]*/
+    public void ChangeSuccessMaterial() 
+    { 
+        rend.material = material[2];
+        rend.material.SetColor("_Color", successColor);
+    }
+    public void ChangeMarkedMaterial()
+    {
+        rend.material = material[2];
+        rend.material.SetColor("_Color", originalColor);
+    }
     #endregion
 
     #region Animaciones
@@ -55,7 +74,7 @@ public class PlacaControl : MonoBehaviour
     public void SuccessAnimation()
     {
         PrintMessage("SuccessAnimation() - INICIO");
-        ChangeMaterialSuccessColor();
+        ChangeSuccessMaterial();
         StartCoroutine(PlacaAnimation(true));
     }
 
@@ -63,7 +82,7 @@ public class PlacaControl : MonoBehaviour
     public void FailAnimation()
     {
         PrintMessage("FailAnimation() - INICIO");
-        ChangeMaterialFailColor();
+        ChangeFailMaterial();
         StartCoroutine(PlacaAnimation(false));
     }
 
@@ -78,17 +97,18 @@ public class PlacaControl : MonoBehaviour
     public IEnumerator PlacaAnimation(bool animType)
     {
         PrintMessage("PlacaAnimation() - INICIO");
-        actualPosition = transform.position;
+        actualPosition = transform.localPosition;
         actualScale = transform.localScale;
 
-        while (Vector3.Distance(targetPosition, transform.position) > Vector3.kEpsilon)
+        while (Vector3.Distance(targetPosition, transform.localPosition) > Vector3.kEpsilon)
         {
             ChangePositionAndScale();
             yield return null;
         }
 
-        transform.position = actualPosition;
+        transform.localPosition = actualPosition;
         transform.localScale = actualScale;
+        PrintMessage(" PlacaAnimation() - Posicion actual = " + transform.localPosition);
 
         if (animType) { OnPlacaAnimationSuccess(); }
         else { OnPlacaAnimationFail(); }
@@ -106,9 +126,9 @@ public class PlacaControl : MonoBehaviour
     private void ChangePositionAndScale()
     {        
         PrintMessage(" ChangePositionAndScale() - TargetPosition = "+ targetPosition +", TargetScale = " +targetScale);
-        float positionDistance = Vector3.Distance(targetPosition, transform.position);
+        float positionDistance = Vector3.Distance(targetPosition, transform.localPosition);
         float scaleDistance = Vector3.Distance(targetScale, transform.localScale);
-        transform.position = Vector3.Lerp(transform.position, targetPosition, (1 / (positionDistance + LERP_SPEED_CONST)));
+        transform.localPosition = Vector3.Lerp(transform.localPosition, targetPosition, (1 / (positionDistance + LERP_SPEED_CONST)));
         transform.localScale = Vector3.Lerp(transform.localScale, targetScale, (1 / (scaleDistance + LERP_SPEED_CONST)));
     }
 

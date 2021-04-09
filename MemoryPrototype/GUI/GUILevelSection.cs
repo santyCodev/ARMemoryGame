@@ -7,8 +7,6 @@ namespace MemoryPrototype.Gui
 {
     public class GUILevelSection : MonoBehaviour
     {        
-        private const string ACIERTOS = "ACIERTOS: ";
-        private const string FALLOS = "FALLOS: ";
         private const int CUENTA = 2000;
 
         [SerializeField] private TextMeshProUGUI aciertoText;
@@ -22,9 +20,7 @@ namespace MemoryPrototype.Gui
 
         // Start is called before the first frame update
         void Awake()
-        {
-            aciertoText.text = ACIERTOS;
-            falloText.text = FALLOS;
+        {            
             cuentaAtras = CUENTA;
             timeBarControl = gameObject.GetComponent<TimeBarControl>();
             timeBarControl.SetMaxTime(CUENTA);
@@ -37,8 +33,8 @@ namespace MemoryPrototype.Gui
         public void DesactivateSeccionLevel() { gameObject.SetActive(false); }
 
         /* Actualizacion de aciertos y fallos de la gui */
-        public void ActualizarAciertosLevel(int numAciertos) { aciertoText.text = ACIERTOS + numAciertos.ToString(); }
-        public void ActualizarFallosLevel(int numFallos) { falloText.text = FALLOS + numFallos.ToString(); }
+        public void ActualizarAciertosLevel(int numAciertos) { aciertoText.text = numAciertos.ToString(); }
+        public void ActualizarFallosLevel(int numFallos) { falloText.text = numFallos.ToString(); }
 
         public void StartLevelGame() {
             ActivateSeccionLevel();
