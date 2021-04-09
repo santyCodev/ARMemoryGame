@@ -84,12 +84,14 @@ namespace MemoryPrototype.Player
         {
             if (!StopPlayer)
             {
+                
                 if (StartExecute &&
-                ((Input.GetTouch(0).phase == TouchPhase.Stationary) ||
+                ((Input.GetTouch(0).phase == TouchPhase.Began) ||
                  (Input.GetTouch(0).phase == TouchPhase.Moved && Input.GetTouch(0).deltaPosition.magnitude < 1.2f)))
                 {
-                    OnClickedReaction();
                     StartExecute = false;
+                    PrintMessage(" ClickPointRaycastAndroid() - Posicion touch = " + Input.GetTouch(0).position);
+                    OnClickedReaction();
                     Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
                     GetPlacaForRaycastHit(ray);
                 }
@@ -104,13 +106,18 @@ namespace MemoryPrototype.Player
         private void GetPlacaForRaycastHit(Ray ray)
         {            
             RaycastHit hit;
-            PrintMessage(" GetPlacaForRaycastHit() - ENTER");            
-            if (Physics.Raycast(ray, out hit)) 
-            {
+            PrintMessage(" GetPlacaForRaycastHit() - ENTER");
+            
+            if (Physics.Raycast(ray, out hit))
+            {                    
                 PrintMessage(" GetPlacaForRaycastHit() - Placa seleccionada: " + hit.transform.position);
                 OnPlacaClicked(hit.transform.gameObject);
             }
-            else { PrintMessage(" - Raycast no colisionado"); }
+            else
+            {
+                StartExecute = true;
+            }            
+            
             PrintMessage(" GetPlacaForRaycastHit() - DONE");
         }
         #endregion

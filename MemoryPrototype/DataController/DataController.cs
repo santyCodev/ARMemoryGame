@@ -35,11 +35,13 @@ namespace MemoryPrototype.Data
         private void OnEnable()
         {
             GUIController.OnFinResultados += ResetParameters;
+            GUIController.OnExitApp += SaveIsExitInfo;
         }
 
         private void OnDisable()
         {
             GUIController.OnFinResultados -= ResetParameters;
+            GUIController.OnExitApp -= SaveIsExitInfo;
         }
 
         #region Funciones level manager
@@ -78,6 +80,16 @@ namespace MemoryPrototype.Data
         {            
             EstadisticasManager.instance.FallosSesion++;
             gui.ActualizarFallosLevel(EstadisticasManager.instance.FallosSesion);
+        }
+
+        public bool GetIsExitInfo()
+        {
+            return EstadisticasManager.instance.SetIsExitInfo;
+        }
+
+        public void SaveIsExitInfo(bool isExit)
+        {
+            EstadisticasManager.instance.SetIsExitInfo = isExit;
         }
         #endregion
 
@@ -120,10 +132,8 @@ namespace MemoryPrototype.Data
         {
             EstadisticasManager.instance.EndSession();
             gui.ActivateResultados();
-            gui.SetResultParameters(EstadisticasManager.instance.RecordAciertos, EstadisticasManager.instance.AciertosSesion,
-                                    EstadisticasManager.instance.FallosSesion, EstadisticasManager.instance.MediaReaction,
-                                    EstadisticasManager.instance.PercentPrecision, EstadisticasManager.instance.RecordReaction,
-                                    EstadisticasManager.instance.RecordPrecision);            
+            gui.SetResultParameters(EstadisticasManager.instance.AciertosSesion, EstadisticasManager.instance.FallosSesion, 
+                                    EstadisticasManager.instance.AciertosPerc, EstadisticasManager.instance.FallosPerc);            
         }
 
         public void ResetParameters() { EstadisticasManager.instance.SetInitialParameters(); }

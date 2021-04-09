@@ -10,12 +10,15 @@ namespace MemoryPrototype.Gui
 {
     public class GUIController : MonoBehaviour
     {
-        [SerializeField] private GameObject seccionTitle;
-        [SerializeField] private GameObject seccionInstrucciones;
-        [SerializeField] private GameObject seccionLevel;
-        [SerializeField] private GameObject seccionResultados;
+        [SerializeField] private GameObject pantallaTitle;
+        [SerializeField] private GameObject pantallaInstrucciones;
+        [SerializeField] private GameObject pantallaGame;
+        [SerializeField] private GameObject pantallaResultados;
+        [SerializeField] private GameObject pantallaPatronTrack;
+        [SerializeField] private TextMeshProUGUI cuentaAtrasGOText;
 
-        private GUIInstruccionesSection guiInstrucciones;
+        private GameObject pantallaActual;
+
         private GUILevelSection guiLevelGame;
         private GUIResultadosSection guiResultados;
 
@@ -25,67 +28,81 @@ namespace MemoryPrototype.Gui
         public static event EndGame OnBarraCuentaAtrasTerminada;        //Evento para avisar que la cuenta atras de barra ha terminado
         public delegate void EndResultadosGUI();                                 //Delegado para el evento
         public static event EndResultadosGUI OnFinResultados;        //Evento para avisar que la cuenta atras de barra ha terminado
+        public delegate void ExitApplication(bool isExit);                                 //Delegado para el evento
+        public static event ExitApplication OnExitApp;        //Evento para avisar que la cuenta atras de barra ha terminado
 
-        [SerializeField] private TextMeshProUGUI cuentaAtrasGOText;
+
         private int cuentaAtrasGo;
         private int contadorFinResultados;
 
-        // Start is called before the first frame update
+        #region Inicializacion controlador
         void Start()
         {
-            guiInstrucciones = seccionInstrucciones.GetComponent<GUIInstruccionesSection>();
-            guiLevelGame = seccionLevel.GetComponent<GUILevelSection>();
-            guiResultados = seccionResultados.GetComponent<GUIResultadosSection>();
+            guiLevelGame = pantallaGame.GetComponent<GUILevelSection>();
+            guiResultados = pantallaResultados.GetComponent<GUIResultadosSection>();
             cuentaAtrasGo = 3;
             contadorFinResultados = 0;
         }
 
-        /* Suscribe el evento de GUI CuentaAtrasEnd */
+        /* Subscripcion de eventos */
         private void OnEnable()
         {
             GUILevelSection.OnLevelGameEnd += EndLevelGame;
             GUIResultadosSection.OnEndResultados += EndResultados;
+            GUISeccionTitle.OnTapClickOnScreen += GoToPantallaInstrucciones;
+            GUIInstruccionesSection.OnTapClickOnGameButton += GoToPantallaCuentaAtras;
         }
 
-        /* Da de baja al evento de GUI CuentaAtrasEnd */
+        /* Desuscripcion de eventos */
         private void OnDisable()
         {
             GUILevelSection.OnLevelGameEnd -= EndLevelGame;
             GUIResultadosSection.OnEndResultados -= EndResultados;
-        }
-
-        #region Seccion Titulo
-        /* Activacion y desactivacion de la seccion de titulo*/
-        public void ActivatePageTitle() { seccionTitle.SetActive(true); }
-        public void DesactivatePageTitle() { seccionTitle.SetActive(false); }
-
-        /* 
-         * Evento de boton llamado con el boton start
-         *  - Desactiva la pantalla de titulo
-         *  - Activa la pagina de instrucciones     
-         */
-        public void ButtonStartAction()
-        {
-            DesactivatePageTitle();
-            guiInstrucciones.ActivatePageInstructions();
+            GUISeccionTitle.OnTapClickOnScreen -= GoToPantallaInstrucciones;
+            GUIInstruccionesSection.OnTapClickOnGameButton -= GoToPantallaCuentaAtras;
         }
         #endregion
+        
+        #region Pantalla de Titulo
+        /*  Activacion de la pantalla de titulo desde el Gamecontroller */
+        public void ActivatePantallaTitle() { ActivatePantalla(pantallaTitle); }
 
-        #region Seccion Instrucciones
+        /*  Desactivacion de la pantalla de titulo desde el GuiController */
+        public void DesactivatePantallaTitle() { DesactivatePantalla(pantallaTitle); }
+
         /* 
-         * Evento de boton llamado con el boton Go de las instrucciones
+         * Evento de llamado desde la pantalla de titulo
+         *  - Desactiva la pantalla de titulo
+         *  - Activa la pantalla de instrucciones     
+         */
+        public void GoToPantallaInstrucciones()
+        {
+            DesactivatePantallaTitle();
+            ActivatePantallaInstructions();
+        }
+        #endregion
+        
+        #region Pantalla de Instrucciones
+        /*  Activacion de la pantalla de instrucciones desde el GUIController*/
+        public void ActivatePantallaInstructions() { ActivatePantalla(pantallaInstrucciones); }
+
+        /*  Desactivacion de la pantalla de instrucciones desde el GuiController */
+        public void DesactivatePantallaInstructions() { DesactivatePantalla(pantallaInstrucciones); }
+
+        /* 
+         * Evento de boton llamado desde la pantalla de las instrucciones
          *  - Desactiva la pagina de instrucciones
          *  - Arranca la corrutina para la cuentra atras y GO
          */
-        public void GoToGame()
+        public void GoToPantallaCuentaAtras()
         {
-            guiInstrucciones.DesactivatePageInstructions();
-            StartCuentaAtrasGO();
+            DesactivatePantallaInstructions();
+            ActivarCuentaAtrasGame();
         }        
         #endregion
 
         #region Cuenta atras GO
-        public void StartCuentaAtrasGO() { StartCoroutine(CuentaAtrasGo()); }
+        public void ActivarCuentaAtrasGame() { StartCoroutine(CuentaAtrasGo()); }
 
         /* 
          * Corrutina para mostrar en Gui la cuenta atras y Go
@@ -97,6 +114,7 @@ namespace MemoryPrototype.Gui
         IEnumerator CuentaAtrasGo()
         {
             cuentaAtrasGOText.gameObject.SetActive(true);
+            pantallaActual = cuentaAtrasGOText.gameObject;
 
             while (cuentaAtrasGo > 0)
             {
@@ -107,7 +125,10 @@ namespace MemoryPrototype.Gui
 
             cuentaAtrasGOText.text = "GO";
             yield return new WaitForSeconds(1);
+
             cuentaAtrasGOText.gameObject.SetActive(false);
+            pantallaActual = null;
+
             OnCuentaAtrasTerminada();
         }
         #endregion
@@ -118,26 +139,40 @@ namespace MemoryPrototype.Gui
          *  - Inicia la corrutina para mostrar los parametros 
          *      de aciertos y fallos y para mostrar la barra de tiempo de juego
          */
-        public void StartLevelGame() { guiLevelGame.StartLevelGame(); }
+        public void StartLevelGame() 
+        { 
+            guiLevelGame.StartLevelGame();
+            pantallaActual = pantallaGame;
+        }
 
         public void ActualizarAciertosLevel(int aciertos) { guiLevelGame.ActualizarAciertosLevel(aciertos); }
 
         public void ActualizarFallosLevel(int fallos) { guiLevelGame.ActualizarFallosLevel(fallos); }
 
-        public void EndLevelGame() { OnBarraCuentaAtrasTerminada(); }
+        public void EndLevelGame() 
+        {
+            pantallaActual = null;
+            OnBarraCuentaAtrasTerminada();        
+        }
         #endregion
 
         #region Seccion Resultados
         /* Metodos de activacion y desactivacion de la seccion resultados */
-        public void ActivateResultados() { guiResultados.ActivateResultados(); }
-        public void DesactivateResultados() { guiResultados.DesactivateResultados(); }
+        public void ActivateResultados() 
+        { 
+            guiResultados.ActivateResultados();
+            pantallaActual = pantallaResultados;
+        }
+        public void DesactivateResultados() 
+        { 
+            guiResultados.DesactivateResultados();
+            pantallaActual = null;
+        }
 
-        public void SetResultParameters(float recordAciertos, float aciertosSesion, float fallosSesion, float mediaReaction,
-                                        float percentPrecision, float recordReaction, float recordPrecision)
+        public void SetResultParameters(int aciertosSesion, int fallosSesion, float aciertosPerc, float fallosPerc)
         {
-            guiResultados.SetDescription(recordAciertos, recordReaction, recordPrecision);
+            guiResultados.SetDescription(aciertosSesion, fallosSesion, aciertosPerc, fallosPerc);
             guiResultados.SetAciertosFallos(aciertosSesion, fallosSesion);
-            guiResultados.SetMediasSlider(mediaReaction, percentPrecision);
         }
 
         public void EndResultados()
@@ -149,11 +184,55 @@ namespace MemoryPrototype.Gui
         /* 
         * Hace un reload de toda la scene, para empezar con todo en estado inicial
         */
-        public void ButtonExitAction()
+        public void ButtonExitAction() { LoadScene(false); }
+
+        /* 
+        * Hace un reload de toda la scene, para empezar con todo en estado inicial
+        */
+        public void ButtonJugarAction() { LoadScene(true); }
+
+        private void LoadScene(bool flag)
         {
+            OnExitApp(flag);
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
         #endregion
+
+        #region Seccion Patron Track
+        /* Activacion y desactivacion de la seccion de titulo*/
+        public void ActivateSeccionPatron() 
+        {
+            pantallaActual.SetActive(false);
+            pantallaPatronTrack.SetActive(true); 
+        }
+        public void DesactivateSeccionPatron() 
+        { 
+            pantallaPatronTrack.SetActive(false);
+            pantallaActual.SetActive(true);
+        }
+
+        /* 
+         * Evento de boton llamado con el boton start
+         *  - Desactiva la pantalla de titulo
+         *  - Activa la pagina de instrucciones     
+         */
+        public void ButtonSeguirAction()
+        {
+            DesactivateSeccionPatron();            
+        }
+        #endregion
+
+        private void ActivatePantalla(GameObject pantalla)
+        {
+            pantalla.SetActive(true);
+            pantallaActual = pantalla;
+        }
+
+        private void DesactivatePantalla(GameObject pantalla)
+        {
+            pantalla.SetActive(false);
+            pantallaActual = null;
+        }
     }
 }
 

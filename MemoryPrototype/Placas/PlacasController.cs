@@ -58,6 +58,9 @@ namespace MemoryPrototype.Placas
             PrintMessage(" SetDefaultTags() - DONE ");
         }
 
+        #endregion
+
+        #region Inicializacion de Placas Random
         /*
            Esta funcion inicializa la lista de placaas random
             - Instancia la lista de placas
@@ -211,12 +214,11 @@ namespace MemoryPrototype.Placas
         /*
             Devuelve a las placas aleatorias su color original
          */
-        public void SetOriginalMaterialColor()
+        public void ChangeOriginalMaterial()
         {            
-            foreach (var placa in placasRandom) { placa.GetComponent<PlacaControl>().SetOriginalMaterialColor(); }
-            PrintMessage(" SetOriginalMaterialColor() - DONE");
+            foreach (var placa in placasRandom) { placa.GetComponent<PlacaControl>().ChangeOriginalMaterial(); }
+            PrintMessage(" ChangeOriginalMaterial() - DONE");
         }
-
         #endregion
 
         #region gestion de logs

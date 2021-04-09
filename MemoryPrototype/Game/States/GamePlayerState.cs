@@ -21,8 +21,8 @@ namespace MemoryPrototype.Game.States
         private List<GameObject> placasRandom;                              //Las placas random
         private GameObject placaActual;                                     //La placa actual a comparar
         private int numPlaca;                                         //Indice de conteo de placas
-        private ResultsState resultsState;
         private bool isReactionMedition;
+        private PlacaControl actualPlacaControl;
 
         #region Inicializacion de estado
         /*
@@ -115,7 +115,7 @@ namespace MemoryPrototype.Game.States
             if (placasRandom[numPlaca].Equals(placaSelected))
             {                
                 PrintMessage(" CheckPlacas() - La placa "+ placaSelected.name +" y la placa "+ placasRandom[numPlaca].name+" SI son iguales");                
-                placasRandom[numPlaca].GetComponent<PlacaControl>().ChangeMaterialColor();
+                placasRandom[numPlaca].GetComponent<PlacaControl>().ChangeMarkedMaterial();
                 dataController.UpAcierto();
                 dataController.StopAccuracyMedition();
                 dataController.UpAciertosTotales();
@@ -275,7 +275,7 @@ namespace MemoryPrototype.Game.States
             }
             else
             {
-                placasController.SetOriginalMaterialColor();
+                placasController.ChangeOriginalMaterial();
                 base.OnExit(new GameInitializationState(gameControllerContext));
             }            
         }
