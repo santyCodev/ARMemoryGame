@@ -5,6 +5,7 @@ using System;
 using UnityEngine;
 using MemoryPrototype.Logs;
 using MemoryPrototype.Utils;
+using Audio;
 
 namespace MemoryPrototype.Gui
 {
@@ -16,7 +17,9 @@ namespace MemoryPrototype.Gui
         [SerializeField] private Transform tapText;
         [SerializeField] private CorroutinesUtils corroutinesUtils;
         [SerializeField] private InputControlUtils inputControlUtils;
+        [SerializeField] private AudioClip goToPlaySound;
 
+        private AudioController audioController;
         private Vector3 initialScale;
         private Vector3 targetScale;
 
@@ -27,11 +30,19 @@ namespace MemoryPrototype.Gui
         {
             initialScale = tapText.localScale;
             targetScale = new Vector3(MAX_SCALE, MAX_SCALE, tapText.localScale.z);
+            audioController = GetComponent<AudioController>();
             StartCoroutine(corroutinesUtils.TextScaleAnimation(initialScale, targetScale, LERP_SPEED_CONST, tapText));            
         }
 
         // Update is called once per frame
-        void Update() { if(inputControlUtils.InputControl()) { OnTapClickOnScreen();} }
+        void Update() 
+        { 
+            if(inputControlUtils.InputControl()) 
+            {
+                audioController.PlayOneShotSound(goToPlaySound);
+                OnTapClickOnScreen();
+            }
+        }
     }
 }
 

@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using MemoryPrototype.Data;
 using MemoryPrototype.Utils;
+using Audio;
 
 namespace MemoryPrototype.Gui
 {
@@ -19,10 +20,17 @@ namespace MemoryPrototype.Gui
         [SerializeField] private Transform jugarTextTransform;
         [SerializeField] private Transform salirTextTransform;
         [SerializeField] private CorroutinesUtils corroutinesUtils;
+        [SerializeField] private AudioClip endGameSound;
 
+        private AudioController audioController;
         public delegate void EndResultados();                             //Delegado para el evento
         public static event EndResultados OnEndResultados;               //Evento para avisar que ha terminado de crecer las barras
 
+        private void Start()
+        {
+            audioController = GetComponent<AudioController>();
+            audioController.PlayOneShotSound(endGameSound);
+        }
 
         /* Metodos de activacion y desactivacion de la seccion resultados */
         public void ActivateResultados() { gameObject.SetActive(true); }

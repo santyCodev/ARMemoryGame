@@ -45,8 +45,8 @@ namespace MemoryPrototype.Game
         private void Start()
         {
             CurrentState = null;
-            if (DataController.GetIsExitInfo()) { guiController.ActivarCuentaAtrasGame(); }
-            else { guiController.ActivatePantallaTitle(); }
+            if (DataController.GetIsExitInfo()) { guiController.ActivarPantallaPatron(true); }
+            else { guiController.ActivarPantallaPatron(false); }
             DataController.SaveIsExitInfo(false);
         }
 
@@ -91,17 +91,7 @@ namespace MemoryPrototype.Game
         }
         #endregion
 
-        #region Funciones llamadas desde el evento OnTargetFound y OnTargetLost
-        public void OnImageTargetFound()
-        {
-            guiController.DesactivateSeccionPatron();
-        }
-
-        public void OnImageTargetLost()
-        {
-            guiController.ActivateSeccionPatron();
-        }
-        #endregion
+        
     } //END CLASS
 }
 

@@ -1,4 +1,5 @@
-﻿using MemoryPrototype.Utils;
+﻿using Audio;
+using MemoryPrototype.Utils;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -14,7 +15,7 @@ namespace MemoryPrototype.Gui
         private const string INSTRUCTION_MESSAGE_3 = "Cada posicion correcta sera un acierto. Al completar el camino, la ultima posicion se tornará verde.";
         private const string INSTRUCTION_MESSAGE_4 = "Una posicion incorrecta sera un fallo, se indicara en rojo el bloque que ha tenido que tocar y tendra que volver a comenzar un nuevo camino.";
         private const string INSTRUCTION_MESSAGE_5 = "Si completa un camino 3 veces, se añadira al camino un bloque mas para memorizar.";
-        private const string INSTRUCTION_MESSAGE_6 = "¿Cuantos bloques del camino es capaz de memorizar en un tiempo determinado?";
+        private const string INSTRUCTION_MESSAGE_6 = "Pero si el camino tiene mas de 4 bloques y falla 3 veces, se quitara un bloque al camino";
 
         private const float MAX_SCALE = 1.2f;
         private const float LERP_SPEED_CONST = 2f;                      //Constante de velocidad de la interpolacion lineal
@@ -28,7 +29,11 @@ namespace MemoryPrototype.Gui
         [SerializeField] private Transform jugarTextTransform;
         [SerializeField] private CorroutinesUtils corroutinesUtils;
         [SerializeField] private InputControlUtils inputControlUtils;
-  
+        [SerializeField] private AudioClip goToPlaySound;
+        [SerializeField] private AudioClip normalButtonSound;
+
+        private AudioController audioController;
+
         public delegate void GoToGame();                             //Delegado para el evento
         public static event GoToGame OnTapClickOnGameButton;         //Evento para avisar que la cuenta de GO atras ha terminado
 
@@ -36,7 +41,7 @@ namespace MemoryPrototype.Gui
 
         private void Start()
         {
-            Debug.Log("Instrucciones start");
+            audioController = GetComponent<AudioController>();
             InitializeMessages();
             indexImages = 0;
             ActivateScreen();
@@ -68,11 +73,13 @@ namespace MemoryPrototype.Gui
         public void OnTapJugarClick() 
         {
             //Se va al juego, lanza el evento
+            audioController.PlayOneShotSound(goToPlaySound);
             OnTapClickOnGameButton();
         }
         public void OnTapSigClick() 
         {
             //Se va a la pantalla de instruccion siguiente
+            audioController.PlayOneShotSound(normalButtonSound);
             indexImages++;
             ActivateScreen();
         }
@@ -80,13 +87,13 @@ namespace MemoryPrototype.Gui
         public void OnTapAntClick() 
         {
             //Se va a la pantalla de instruccion anterior
+            audioController.PlayOneShotSound(normalButtonSound);
             indexImages--;
             ActivateScreen();
         }       
 
         private void ActivateScreen()
         {
-            Debug.Log("Instrucciones activate screen");
             if (instructionImages.Length > 1)
             {
                 if      (indexImages == 0) { SetScreenParameters(true, false, instructionMessages[0]); }
@@ -97,7 +104,6 @@ namespace MemoryPrototype.Gui
 
         private void SetScreenParameters(bool valueSig, bool valueAnt, string message)
         {
-            Debug.Log("Instrucciones activate button message");
             sigTextTransform.gameObject.SetActive(valueSig);
             antTextTransform.gameObject.SetActive(valueAnt);
             sourceImage.sprite = instructionImages[indexImages];

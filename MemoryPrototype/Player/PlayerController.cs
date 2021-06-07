@@ -7,15 +7,17 @@ namespace MemoryPrototype.Player
 {
     public class PlayerController : MonoBehaviour
     {
+        private const string CLASS_NAME = "PLAYER CONTROLLER";      //Constante con el nombre de la clase
+
         [SerializeField] private LogController logController;       //Controlador de logs
 
-        private const string CLASS_NAME = "PLAYER CONTROLLER";      //Constante con el nombre de la clase
         public bool StartExecute { get; set; }                      //Indica que el player comienza a jugar
-        public bool StopPlayer { get; set; }                      
+        public bool StopPlayer { get; set; }           
         public delegate void PlacaSelected(GameObject placa);       //Delegado para el evento
         public static event PlacaSelected OnPlacaClicked;           //Evento para avisar que el player ha hecho click en una placa
         public delegate void PlacaClicked();       //Delegado para el evento
         public static event PlacaClicked OnClickedReaction;           //Evento para avisar que el player ha hecho click en una placa
+
         #region Inicializacion
         /*
             Al tener StartExecute a false, indicamos al jugador

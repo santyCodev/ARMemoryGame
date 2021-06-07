@@ -1,4 +1,5 @@
-﻿using MemoryPrototype.Logs;
+﻿using Audio;
+using MemoryPrototype.Logs;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,19 +9,28 @@ namespace MemoryPrototype.Character
     public class CharacterController : MonoBehaviour
     {
         private const float FIRST_POS_Y = 0.0f;
-        [SerializeField] private LogController logController;       //Controlador de logs
-
-        private List<GameObject> positionsToWalk;                   //Coleccion de posiciones a recorrer
-        private Vector3 nextPosition;                               //Siguiente posicion
-        private float currentLerpTime;                              //Tiempo actual de interpolacion lineal
         private const float LERP_SPEED_CONST = 2.0f;                   //Constante de velocidad de la interpolacion lineal para Andoroid
         private const float LERP_SPEED_CONST_GL = 2.8f;                   //Constante de velocidad de la interpolacion lineal para webGl
         private const string CLASS_NAME = "CHARACTER CONTROLLER";
 
+        [SerializeField] private LogController logController;       //Controlador de logs
+        [SerializeField] private AudioClip moveSound;
+
+        private AudioController audioController;
+
+        private List<GameObject> positionsToWalk;                   //Coleccion de posiciones a recorrer
+        private Vector3 nextPosition;                               //Siguiente posicion
+        private float currentLerpTime;                              //Tiempo actual de interpolacion lineal        
+
         public bool StopWalk;
         public delegate void FinishAction();                        //Delegado para el evento
         public static event FinishAction OnCharacterFinish;         //Evento para avisar que el character ha terminado
-        
+
+        private void Awake()
+        {
+            audioController = GetComponent<AudioController>();
+        }
+
         #region Prepare for movement
         /*
             Prepara el personaje para su movimiento
@@ -80,6 +90,7 @@ namespace MemoryPrototype.Character
                     {
                         nextPosition = NewPosition(placaPosition.transform.position);
                         LookAtNextPosition(nextPosition);
+                        audioController.PlayOneShotSound(moveSound);
 
                         while (Vector3.Distance(nextPosition, transform.position) > Vector3.kEpsilon)
                         {                            

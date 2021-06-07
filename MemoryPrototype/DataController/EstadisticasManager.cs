@@ -10,7 +10,6 @@ namespace MemoryPrototype.Data
         private List<float> tiemposAccurancy;
         private List<int> listAciertos;
         private List<int> listFallos;
-
         public int AciertosSesion { get; set; }
         public int FallosSesion { get; set; }
         public int RecordAciertos { get; set; }
@@ -55,8 +54,15 @@ namespace MemoryPrototype.Data
 
             MediaAciertos = MediaCalcInt(listAciertos);
             MediaFallos = MediaCalcInt(listFallos);
-            AciertosPerc = PercentValueInt(listAciertos, MediaAciertos);
-            FallosPerc = PercentValueInt(listFallos, MediaFallos);      
+
+            CalculatePercentSession();
+        }
+
+        private void CalculatePercentSession()
+        {
+            int sumaAciertosFallos = (AciertosSesion + FallosSesion);
+            AciertosPerc = (AciertosSesion * 100) / sumaAciertosFallos;
+            FallosPerc = (FallosSesion * 100) / sumaAciertosFallos;
         }
 
         public void SetInitialParameters()
@@ -71,43 +77,13 @@ namespace MemoryPrototype.Data
             MediaFallos = 0;
         }
 
+        
         private float MediaCalcInt(List<int> list)
         {
             float nums = 0.0f;
             foreach (var item in list) { nums = nums + item; }
             return nums / (list.Count);
 
-        }
-        private float MediaCalc(List<float> list)
-        {
-            float times = 0.0f;
-            foreach (var time in list) { times = times + time; }
-            return times / (list.Count);
-        }
-
-        private float MaxValueListInt(List<int> list)
-        {
-            float maxTime = 0.0f;
-            foreach (var time in list) { if (maxTime < time) { maxTime = time; } }
-            return maxTime;
-        }
-
-        private float MaxValueList(List<float> list)
-        {
-            float maxTime = 0.0f;
-            foreach (var time in list) { if (maxTime < time) { maxTime = time; } }
-            return maxTime;
-        }
-
-        private float PercentValueInt(List<int> list, float media)
-        {
-            float maxTime = MaxValueListInt(list);
-            return (media * 100) / maxTime;
-        }
-        private float PercentValue(List<float> list, float media)
-        {
-            float maxTime = MaxValueList(list);
-            return (media * 100) / maxTime;
         }
     }
 }

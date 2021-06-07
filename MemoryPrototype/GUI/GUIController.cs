@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using MemoryPrototype.Data;
+using Audio;
 
 namespace MemoryPrototype.Gui
 {
@@ -14,13 +15,17 @@ namespace MemoryPrototype.Gui
         [SerializeField] private GameObject pantallaInstrucciones;
         [SerializeField] private GameObject pantallaGame;
         [SerializeField] private GameObject pantallaResultados;
-        [SerializeField] private GameObject pantallaPatronTrack;
+        [SerializeField] private GameObject pantallaBuscarTarget;
         [SerializeField] private TextMeshProUGUI cuentaAtrasGOText;
+        [SerializeField] private AudioClip countDownSound;
+        [SerializeField] private AudioClip newGameSound;
+        [SerializeField] private AudioClip normalButtonSound;
 
         private GameObject pantallaActual;
-
+        private AudioController audioController;
         private GUILevelSection guiLevelGame;
         private GUIResultadosSection guiResultados;
+        private GUIBuscarPatron guiBuscarPatron;
 
         public delegate void GoNextState();                             //Delegado para el evento
         public static event GoNextState OnCuentaAtrasTerminada;         //Evento para avisar que la cuenta de GO atras ha terminado
@@ -31,15 +36,18 @@ namespace MemoryPrototype.Gui
         public delegate void ExitApplication(bool isExit);                                 //Delegado para el evento
         public static event ExitApplication OnExitApp;        //Evento para avisar que la cuenta atras de barra ha terminado
 
-
         private int cuentaAtrasGo;
         private int contadorFinResultados;
+
+        public bool GoToInstructions { get; set; }
 
         #region Inicializacion controlador
         void Start()
         {
             guiLevelGame = pantallaGame.GetComponent<GUILevelSection>();
             guiResultados = pantallaResultados.GetComponent<GUIResultadosSection>();
+            guiBuscarPatron = pantallaBuscarTarget.GetComponent<GUIBuscarPatron>();
+            audioController = GetComponent<AudioController>();
             cuentaAtrasGo = 3;
             contadorFinResultados = 0;
         }
@@ -50,7 +58,8 @@ namespace MemoryPrototype.Gui
             GUILevelSection.OnLevelGameEnd += EndLevelGame;
             GUIResultadosSection.OnEndResultados += EndResultados;
             GUISeccionTitle.OnTapClickOnScreen += GoToPantallaInstrucciones;
-            GUIInstruccionesSection.OnTapClickOnGameButton += GoToPantallaCuentaAtras;
+            GUIInstruccionesSection.OnTapClickOnGameButton += GoToCuentaAtrasGo;
+            GUIBuscarPatron.GoToGame += ActivateGameLogic;
         }
 
         /* Desuscripcion de eventos */
@@ -59,12 +68,45 @@ namespace MemoryPrototype.Gui
             GUILevelSection.OnLevelGameEnd -= EndLevelGame;
             GUIResultadosSection.OnEndResultados -= EndResultados;
             GUISeccionTitle.OnTapClickOnScreen -= GoToPantallaInstrucciones;
-            GUIInstruccionesSection.OnTapClickOnGameButton -= GoToPantallaCuentaAtras;
-        }
+            GUIInstruccionesSection.OnTapClickOnGameButton -= GoToCuentaAtrasGo;
+            GUIBuscarPatron.GoToGame -= ActivateGameLogic;
+        }        
         #endregion
-        
-        #region Pantalla de Titulo
-        /*  Activacion de la pantalla de titulo desde el Gamecontroller */
+
+        #region Seccion Busqueda patron
+        /* Pantalla que busca el image target */
+        public void ActivarPantallaPatron(bool goToinstructions) 
+        {            
+            ActivatePantalla(pantallaBuscarTarget);
+            GoToInstructions = goToinstructions;
+        }
+        public void DesactivarPantallaPatron() { DesactivatePantalla(pantallaBuscarTarget); }
+
+        /* Evento llamado despues de encontrar el image target
+            - Segun la variable GoToCuentaAtras se bifurca a la pantalla de cuenta atras o la de title*/
+        private void ActivateGameLogic()
+        {
+            if (GoToInstructions) { GoToInstructionsFromBusquedaPatron(); }
+            else { GoToPantallaTitle(); }
+        }
+
+        /* Evento llamado desde la pantalla de busqueda de patron, para ir directamente a las instrucciones*/
+        public void GoToInstructionsFromBusquedaPatron()
+        {
+            DesactivarPantallaPatron();
+            ActivatePantallaInstructions();
+        }
+
+        /*  Activacion de la pantalla de titulo desde la pantalla de busqueda de patron */
+        public void GoToPantallaTitle()
+        {
+            DesactivarPantallaPatron();
+            ActivatePantallaTitle();
+        }
+
+        #endregion
+
+        #region Pantalla de Titulo        
         public void ActivatePantallaTitle() { ActivatePantalla(pantallaTitle); }
 
         /*  Desactivacion de la pantalla de titulo desde el GuiController */
@@ -94,15 +136,19 @@ namespace MemoryPrototype.Gui
          *  - Desactiva la pagina de instrucciones
          *  - Arranca la corrutina para la cuentra atras y GO
          */
-        public void GoToPantallaCuentaAtras()
+        public void GoToCuentaAtrasGo()
         {
             DesactivatePantallaInstructions();
-            ActivarCuentaAtrasGame();
-        }        
-        #endregion
+            ActivarCuentaAtrasGame();            
+        }
+        #endregion        
 
         #region Cuenta atras GO
-        public void ActivarCuentaAtrasGame() { StartCoroutine(CuentaAtrasGo()); }
+        /* Pantalla que se activa si se ha encontrado el image target, se ejecuta con evento*/
+        public void ActivarCuentaAtrasGame()
+        {            
+            StartCoroutine(CuentaAtrasGo()); 
+        }
 
         /* 
          * Corrutina para mostrar en Gui la cuenta atras y Go
@@ -116,8 +162,11 @@ namespace MemoryPrototype.Gui
             cuentaAtrasGOText.gameObject.SetActive(true);
             pantallaActual = cuentaAtrasGOText.gameObject;
 
+            yield return new WaitForSeconds(1);
+
             while (cuentaAtrasGo > 0)
             {
+                audioController.PlayOneShotSound(countDownSound);
                 cuentaAtrasGOText.text = cuentaAtrasGo.ToString();
                 cuentaAtrasGo--;
                 yield return new WaitForSeconds(1);
@@ -182,45 +231,36 @@ namespace MemoryPrototype.Gui
         }
 
         /* 
-        * Hace un reload de toda la scene, para empezar con todo en estado inicial
+        * Evento llamado desde el boton salir
         */
-        public void ButtonExitAction() { LoadScene(false); }
-
-        /* 
-        * Hace un reload de toda la scene, para empezar con todo en estado inicial
-        */
-        public void ButtonJugarAction() { LoadScene(true); }
-
-        private void LoadScene(bool flag)
+        public void ButtonExitAction() 
         {
-            OnExitApp(flag);
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
-        #endregion
-
-        #region Seccion Patron Track
-        /* Activacion y desactivacion de la seccion de titulo*/
-        public void ActivateSeccionPatron() 
-        {
-            pantallaActual.SetActive(false);
-            pantallaPatronTrack.SetActive(true); 
-        }
-        public void DesactivateSeccionPatron() 
-        { 
-            pantallaPatronTrack.SetActive(false);
-            pantallaActual.SetActive(true);
+            audioController.PlayOneShotSound(normalButtonSound);
+            LoadScene(false); 
         }
 
         /* 
-         * Evento de boton llamado con el boton start
-         *  - Desactiva la pantalla de titulo
-         *  - Activa la pagina de instrucciones     
+        * Evento llamado desde el boton jugar
+        */
+        public void ButtonJugarAction() 
+        {
+            audioController.PlayOneShotSound(newGameSound);
+            LoadScene(true); 
+        }
+
+        /**
+         * Si el parametro flag es true, recarga la escena para volver a jugar
+         * Si el parametro flag es false, cierra la aplicacion
          */
-        public void ButtonSeguirAction()
-        {
-            DesactivateSeccionPatron();            
+        private void LoadScene(bool flag)
+        {            
+            OnExitApp(flag);
+            if (flag) { SceneManager.LoadScene(SceneManager.GetActiveScene().name); }
+            else { Application.Quit(); }            
         }
         #endregion
+
+        #region Logica para activar y desactivar pantallas
 
         private void ActivatePantalla(GameObject pantalla)
         {
@@ -233,6 +273,8 @@ namespace MemoryPrototype.Gui
             pantalla.SetActive(false);
             pantallaActual = null;
         }
+
+        #endregion
     }
 }
 
